@@ -54,10 +54,11 @@ export default function MapControls({ map, basemap, onBasemap, dailyDate, dailyM
           </ul>
         )}
       </Popover>
-      <div className={`flex flex-col overflow-hidden rounded-f4 ${glass}`} role="group" aria-label="Zoom">
-        <button className={btn} onClick={() => map?.zoomIn()} aria-label="Zoom in"><Icon icon={Plus} size="sm" /></button>
+      {/* 34px wide including its border, like the round buttons, so the column's centres line up */}
+      <div className={`box-border flex w-f6 flex-col overflow-hidden rounded-f4 ${glass}`} role="group" aria-label="Zoom">
+        <button className={`${btn} w-full`} onClick={() => map?.zoomIn()} aria-label="Zoom in"><Icon icon={Plus} size="sm" /></button>
         <span className="mx-f2 h-px bg-line" aria-hidden />
-        <button className={btn} onClick={() => map?.zoomOut()} aria-label="Zoom out"><Icon icon={Minus} size="sm" /></button>
+        <button className={`${btn} w-full`} onClick={() => map?.zoomOut()} aria-label="Zoom out"><Icon icon={Minus} size="sm" /></button>
       </div>
     </div>
   );

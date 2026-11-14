@@ -269,7 +269,8 @@ export default function MapPanel() {
           <div className="max-w-64 rounded-f3 border border-line bg-page/85 px-f4 py-f2 text-cap text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>
         )}
       </div>
-      <div className="absolute bottom-[2.75rem] right-f4 z-10">
+      {/* sits 5px above the 34px credits button (13px from the edge): one column, equal gaps */}
+      <div className="absolute bottom-[52px] right-f4 z-10">
         <MapControls map={mapRef.current} basemap={basemap} onBasemap={setBasemap} dailyDate={imageryDate} dailyMissing={dailyMissing} />
       </div>
       {liveError && (
