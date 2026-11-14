@@ -6,7 +6,7 @@ import type {
   Envelope, GridCell, GridData, HasData, Meta, Origin, Warning,
 } from '../types';
 import { ApiError } from '../errors';
-import { day, exportFile, ints, num, query, str } from './db';
+import { connection, day, exportFile, ints, num, query, registerBuffer, str } from './db';
 import { boxAreaDeg2, daysBetween, daysInMonth, eachDay, ymd } from '../../lib/dates';
 
 // ---------------------------------------------------------------- dataset
@@ -42,19 +42,60 @@ async function fetchManifest(): Promise<Manifest> {
   return res.json();
 }
 
+// Small files are downloaded whole, all at once, and kept in memory: DuckDB reads remote files one
+// request at a time (~0.3 s each through the Worker), so a dozen small monthly files cost seconds
+// per query when read remotely, but a fraction of a second when fetched in parallel up front.
+// Only the large history files (cells, cells_month, rows) are read remotely with Range requests.
+const memFiles = new Map<string, string>(); // in-memory file name -> version it holds
+
+async function fetchBytes(path: string): Promise<Uint8Array> {
+  let res: Response;
+  try {
+    res = await fetch(fileUrl(path));
+  } catch (e) {
+    throw new ApiError('NETWORK', String(e));
+  }
+  if (!res.ok) throw new ApiError('INTERNAL_ERROR', `Dataset file missing: ${path} (HTTP ${res.status}).`, res.status);
+  return new Uint8Array(await res.arrayBuffer());
+}
+
+/** Download the files whose version changed (in parallel) and register them under `mem/…`. */
+async function loadSmallFiles(files: { path: string; version: string }[]): Promise<void> {
+  await Promise.all(files.map(async ({ path, version }) => {
+    const name = `mem/${path}`;
+    if (memFiles.get(name) === version) return;
+    const sep = path.includes('?') ? '&' : '?';
+    await registerBuffer(name, await fetchBytes(`${path}${sep}v=${encodeURIComponent(version)}`));
+    memFiles.set(name, version);
+  }));
+}
+
+/** A live month's version: changes only when one of its days is (re)processed. */
+function monthVersion(m: Manifest, month: string): string {
+  let v = '';
+  for (const [d, s] of Object.entries(m.days)) if (d.startsWith(month) && (s.processed_at ?? '') > v) v = s.processed_at ?? '';
+  return v || m.updated_at;
+}
+
 async function buildViews(m: Manifest) {
-  const v = encodeURIComponent(m.updated_at); // new URL per update, so the browser never reuses a stale live file
-  const hist = (name: string) => str(fileUrl(`hist/${name}.parquet`));
-  const live = (kind: string) => m.live_months.length
-    ? `read_parquet([${m.live_months.map((mo) => str(fileUrl(`live/${kind}/${mo}.parquet?v=${v}`))).join(', ')}])`
-    : null;
+  // history files only change when days are consolidated (local_end moves): new URL then, so neither the
+  // browser nor DuckDB's footer cache can mix an old file with a new one
+  const hv = encodeURIComponent(m.local_end);
+  const hist = (name: string) => str(fileUrl(`hist/${name}.parquet?v=${hv}`));
+  const versions = new Map(m.live_months.map((mo) => [mo, monthVersion(m, mo)]));
+  const liveCells = m.live_months.map((mo) => `live/cells/${mo}.parquet`);
+  await loadSmallFiles([
+    { path: 'hist/day_status.parquet', version: m.local_end },
+    ...liveCells.map((path, i) => ({ path, version: versions.get(m.live_months[i])! })),
+  ]);
+  const mem = (paths: string[]) => `read_parquet([${paths.map((x) => str(`mem/${x}`)).join(', ')}])`;
   const stmts = [
     `CREATE OR REPLACE VIEW hist_cells AS SELECT * FROM read_parquet(${hist('cells')})`,
     `CREATE OR REPLACE VIEW hist_cells_month AS SELECT * FROM read_parquet(${hist('cells_month')})`,
-    `CREATE OR REPLACE VIEW hist_status AS SELECT fire_date, has_data, daynight_reliable, flag FROM read_parquet(${hist('day_status')})`,
-    `CREATE OR REPLACE VIEW hist_rows AS SELECT * FROM read_parquet(${hist('rows')})`,
-    `CREATE OR REPLACE VIEW live_cells AS SELECT * FROM ${live('cells') ?? '(SELECT * FROM hist_cells WHERE false)'}`,
-    `CREATE OR REPLACE VIEW live_rows AS SELECT * FROM ${live('rows') ?? '(SELECT * FROM hist_rows WHERE false)'}`,
+    `CREATE OR REPLACE TABLE hist_status AS SELECT fire_date, has_data, daynight_reliable, flag FROM ${mem(['hist/day_status.parquet'])}`,
+    liveCells.length
+      ? `CREATE OR REPLACE TABLE live_cells AS SELECT * FROM ${mem(liveCells)}`
+      : `CREATE OR REPLACE VIEW live_cells AS SELECT * FROM hist_cells WHERE false`,
     `CREATE OR REPLACE TABLE live_status (fire_date DATE, has_data VARCHAR, daynight_reliable BOOLEAN, flag VARCHAR)`,
   ];
   const days = Object.entries(m.days);
@@ -74,7 +115,8 @@ export function dataset(refresh = false): Promise<Manifest> {
   if (!setup || refresh) {
     const previous = setup;
     setup = (async () => {
-      const m = await fetchManifest();
+      // start the SQL engine while the manifest downloads
+      const [m] = await Promise.all([fetchManifest(), connection()]);
       if (!manifest || m.updated_at !== manifest.updated_at) await buildViews(m);
       manifest = m;
       return m;
@@ -386,10 +428,18 @@ export async function hotspotsCsv(q: AreaQuery): Promise<Uint8Array> {
   checkBox(q.bbox);
   if (boxAreaDeg2(q.bbox) * daysBetween(q.start, q.end) > LIMITS.csv_max_deg2_days)
     throw new ApiError('QUERY_TOO_LARGE', 'Too large for one CSV. Choose a smaller area or shorter period.', 400);
-  await dataset();
+  const m = await dataset();
+  // Detection rows are only needed here, so their files are opened only now, and only the ones the
+  // period touches (opening each remote file costs a couple of round trips).
+  const months = m.live_months.filter((mo) => mo >= q.start.slice(0, 7) && mo <= q.end.slice(0, 7));
+  const files = [
+    ...(q.start <= m.local_end ? [fileUrl(`hist/rows.parquet?v=${encodeURIComponent(m.local_end)}`)] : []),
+    ...months.map((mo) => fileUrl(`live/rows/${mo}.parquet?v=${encodeURIComponent(monthVersion(m, mo))}`)),
+  ];
+  if (!files.length) throw new ApiError('NOT_FOUND', 'No detections are stored for this period yet.', 404);
   const cols = CSV_COLUMNS.map((c) => (c === 'acq_date' || c === 'fire_date' ? `strftime(${c}, '%Y-%m-%d') AS ${c}` : `"${c}"`)).join(', ');
   return exportFile(`
-    COPY (SELECT ${cols} FROM (SELECT * FROM hist_rows UNION ALL BY NAME SELECT * FROM live_rows)
+    COPY (SELECT ${cols} FROM read_parquet([${files.map(str).join(', ')}], union_by_name = true)
           WHERE fire_date BETWEEN ${day(q.start)} AND ${day(q.end)} AND ${boxSql(q.bbox, q.types, 'latitude', 'longitude')}
           ORDER BY acq_date, acq_time) TO 'hotspots.csv' (HEADER, DELIMITER ',')`, 'hotspots.csv');
 }

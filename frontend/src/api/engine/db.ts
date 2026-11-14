@@ -1,6 +1,6 @@
 // DuckDB-WASM: the same SQL engine the backend uses, running in the browser. It reads the
 // Parquet files over HTTP with Range requests, so only the parts a query needs are downloaded.
-// The WebAssembly binary loads from jsDelivr on first use (a few MB, then cached).
+// The WebAssembly binary loads from jsDelivr on first use (about 7 MB compressed, then cached).
 
 import * as duckdb from '@duckdb/duckdb-wasm';
 
@@ -17,6 +17,8 @@ export function connection(): Promise<duckdb.AsyncDuckDBConnection> {
     instance = db;
     const conn = await db.connect();
     await conn.query(`SET TimeZone = 'UTC'`);
+    // keep Parquet footers between queries, so repeat queries skip those round trips
+    try { await conn.query('SET enable_object_cache = true'); } catch { /* setting renamed in newer DuckDB */ }
     return conn;
   })();
   return ready;
@@ -36,6 +38,12 @@ export async function exportFile(sql: string, name: string): Promise<Uint8Array>
   const bytes = await instance!.copyFileToBuffer(name);
   await instance!.dropFile(name);
   return bytes;
+}
+
+/** Put downloaded bytes into DuckDB's in-memory file system (replacing a file of the same name). */
+export async function registerBuffer(name: string, bytes: Uint8Array): Promise<void> {
+  await connection();
+  await instance!.registerFileBuffer(name, bytes);
 }
 
 // ---- safe SQL literals (all inputs are validated before they reach SQL) ----

@@ -90,6 +90,14 @@ class DatasetTest(unittest.TestCase):
         self.assertEqual(manifest["latest_fire_date"], "2026-01-10")
         self.assertEqual(manifest["live_months"], ["2026-01"])
 
+    def test_requested_days_beat_the_backlog(self):
+        wanted = process_days.parse_days("2026-11-01:2026-11-14")
+        backlog = process_days.parse_days("2026-08-10:2026-12-31")
+        days = process_days.choose_days(wanted, backlog, 20)
+        self.assertEqual(len(days), 20)
+        self.assertTrue(set(wanted) <= set(days))
+        self.assertEqual(days[0], date(2026, 8, 10))  # the rest of the cap goes to the oldest gap
+
     def test_missing_days_fill_from_csv_end(self):
         manifest = json.loads((Path(self.tmp.name) / "manifest.json").read_text())
         self.assertEqual(process_days.missing_days(manifest, date(2026, 1, 3), 10),

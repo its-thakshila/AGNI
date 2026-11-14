@@ -54,7 +54,12 @@ function parseRange(header: string | null): R2Range | undefined {
 
 async function serveFile(request: Request, env: Env, dataset: string, file: string, headers: Record<string, string>) {
   const key = `${dataset}/${file}`;
-  const cache = file === 'manifest.json' ? 'no-store' : file.startsWith('hist/') ? 'public, max-age=3600' : 'public, max-age=60';
+  // The site asks for data files with ?v=<version>, a new URL whenever the file changes, so those
+  // can be cached by the browser for good: repeat visits read them without any network round trip.
+  const versioned = new URL(request.url).searchParams.has('v');
+  const cache = file === 'manifest.json' ? 'no-store'
+    : versioned ? 'public, max-age=31536000, immutable'
+    : file.startsWith('hist/') ? 'public, max-age=3600' : 'public, max-age=60';
   const base = { ...headers, 'Accept-Ranges': 'bytes', 'Cache-Control': cache, 'Content-Type': file.endsWith('.json') ? 'application/json' : 'application/octet-stream' };
 
   if (request.method === 'HEAD') {

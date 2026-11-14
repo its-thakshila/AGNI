@@ -198,6 +198,13 @@ def missing_days(manifest: dict, today: date, limit: int) -> list[date]:
     return out
 
 
+def choose_days(wanted: list[date], backlog: list[date], limit: int) -> list[date]:
+    """Requested/recent days first, then the oldest missing days, up to `limit`; returned in date order."""
+    picked = list(dict.fromkeys(sorted(wanted)))[:limit]
+    picked += [d for d in backlog if d not in picked][: limit - len(picked)]
+    return sorted(picked)
+
+
 def parse_days(text: str) -> list[date]:
     days = []
     for part in filter(None, (p.strip() for p in (text or "").split(","))):
@@ -227,12 +234,15 @@ def main():
     if manifest is None:
         raise SystemExit(f"{store}: manifest.json not found. Run build_hist first.")
 
-    days = parse_days(args.days)
+    # Days someone asked for (the Worker passes the days a visitor is looking at) and the last few
+    # days come first; the backlog only fills what is left of the per-run cap. Before, the backlog
+    # was sorted in front and pushed the requested days past the cap, so they stayed "pending".
+    wanted = parse_days(args.days)
     if args.recent:
-        days += [today - timedelta(days=i) for i in range(args.recent)]
-    if args.fill_missing:
-        days += missing_days(manifest, today, args.max_days)
-    days = sorted(set(days))[: args.max_days]
+        wanted += [today - timedelta(days=i) for i in range(args.recent)]
+    wanted = sorted({d for d in wanted if d <= today})
+    backlog = missing_days(manifest, today, args.max_days) if args.fill_missing else []
+    days = choose_days(wanted, backlog, args.max_days)
     print(f"{store}: processing {len(days)} day(s)" + (" with FAKE FIRMS data" if args.fake else ""))
     if harmonic.PLACEHOLDER:
         # never let made-up estimates reach real data: the stand-in is for fake/test runs only
