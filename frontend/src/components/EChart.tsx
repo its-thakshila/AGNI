@@ -16,7 +16,8 @@ export const TOOLTIP = {
 
 interface Props {
   option: echarts.EChartsCoreOption;
-  height: number;
+  /** px; omit to fill the parent's height */
+  height?: number;
   className?: string;
   onClick?: (p: { seriesIndex?: number; dataIndex: number; data: unknown }) => void;
   ariaLabel: string;
@@ -46,5 +47,5 @@ export default function EChart({ option, height, className, onClick, ariaLabel }
     chart.current?.resize();
   }, [option, height]);
 
-  return <div ref={el} role="img" aria-label={ariaLabel} className={className} style={{ height }} />;
+  return <div ref={el} role="img" aria-label={ariaLabel} className={className} style={height ? { height } : { position: 'absolute', inset: 0 }} />;
 }

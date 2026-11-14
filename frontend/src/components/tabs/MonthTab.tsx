@@ -1,15 +1,15 @@
 import { useMemo, useState } from 'react';
-import { downloadCsv, friendlyError } from '../api/client';
-import { isModelled } from '../api/types';
-import { useAnomaly, useDaily, useMeta, useMonthQuery } from '../hooks/useData';
-import { useSelection } from '../store/useSelection';
-import { INK, ORIGIN_LABEL } from '../lib/colors';
-import { boxAreaDeg2, daysBetween } from '../lib/dates';
-import { MONTHS_LONG, compact, fmt } from '../lib/stats';
-import EChart, { AXIS_FONT, TOOLTIP } from './EChart';
-import Notices from './Notices';
+import { downloadCsv, friendlyError } from '../../api/client';
+import { isModelled } from '../../api/types';
+import { useAnomaly, useDaily, useMeta, useMonthQuery } from '../../hooks/useData';
+import { useSelection } from '../../store/useSelection';
+import { INK, ORIGIN_LABEL } from '../../lib/colors';
+import { boxAreaDeg2, daysBetween } from '../../lib/dates';
+import { MONTHS_LONG, compact, fmt } from '../../lib/stats';
+import EChart, { AXIS_FONT, TOOLTIP } from '../EChart';
 
 const EMBER_LINE = '#f2803d';
+const axisY = { type: 'value', splitNumber: 3, axisLabel: { ...AXIS_FONT, formatter: (v: number) => compact(v) }, splitLine: { lineStyle: { color: '#222226' } } };
 
 function DailyChart() {
   const { data, error } = useDaily();
@@ -24,9 +24,9 @@ function DailyChart() {
     const noData = days.flatMap((x, i) => (x.has_data === 'none' ? [[{ xAxis: labels[i] }, { xAxis: labels[i] }]] : []));
     return {
       animation: false,
-      grid: { left: 44, right: 12, top: 12, bottom: 28 },
-      xAxis: { type: 'category', data: labels, boundaryGap: true, axisLine: { lineStyle: { color: '#383835' } }, axisTick: { show: false }, axisLabel: { ...AXIS_FONT, interval: 4 } },
-      yAxis: { type: 'value', splitNumber: 3, axisLabel: { ...AXIS_FONT, formatter: (v: number) => compact(v) }, splitLine: { lineStyle: { color: '#222226' } } },
+      grid: { left: 40, right: 8, top: 10, bottom: 22 },
+      xAxis: { type: 'category', data: labels, axisLine: { lineStyle: { color: '#383835' } }, axisTick: { show: false }, axisLabel: { ...AXIS_FONT, interval: 4 } },
+      yAxis: axisY,
       tooltip: {
         ...TOOLTIP,
         trigger: 'axis',
@@ -62,12 +62,14 @@ function DailyChart() {
   }, [d]);
 
   return (
-    <div>
+    <div className="flex min-h-[150px] flex-1 flex-col">
       <div className="flex items-baseline justify-between gap-2">
         <h3 className="text-sm font-medium text-ink">Day by day</h3>
-        {d?.days.some((x) => (x.uncertainty ?? 0) > 0) && <span className="text-xs text-muted">Shaded band: model uncertainty</span>}
+        {d?.days.some((x) => (x.uncertainty ?? 0) > 0) && <span className="text-[11px] text-muted">Shaded: model uncertainty</span>}
       </div>
-      {error ? <p className="py-6 text-sm text-ember-soft">{friendlyError(error)}</p> : <EChart height={200} option={option} ariaLabel="Daily hotspot detections for the selected month" />}
+      <div className="relative min-h-0 flex-1">
+        {error ? <p className="py-6 text-sm text-ember-soft">{friendlyError(error)}</p> : <EChart option={option} ariaLabel="Daily hotspot detections for the selected month" />}
+      </div>
     </div>
   );
 }
@@ -82,9 +84,9 @@ function HistoryChart() {
     const h = a.history;
     return {
       animation: false,
-      grid: { left: 44, right: 12, top: 12, bottom: 28 },
+      grid: { left: 40, right: 8, top: 10, bottom: 22 },
       xAxis: { type: 'category', data: h.map((x) => String(x.year)), axisLine: { lineStyle: { color: '#383835' } }, axisTick: { show: false }, axisLabel: { ...AXIS_FONT, interval: 4 } },
-      yAxis: { type: 'value', splitNumber: 3, axisLabel: { ...AXIS_FONT, formatter: (v: number) => compact(v) }, splitLine: { lineStyle: { color: '#222226' } } },
+      yAxis: axisY,
       tooltip: {
         ...TOOLTIP,
         trigger: 'item',
@@ -101,18 +103,15 @@ function HistoryChart() {
       },
       series: [
         {
-          type: 'bar', barMaxWidth: 14, cursor: 'pointer',
+          type: 'bar', barMaxWidth: 12, cursor: 'pointer',
           data: h.map((x) => ({
             value: x.value,
-            itemStyle: {
-              color: x.year === year ? EMBER_LINE : isModelled(x.main_origin) ? '#33333a' : '#4a4a52',
-              borderRadius: [3, 3, 0, 0],
-            },
+            itemStyle: { color: x.year === year ? EMBER_LINE : isModelled(x.main_origin) ? '#33333a' : '#4a4a52', borderRadius: [3, 3, 0, 0] },
           })),
           markLine: {
             silent: true, symbol: 'none',
             lineStyle: { color: INK.muted, type: 'dashed', width: 1 },
-            label: { formatter: 'Usual', color: INK.muted, fontSize: 10, fontFamily: 'Inter', position: 'insideEndTop' },
+            label: { formatter: 'Usual', color: INK.muted, fontSize: 10, fontFamily: 'Inter', position: 'insideStartTop' },
             data: [{ yAxis: a.baseline.median }],
           },
         },
@@ -121,36 +120,35 @@ function HistoryChart() {
   }, [a, year, month]);
 
   return (
-    <div>
+    <div className="flex min-h-[150px] flex-1 flex-col">
       <div className="flex items-baseline justify-between gap-2">
         <h3 className="text-sm font-medium text-ink">{MONTHS_LONG[month - 1]} in every year</h3>
-        {a?.compared_days.month_to_date && <span className="text-xs text-muted">Days 1–{a.compared_days.to_day} of each year</span>}
+        {a?.compared_days.month_to_date && <span className="text-[11px] text-muted">Days 1–{a.compared_days.to_day} of each year</span>}
       </div>
-      {error ? (
-        <p className="py-6 text-sm text-ember-soft">{friendlyError(error)}</p>
-      ) : (
-        <EChart
-          height={200}
-          option={option}
-          ariaLabel={`Detections in ${MONTHS_LONG[month - 1]} for every year`}
-          onClick={(p) => {
-            const x = a?.history[p.dataIndex];
-            if (x && x.value !== null) setMonth(x.year, month);
-          }}
-        />
-      )}
+      <div className="relative min-h-0 flex-1">
+        {error ? (
+          <p className="py-6 text-sm text-ember-soft">{friendlyError(error)}</p>
+        ) : (
+          <EChart
+            option={option}
+            ariaLabel={`Detections in ${MONTHS_LONG[month - 1]} for every year`}
+            onClick={(p) => {
+              const x = a?.history[p.dataIndex];
+              if (x && x.value !== null) setMonth(x.year, month);
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }
 
-export default function MonthDetail() {
-  const { year, month } = useSelection();
+export default function MonthTab() {
   const { data: meta } = useMeta();
   const q = useMonthQuery();
-  const daily = useDaily().data;
+  const daily = useDaily().data?.data;
   const [busy, setBusy] = useState(false);
   const [dlError, setDlError] = useState('');
-
   const tooBig = !!(q && meta && boxAreaDeg2(q.bbox) * daysBetween(q.start, q.end) > meta.limits.csv_max_deg2_days);
 
   async function download() {
@@ -167,33 +165,23 @@ export default function MonthDetail() {
   }
 
   return (
-    <section className="mt-6 rounded-2xl border border-line bg-surface p-4 sm:p-5" aria-label="Selected month">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h2 className="text-base font-medium text-ink">
-            {MONTHS_LONG[month - 1]} {year}
-          </h2>
-          <p className="text-sm text-muted">
-            {daily ? `${fmt(daily.data.totals.count)} detections on ${daily.data.totals.days_with_data} of ${daily.data.totals.days_total} days` : 'Loading…'}
-          </p>
-        </div>
-        <div className="text-right">
-          <button
-            onClick={download}
-            disabled={busy || !q || tooBig}
-            className="rounded-lg border border-line px-3 py-1.5 text-sm text-ink-2 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {busy ? 'Preparing…' : 'Download CSV'}
-          </button>
-          {tooBig && <p className="mt-1 max-w-64 text-xs text-muted">Too much data for one file. Draw a smaller area to download.</p>}
-          {dlError && <p className="mt-1 max-w-64 text-xs text-ember-soft">{dlError}</p>}
-        </div>
+    <div className="flex min-h-0 flex-1 flex-col gap-4">
+      <DailyChart />
+      <HistoryChart />
+      <div className="flex items-center justify-between gap-3 border-t border-line pt-3">
+        <p className="text-xs text-muted">
+          {dlError ? <span className="text-ember-soft">{dlError}</span>
+            : tooBig ? 'Too much data for one file. Draw a smaller area to download.'
+            : daily ? `Data on ${daily.totals.days_with_data} of ${daily.totals.days_total} days` : ''}
+        </p>
+        <button
+          onClick={download}
+          disabled={busy || !q || tooBig}
+          className="shrink-0 rounded-lg border border-line px-3 py-1.5 text-sm text-ink-2 transition-colors hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          {busy ? 'Preparing…' : 'Download CSV'}
+        </button>
       </div>
-      <div className="mt-4 grid gap-6 lg:grid-cols-2">
-        <DailyChart />
-        <HistoryChart />
-      </div>
-      <Notices warnings={daily?.warnings} />
-    </section>
+    </div>
   );
 }

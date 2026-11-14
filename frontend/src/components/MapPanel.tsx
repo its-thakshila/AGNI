@@ -7,8 +7,7 @@ import { friendlyError } from '../api/client';
 import { useBox, useGrid, useMeta } from '../hooks/useData';
 import { useSelection } from '../store/useSelection';
 import { EMBER } from '../lib/colors';
-import { MONTHS_LONG, compact } from '../lib/stats';
-import AreaCard from './AreaCard';
+import AreaControl from './AreaControl';
 
 const STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 const EMPTY: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] };
@@ -47,7 +46,7 @@ export default function MapPanel() {
   const el = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MLMap | null>(null);
   const [ready, setReady] = useState(false);
-  const { aoi, drawing, setAoi, setDrawing, year, month } = useSelection();
+  const { aoi, drawing, setAoi, setDrawing } = useSelection();
   const { data: meta } = useMeta();
   const { box } = useBox();
   const grid = useGrid();
@@ -77,7 +76,13 @@ export default function MapPanel() {
       setReady(true);
     });
     mapRef.current = map;
-    return () => map.remove();
+    // the panel layout can change the map's size without a window resize
+    const ro = new ResizeObserver(() => map.resize());
+    ro.observe(el.current!);
+    return () => {
+      ro.disconnect();
+      map.remove();
+    };
   }, []);
 
   useEffect(() => {
@@ -134,31 +139,27 @@ export default function MapPanel() {
   const modelShare = g && g.cells.length ? g.cells.filter((c) => isModelled(c.main_origin)).length / g.cells.length : 0;
 
   return (
-    <section className="relative h-[58vh] min-h-[380px] border-b border-line" aria-label="Map of hotspot detections">
+    <section className="absolute inset-0" aria-label="Map of hotspot detections">
       {/* inline position: MapLibre's own CSS would override a utility class here */}
       <div ref={el} style={{ position: 'absolute', inset: 0 }} />
-      <AreaCard />
-      <div className="pointer-events-none absolute right-3 top-3 rounded-xl border border-line bg-page/80 px-3.5 py-2.5 text-right backdrop-blur sm:right-4 sm:top-4">
-        <div className="text-xs text-muted">Showing</div>
-        <div className="text-sm font-medium text-ink">
-          {MONTHS_LONG[month - 1]} {year}
-        </div>
-        <div className="tabular max-w-48 text-xs text-ink-2">
-          {grid.isFetching ? 'Loading…' : grid.error ? friendlyError(grid.error) : g ? `${compact(g.total)} detections` : '—'}
-        </div>
+      <div className="absolute left-3 top-3 z-10">
+        <AreaControl />
       </div>
-      <div className="pointer-events-none absolute bottom-3 left-3 rounded-xl border border-line bg-page/80 px-3.5 py-2.5 backdrop-blur sm:bottom-4 sm:left-4">
-        <div className="text-xs text-muted">Detections per 10 km square</div>
-        <div className="mt-1.5 flex h-2 w-40 overflow-hidden rounded-full">
-          {ramp.map((c) => <span key={c} className="flex-1" style={{ background: c }} />)}
-        </div>
-        <div className="mt-1 flex w-40 justify-between text-[10px] text-muted">
+      {grid.isFetching && (
+        <div className="pointer-events-none absolute right-3 top-3 rounded-full border border-line bg-page/80 px-3 py-1 text-xs text-muted backdrop-blur">Loading…</div>
+      )}
+      {grid.error && (
+        <div className="absolute right-3 top-3 max-w-64 rounded-lg border border-line bg-page/85 px-3 py-1.5 text-xs text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>
+      )}
+      <div className="pointer-events-none absolute bottom-3 left-3 rounded-lg border border-line bg-page/80 px-3 py-2 backdrop-blur">
+        <div className="flex items-center gap-2 text-[11px] text-muted">
           <span>Few</span>
-          <span>Many</span>
+          <span className="flex h-1.5 w-24 overflow-hidden rounded-full">
+            {ramp.map((c) => <span key={c} className="flex-1" style={{ background: c }} />)}
+          </span>
+          <span>Many detections per 10 km</span>
         </div>
-        {modelShare > 0.5 && (
-          <div className="mt-1.5 max-w-44 text-[11px] leading-snug text-ink-2">Rebuilt from MODIS: shows where burning was, not exact fire points.</div>
-        )}
+        {modelShare > 0.5 && <div className="mt-1 text-[11px] text-ink-2">Rebuilt from MODIS: where burning was, not exact points</div>}
       </div>
     </section>
   );
