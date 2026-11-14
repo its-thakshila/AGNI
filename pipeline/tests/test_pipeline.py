@@ -98,6 +98,18 @@ class DatasetTest(unittest.TestCase):
         self.assertTrue(set(wanted) <= set(days))
         self.assertEqual(days[0], date(2026, 8, 10))  # the rest of the cap goes to the oldest gap
 
+    def test_day_totals_match_cells(self):
+        root = Path(self.tmp.name)
+        process_days.run(self.store, FakeFirms(), process_days.parse_days("2026-01-01:2026-01-05"), TODAY, log=lambda *_: None)
+        consolidate.consolidate(self.store)
+        with duckdb.connect() as db:
+            totals, cells = (db.execute(f"SELECT round(sum(count), 6), count(DISTINCT fire_date) FROM read_parquet(?){w}",
+                                        [str(root / f)]).fetchone()
+                             for f, w in (("hist/day_totals.parquet", ""),
+                                          ("hist/cells.parquet", " WHERE cell_lat BETWEEN -44 AND -9 AND cell_lon BETWEEN 112 AND 154")))
+        self.assertEqual(totals, cells)
+        self.assertTrue(json.loads((root / "manifest.json").read_text())["totals"])
+
     def test_consolidate_leaves_other_years_untouched(self):
         root = Path(self.tmp.name)
         before = (root / "hist/rows/2025.parquet").read_bytes()

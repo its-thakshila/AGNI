@@ -97,7 +97,7 @@ def consolidate(store, export_csv: str | None = None, keep_recent_days: int = 3)
     row_years = {} if legacy else dict(manifest["row_years"])
     row_years.update(info["row_years"])
     manifest.update(record_start=info["record_start"], local_end=info["local_end"], known_gaps=info["known_gaps"],
-                    row_years=dict(sorted(row_years.items())), updated_at=datetime.now(UTC).isoformat(timespec="seconds"))
+                    row_years=dict(sorted(row_years.items())), totals=True, updated_at=datetime.now(UTC).isoformat(timespec="seconds"))
     # live month files still hold the consolidated days: drop whole months now in hist, and
     # rewrite partly consolidated months without those days (otherwise they'd count twice)
     still_live = {d[:7] for d in manifest["days"]}

@@ -21,6 +21,8 @@ export interface Manifest {
   days: Record<string, ManifestDay>; live_months: string[]; updated_at: string;
   /** history detection files, one per year: year -> version (older datasets: one hist/rows.parquet) */
   row_years?: Record<string, string>;
+  /** hist/day_totals.parquet exists: all-Australia totals per day (small, loaded whole) */
+  totals?: boolean;
 }
 
 const BASE = new URL(((import.meta.env.VITE_DATA_URL as string | undefined) || `${import.meta.env.BASE_URL}data/mock`).replace(/\/?$/, '/'), location.href).href;
@@ -102,6 +104,7 @@ async function buildViews(m: Manifest) {
   const liveCells = m.live_months.map((mo) => `live/cells/${mo}.parquet`);
   const loaded = await loadSmallFiles([
     { path: 'hist/day_status.parquet', version: m.local_end },
+    ...(m.totals ? [{ path: 'hist/day_totals.parquet', version: m.local_end }] : []),
     ...liveCells.map((path, i) => ({ path, version: versions.get(m.live_months[i])! })),
   ]);
   const mem = (paths: string[]) => `read_parquet([${paths.map((x) => str(memFiles.get(x)!)).join(', ')}])`;
@@ -118,6 +121,15 @@ async function buildViews(m: Manifest) {
   if (days.length) {
     stmts.push(`INSERT INTO live_status VALUES ${days.map(([d, s]) =>
       `(${day(d)}, ${str(s.has_data)}, ${s.daynight_reliable ? 'true' : 'false'}, ${s.flag ? str(s.flag) : 'NULL'})`).join(', ')}`);
+  }
+  if (m.totals) {
+    const inside = `cell_lat BETWEEN ${num(COVERAGE.min_lat)} AND ${num(COVERAGE.max_lat)} AND cell_lon BETWEEN ${num(COVERAGE.min_lon)} AND ${num(COVERAGE.max_lon)}`;
+    stmts.push(
+      `CREATE OR REPLACE TABLE hist_totals AS SELECT * FROM ${mem(['hist/day_totals.parquet'])}`,
+      `CREATE OR REPLACE VIEW all_totals AS SELECT * FROM hist_totals UNION ALL BY NAME
+         SELECT fire_date, "pass", type, origin, SUM(count) AS count, SUM(frp_sum) AS frp_sum, SUM(n_rows) AS n_rows
+         FROM live_cells WHERE ${inside} GROUP BY ALL`,
+    );
   }
   stmts.push(
     `CREATE OR REPLACE VIEW all_cells AS SELECT * FROM hist_cells UNION ALL BY NAME SELECT * FROM live_cells`,
@@ -170,6 +182,17 @@ function percentile(values: number[], p: number): number {
 
 const boxSql = (b: BBox, types: number[], lat = 'cell_lat', lon = 'cell_lon') =>
   `${lat} BETWEEN ${num(b.min_lat)} AND ${num(b.max_lat)} AND ${lon} BETWEEN ${num(b.min_lon)} AND ${num(b.max_lon)} AND type IN ${ints(types)}`;
+
+interface Area { from: string; where: string; totals: boolean }
+
+/** Where to sum detections for an area: the small all-Australia totals when the area is the whole
+ *  coverage (the default view), otherwise the 0.1° cells inside the box. */
+function area(m: Manifest, b: BBox, types: number[]): Area {
+  const whole = b.min_lat <= COVERAGE.min_lat && b.max_lat >= COVERAGE.max_lat && b.min_lon <= COVERAGE.min_lon && b.max_lon >= COVERAGE.max_lon;
+  return m.totals && whole
+    ? { from: 'all_totals', where: `type IN ${ints(types)}`, totals: true }
+    : { from: 'all_cells', where: boxSql(b, types), totals: false };
+}
 
 function checkBox(b: BBox) {
   if (b.min_lat >= b.max_lat || b.min_lon >= b.max_lon) throw new ApiError('EMPTY_BOX', 'Select an area with a nonzero width and height.', 400);
@@ -239,12 +262,12 @@ export async function meta(): Promise<Meta> {
 
 export async function daily(q: AreaQuery): Promise<Envelope<DailyData>> {
   checkBox(q.bbox);
-  await dataset();
+  const a = area(await dataset(), q.bbox, q.types);
   const range = `fire_date BETWEEN ${day(q.start)} AND ${day(q.end)}`;
   const [rows, status] = await Promise.all([
     query<{ d: string; p: string; o: string; c: number; f: number; n: number }>(
       `SELECT strftime(fire_date, '%Y-%m-%d') AS d, "pass" AS p, origin AS o, SUM(count)::DOUBLE AS c, SUM(frp_sum)::DOUBLE AS f, SUM(n_rows)::DOUBLE AS n
-       FROM all_cells WHERE ${range} AND ${boxSql(q.bbox, q.types)} GROUP BY ALL`),
+       FROM ${a.from} WHERE ${range} AND ${a.where} GROUP BY ALL`),
     statusRows(range),
   ]);
   const byDay = new Map<string, typeof rows>();
@@ -338,16 +361,18 @@ function summary(sums: MonthSum[], st: MonthStatus | undefined, expected: number
   };
 }
 
-const monthSql = (boxWhere: string, extra = 'true') => `
-  SELECT year::INT AS y, month::INT AS m, origin AS o, SUM(count)::DOUBLE AS c FROM hist_cells_month WHERE ${boxWhere} AND ${extra.replace(/\$Y/g, 'year').replace(/\$M/g, 'month')} GROUP BY ALL
+const monthSql = (a: Area, extra = 'true') => a.totals ? `
+  SELECT year(fire_date)::INT AS y, month(fire_date)::INT AS m, origin AS o, SUM(count)::DOUBLE AS c FROM all_totals
+  WHERE ${a.where} AND ${extra.replace(/\$Y/g, 'year(fire_date)').replace(/\$M/g, 'month(fire_date)')} GROUP BY ALL` : `
+  SELECT year::INT AS y, month::INT AS m, origin AS o, SUM(count)::DOUBLE AS c FROM hist_cells_month WHERE ${a.where} AND ${extra.replace(/\$Y/g, 'year').replace(/\$M/g, 'month')} GROUP BY ALL
   UNION ALL
-  SELECT year(fire_date)::INT, month(fire_date)::INT, origin, SUM(count)::DOUBLE FROM live_cells WHERE ${boxWhere} AND ${extra.replace(/\$Y/g, 'year(fire_date)').replace(/\$M/g, 'month(fire_date)')} GROUP BY ALL`;
+  SELECT year(fire_date)::INT, month(fire_date)::INT, origin, SUM(count)::DOUBLE FROM live_cells WHERE ${a.where} AND ${extra.replace(/\$Y/g, 'year(fire_date)').replace(/\$M/g, 'month(fire_date)')} GROUP BY ALL`;
 
 export async function calendar(b: BBox, types: number[]): Promise<Envelope<CalendarData>> {
   checkBox(b);
   const m = await dataset();
   const [sums, status, statusAll] = await Promise.all([
-    query<MonthSum>(monthSql(boxSql(b, types))),
+    query<MonthSum>(monthSql(area(m, b, types))),
     query<MonthStatus>(`SELECT year(fire_date)::INT AS y, month(fire_date)::INT AS m,
                           COUNT(*) FILTER (WHERE has_data <> 'none')::INT AS obs,
                           bool_and(has_data = 'full') FILTER (WHERE has_data <> 'none') AS allfull
@@ -393,6 +418,7 @@ function categoryOf(v: number, s: { p10: number; p25: number; p75: number; p90: 
 export async function anomaly(b: BBox, month: string, types: number[], baseline?: [number, number]): Promise<Envelope<AnomalyData>> {
   checkBox(b);
   const m = await dataset();
+  const a = area(m, b, types);
   const y = +month.slice(0, 4), mo = +month.slice(5, 7);
   const latest = m.latest_fire_date;
   const latestDay = +latest.slice(8, 10);
@@ -406,10 +432,10 @@ export async function anomaly(b: BBox, month: string, types: number[], baseline?
     .sort((a, c) => a - c);
   const yearList = ints(years.length ? years : [y]);
   const sums = mtd
-    ? await query<MonthSum>(`SELECT year(fire_date)::INT AS y, ${mo} AS m, origin AS o, SUM(count)::DOUBLE AS c FROM all_cells
+    ? await query<MonthSum>(`SELECT year(fire_date)::INT AS y, ${mo} AS m, origin AS o, SUM(count)::DOUBLE AS c FROM ${a.from}
                              WHERE month(fire_date) = ${mo} AND day(fire_date) <= ${toDay} AND year(fire_date) IN ${yearList}
-                               AND ${boxSql(b, types)} GROUP BY ALL`)
-    : await query<MonthSum>(monthSql(boxSql(b, types), `$M = ${mo} AND $Y IN ${yearList}`));
+                               AND ${a.where} GROUP BY ALL`)
+    : await query<MonthSum>(monthSql(a, `$M = ${mo} AND $Y IN ${yearList}`));
   const status = await query<MonthStatus>(`SELECT year(fire_date)::INT AS y, ${mo} AS m,
                     COUNT(*) FILTER (WHERE has_data <> 'none')::INT AS obs,
                     bool_and(has_data = 'full') FILTER (WHERE has_data <> 'none') AS allfull

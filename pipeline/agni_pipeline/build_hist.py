@@ -17,7 +17,7 @@ from pathlib import Path
 
 import duckdb
 
-from .common import CELLS_MONTH_SELECT, build_from_parquet, load_backend_builder
+from .common import BBOX, CELLS_MONTH_SELECT, build_from_parquet, load_backend_builder
 from .storage import open_store, read_json, write_json
 
 PERIODS = [
@@ -45,7 +45,14 @@ def write_hist(store, folder: Path, db, years: list[int] | None = None) -> dict:
     db.execute(f"COPY ({CELLS_MONTH_SELECT.format(source='read_parquet(?)')} ORDER BY cj, ci, year, month) "
                "TO (?) (FORMAT PARQUET, PARQUET_VERSION V1, ROW_GROUP_SIZE 50000)", [cells, str(out / "cells_month.parquet")])
     db.execute("COPY (SELECT * FROM read_parquet(?) ORDER BY fire_date) TO (?) (FORMAT PARQUET, PARQUET_VERSION V1)", [status, str(out / "day_status.parquet")])
-    for name in ("cells", "cells_month", "day_status"):
+    # all-Australia totals per day (well under 1 MB): the website loads this whole and answers the
+    # default view (calendar, trends, comparisons for all of Australia) without scanning cells
+    min_lon, min_lat, max_lon, max_lat = BBOX
+    db.execute(f"""COPY (SELECT fire_date, "pass", type, origin, SUM(count) AS count, SUM(frp_sum) AS frp_sum, SUM(n_rows) AS n_rows
+                         FROM read_parquet(?) WHERE cell_lat BETWEEN {min_lat} AND {max_lat} AND cell_lon BETWEEN {min_lon} AND {max_lon}
+                         GROUP BY ALL ORDER BY fire_date) TO (?) (FORMAT PARQUET, PARQUET_VERSION V1)""",
+               [cells, str(out / "day_totals.parquet")])
+    for name in ("cells", "cells_month", "day_status", "day_totals"):
         store.write(f"hist/{name}.parquet", (out / f"{name}.parquet").read_bytes())
 
     present = [y for (y,) in db.execute("SELECT DISTINCT year(fire_date)::INT FROM read_parquet(?) ORDER BY 1", [rows]).fetchall()]
@@ -70,7 +77,7 @@ def write_hist(store, folder: Path, db, years: list[int] | None = None) -> dict:
         SELECT min(fire_date)::VARCHAR, max(fire_date)::VARCHAR FROM (
             SELECT fire_date, fire_date - (row_number() OVER (ORDER BY fire_date))::INT AS grp
             FROM read_parquet(?) WHERE has_data = 'none') GROUP BY grp ORDER BY 1""", [status]).fetchall()
-    return {"record_start": str(first), "local_end": str(last), "row_years": row_years,
+    return {"record_start": str(first), "local_end": str(last), "row_years": row_years, "totals": True,
             "known_gaps": [{"from": a, "to": b, "reason": "No satellite data"} for a, b in gaps]}
 
 

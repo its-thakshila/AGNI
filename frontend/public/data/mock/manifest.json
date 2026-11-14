@@ -6,7 +6,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:25+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-02": {
@@ -14,7 +14,7 @@
    "detections": 13,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:25+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-03": {
@@ -22,7 +22,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:25+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-04": {
@@ -30,7 +30,7 @@
    "detections": 13,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:25+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-05": {
@@ -38,7 +38,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:25+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-06": {
@@ -46,7 +46,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:25+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-07": {
@@ -54,7 +54,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:25+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-08": {
@@ -62,7 +62,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:25+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-09": {
@@ -70,7 +70,7 @@
    "detections": 19,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-01-10": {
@@ -78,7 +78,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-11": {
@@ -86,7 +86,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-12": {
@@ -94,7 +94,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-13": {
@@ -102,7 +102,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-14": {
@@ -110,7 +110,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-15": {
@@ -118,7 +118,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-16": {
@@ -126,7 +126,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-17": {
@@ -134,7 +134,7 @@
    "detections": 8,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-18": {
@@ -142,7 +142,7 @@
    "detections": 13,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:26+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-19": {
@@ -150,7 +150,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-20": {
@@ -158,7 +158,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-21": {
@@ -166,7 +166,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-22": {
@@ -174,7 +174,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-23": {
@@ -182,7 +182,7 @@
    "detections": 18,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-01-24": {
@@ -190,7 +190,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-25": {
@@ -198,7 +198,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-26": {
@@ -206,7 +206,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-27": {
@@ -214,7 +214,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-28": {
@@ -222,7 +222,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-29": {
@@ -230,7 +230,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-30": {
@@ -238,7 +238,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-01-31": {
@@ -246,7 +246,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-01": {
@@ -254,7 +254,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-02": {
@@ -262,7 +262,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-03": {
@@ -270,7 +270,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-04": {
@@ -278,7 +278,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-05": {
@@ -286,7 +286,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-06": {
@@ -294,7 +294,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-07": {
@@ -302,7 +302,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-08": {
@@ -310,7 +310,7 @@
    "detections": 13,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-09": {
@@ -318,7 +318,7 @@
    "detections": 18,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-02-10": {
@@ -326,7 +326,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-11": {
@@ -334,7 +334,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-12": {
@@ -342,7 +342,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-13": {
@@ -350,7 +350,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-14": {
@@ -358,7 +358,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-15": {
@@ -366,7 +366,7 @@
    "detections": 9,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-16": {
@@ -374,7 +374,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-17": {
@@ -382,7 +382,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-18": {
@@ -390,7 +390,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-19": {
@@ -398,7 +398,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-20": {
@@ -406,7 +406,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-21": {
@@ -414,7 +414,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-22": {
@@ -422,7 +422,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:26+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-23": {
@@ -430,7 +430,7 @@
    "detections": 12,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-02-24": {
@@ -438,7 +438,7 @@
    "detections": 13,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-25": {
@@ -446,7 +446,7 @@
    "detections": 8,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-26": {
@@ -454,7 +454,7 @@
    "detections": 12,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-27": {
@@ -462,7 +462,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-02-28": {
@@ -470,7 +470,7 @@
    "detections": 8,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-01": {
@@ -478,7 +478,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:27+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-02": {
@@ -486,7 +486,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-03": {
@@ -494,7 +494,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-04": {
@@ -502,7 +502,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-05": {
@@ -510,7 +510,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-06": {
@@ -518,7 +518,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-07": {
@@ -526,7 +526,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-08": {
@@ -534,7 +534,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-09": {
@@ -542,7 +542,7 @@
    "detections": 3,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-03-10": {
@@ -550,7 +550,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-11": {
@@ -558,7 +558,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-12": {
@@ -566,7 +566,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-13": {
@@ -574,7 +574,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-14": {
@@ -582,7 +582,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-15": {
@@ -590,7 +590,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-16": {
@@ -598,7 +598,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-17": {
@@ -606,7 +606,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-18": {
@@ -614,7 +614,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-19": {
@@ -622,7 +622,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-20": {
@@ -630,7 +630,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-21": {
@@ -638,7 +638,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-22": {
@@ -646,7 +646,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-23": {
@@ -654,7 +654,7 @@
    "detections": 15,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-03-24": {
@@ -662,7 +662,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-25": {
@@ -670,7 +670,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-26": {
@@ -678,7 +678,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-27": {
@@ -686,7 +686,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-28": {
@@ -694,7 +694,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-29": {
@@ -702,7 +702,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-30": {
@@ -710,7 +710,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-03-31": {
@@ -718,7 +718,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-01": {
@@ -726,7 +726,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-02": {
@@ -734,7 +734,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-03": {
@@ -742,7 +742,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-04": {
@@ -750,7 +750,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-05": {
@@ -758,7 +758,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-06": {
@@ -766,7 +766,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-07": {
@@ -774,7 +774,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-08": {
@@ -782,7 +782,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-09": {
@@ -790,7 +790,7 @@
    "detections": 8,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-04-10": {
@@ -798,7 +798,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-11": {
@@ -806,7 +806,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-12": {
@@ -814,7 +814,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-13": {
@@ -822,7 +822,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-14": {
@@ -830,7 +830,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-15": {
@@ -838,7 +838,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-16": {
@@ -846,7 +846,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-17": {
@@ -854,7 +854,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-18": {
@@ -862,7 +862,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-19": {
@@ -870,7 +870,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-20": {
@@ -878,7 +878,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:28+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-21": {
@@ -886,7 +886,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-22": {
@@ -894,7 +894,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-23": {
@@ -902,7 +902,7 @@
    "detections": 4,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:27+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-04-24": {
@@ -910,7 +910,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-25": {
@@ -918,7 +918,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-26": {
@@ -926,7 +926,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-27": {
@@ -934,7 +934,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-28": {
@@ -942,7 +942,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-29": {
@@ -950,7 +950,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-04-30": {
@@ -958,7 +958,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-01": {
@@ -966,7 +966,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-02": {
@@ -974,7 +974,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-03": {
@@ -982,7 +982,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-04": {
@@ -990,7 +990,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-05": {
@@ -998,7 +998,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-06": {
@@ -1006,7 +1006,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-07": {
@@ -1014,7 +1014,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-08": {
@@ -1022,7 +1022,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-09": {
@@ -1030,7 +1030,7 @@
    "detections": 5,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-05-10": {
@@ -1038,7 +1038,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-11": {
@@ -1046,7 +1046,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-12": {
@@ -1054,7 +1054,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-13": {
@@ -1062,7 +1062,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-14": {
@@ -1070,7 +1070,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-15": {
@@ -1078,7 +1078,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-16": {
@@ -1086,7 +1086,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-17": {
@@ -1094,7 +1094,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-18": {
@@ -1102,7 +1102,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-19": {
@@ -1110,7 +1110,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-20": {
@@ -1118,7 +1118,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-21": {
@@ -1126,7 +1126,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-22": {
@@ -1134,7 +1134,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-23": {
@@ -1142,7 +1142,7 @@
    "detections": 8,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-05-24": {
@@ -1150,7 +1150,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-25": {
@@ -1158,7 +1158,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-26": {
@@ -1166,7 +1166,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-27": {
@@ -1174,7 +1174,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-28": {
@@ -1182,7 +1182,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-29": {
@@ -1190,7 +1190,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-30": {
@@ -1198,7 +1198,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-05-31": {
@@ -1206,7 +1206,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-01": {
@@ -1214,7 +1214,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-02": {
@@ -1222,7 +1222,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-03": {
@@ -1230,7 +1230,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-04": {
@@ -1238,7 +1238,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-05": {
@@ -1246,7 +1246,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-06": {
@@ -1254,7 +1254,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-07": {
@@ -1262,7 +1262,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-08": {
@@ -1270,7 +1270,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-09": {
@@ -1278,7 +1278,7 @@
    "detections": 7,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-06-10": {
@@ -1286,7 +1286,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-11": {
@@ -1294,7 +1294,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-12": {
@@ -1302,7 +1302,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-13": {
@@ -1310,7 +1310,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-14": {
@@ -1318,7 +1318,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-15": {
@@ -1326,7 +1326,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-16": {
@@ -1334,7 +1334,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-17": {
@@ -1342,7 +1342,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-18": {
@@ -1350,7 +1350,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-19": {
@@ -1358,7 +1358,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:29+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-20": {
@@ -1366,7 +1366,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-21": {
@@ -1374,7 +1374,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-22": {
@@ -1382,7 +1382,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-23": {
@@ -1390,7 +1390,7 @@
    "detections": 10,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-06-24": {
@@ -1398,7 +1398,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-25": {
@@ -1406,7 +1406,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-26": {
@@ -1414,7 +1414,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-27": {
@@ -1422,7 +1422,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-28": {
@@ -1430,7 +1430,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-29": {
@@ -1438,7 +1438,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-06-30": {
@@ -1446,7 +1446,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:28+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-01": {
@@ -1454,7 +1454,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-02": {
@@ -1462,7 +1462,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-03": {
@@ -1470,7 +1470,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-04": {
@@ -1478,7 +1478,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-05": {
@@ -1486,7 +1486,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-06": {
@@ -1494,7 +1494,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-07": {
@@ -1502,7 +1502,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-08": {
@@ -1510,7 +1510,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-09": {
@@ -1518,7 +1518,7 @@
    "detections": 14,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-07-10": {
@@ -1526,7 +1526,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-11": {
@@ -1534,7 +1534,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-12": {
@@ -1542,7 +1542,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-13": {
@@ -1550,7 +1550,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-14": {
@@ -1558,7 +1558,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-15": {
@@ -1566,7 +1566,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-16": {
@@ -1574,7 +1574,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-17": {
@@ -1582,7 +1582,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-18": {
@@ -1590,7 +1590,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-19": {
@@ -1598,7 +1598,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-20": {
@@ -1606,7 +1606,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-21": {
@@ -1614,7 +1614,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-22": {
@@ -1622,7 +1622,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-23": {
@@ -1630,7 +1630,7 @@
    "detections": 11,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-07-24": {
@@ -1638,7 +1638,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-25": {
@@ -1646,7 +1646,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-26": {
@@ -1654,7 +1654,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-27": {
@@ -1662,7 +1662,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-28": {
@@ -1670,7 +1670,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-29": {
@@ -1678,7 +1678,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-30": {
@@ -1686,7 +1686,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-07-31": {
@@ -1694,7 +1694,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-01": {
@@ -1702,7 +1702,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-02": {
@@ -1710,7 +1710,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-03": {
@@ -1718,7 +1718,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-04": {
@@ -1726,7 +1726,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-05": {
@@ -1734,7 +1734,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-06": {
@@ -1742,7 +1742,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-07": {
@@ -1750,7 +1750,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-08": {
@@ -1758,7 +1758,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-09": {
@@ -1766,7 +1766,7 @@
    "detections": 5,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-08-10": {
@@ -1774,7 +1774,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-11": {
@@ -1782,7 +1782,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-12": {
@@ -1790,7 +1790,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-13": {
@@ -1798,7 +1798,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-14": {
@@ -1806,7 +1806,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-15": {
@@ -1814,7 +1814,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-16": {
@@ -1822,7 +1822,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-17": {
@@ -1830,7 +1830,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:30+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-18": {
@@ -1838,7 +1838,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-19": {
@@ -1846,7 +1846,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-20": {
@@ -1854,7 +1854,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-21": {
@@ -1862,7 +1862,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-22": {
@@ -1870,7 +1870,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-23": {
@@ -1878,7 +1878,7 @@
    "detections": 4,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-08-24": {
@@ -1886,7 +1886,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-25": {
@@ -1894,7 +1894,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-26": {
@@ -1902,7 +1902,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-27": {
@@ -1910,7 +1910,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-28": {
@@ -1918,7 +1918,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-29": {
@@ -1926,7 +1926,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-30": {
@@ -1934,7 +1934,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-08-31": {
@@ -1942,7 +1942,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-01": {
@@ -1950,7 +1950,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-02": {
@@ -1958,7 +1958,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-03": {
@@ -1966,7 +1966,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-04": {
@@ -1974,7 +1974,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:29+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-05": {
@@ -1982,7 +1982,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-06": {
@@ -1990,7 +1990,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-07": {
@@ -1998,7 +1998,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-08": {
@@ -2006,7 +2006,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-09": {
@@ -2014,7 +2014,7 @@
    "detections": 6,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "MODIS_SP+ML-XGB-1.0-gapfill"
   },
   "2026-09-10": {
@@ -2022,7 +2022,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-11": {
@@ -2030,7 +2030,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-12": {
@@ -2038,7 +2038,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-13": {
@@ -2046,7 +2046,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-14": {
@@ -2054,7 +2054,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_SP"
   },
   "2026-09-15": {
@@ -2062,7 +2062,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-16": {
@@ -2070,7 +2070,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-17": {
@@ -2078,7 +2078,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-18": {
@@ -2086,7 +2086,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-19": {
@@ -2094,7 +2094,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-20": {
@@ -2102,7 +2102,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-21": {
@@ -2110,7 +2110,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-22": {
@@ -2118,7 +2118,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-23": {
@@ -2126,7 +2126,7 @@
    "detections": 6,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "MODIS_NRT+ML-XGB-1.0-gapfill"
   },
   "2026-09-24": {
@@ -2134,7 +2134,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-25": {
@@ -2142,7 +2142,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-26": {
@@ -2150,7 +2150,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-27": {
@@ -2158,7 +2158,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-28": {
@@ -2166,7 +2166,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-29": {
@@ -2174,7 +2174,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-09-30": {
@@ -2182,7 +2182,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-01": {
@@ -2190,7 +2190,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-02": {
@@ -2198,7 +2198,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-03": {
@@ -2206,7 +2206,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-04": {
@@ -2214,7 +2214,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-05": {
@@ -2222,7 +2222,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-06": {
@@ -2230,7 +2230,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-07": {
@@ -2238,7 +2238,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-08": {
@@ -2246,7 +2246,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:31+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-09": {
@@ -2254,7 +2254,7 @@
    "detections": 4,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "MODIS_NRT+ML-XGB-1.0-gapfill"
   },
   "2026-10-10": {
@@ -2262,7 +2262,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-11": {
@@ -2270,7 +2270,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-12": {
@@ -2278,7 +2278,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-13": {
@@ -2286,7 +2286,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-14": {
@@ -2294,7 +2294,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-15": {
@@ -2302,7 +2302,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-16": {
@@ -2310,7 +2310,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-17": {
@@ -2318,7 +2318,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-18": {
@@ -2326,7 +2326,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-19": {
@@ -2334,7 +2334,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-20": {
@@ -2342,7 +2342,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-21": {
@@ -2350,7 +2350,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-22": {
@@ -2358,7 +2358,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-23": {
@@ -2366,7 +2366,7 @@
    "detections": 4,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "MODIS_NRT+ML-XGB-1.0-gapfill"
   },
   "2026-10-24": {
@@ -2374,7 +2374,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-25": {
@@ -2382,7 +2382,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-26": {
@@ -2390,7 +2390,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-27": {
@@ -2398,7 +2398,7 @@
    "detections": 3,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-28": {
@@ -2406,7 +2406,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-29": {
@@ -2414,7 +2414,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-30": {
@@ -2422,7 +2422,7 @@
    "detections": 5,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-10-31": {
@@ -2430,7 +2430,7 @@
    "detections": 4,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-01": {
@@ -2438,7 +2438,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-02": {
@@ -2446,7 +2446,7 @@
    "detections": 14,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-03": {
@@ -2454,7 +2454,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-04": {
@@ -2462,7 +2462,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-05": {
@@ -2470,7 +2470,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-06": {
@@ -2478,7 +2478,7 @@
    "detections": 13,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-07": {
@@ -2486,7 +2486,7 @@
    "detections": 10,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-08": {
@@ -2494,7 +2494,7 @@
    "detections": 8,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:30+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-09": {
@@ -2502,7 +2502,7 @@
    "detections": 21,
    "flag": "viirs_offline",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:31+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "MODIS_NRT+ML-XGB-1.0-gapfill"
   },
   "2026-11-10": {
@@ -2510,7 +2510,7 @@
    "detections": 8,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:31+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-11": {
@@ -2518,7 +2518,7 @@
    "detections": 11,
    "flag": null,
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:31+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   },
   "2026-11-12": {
@@ -2526,7 +2526,7 @@
    "detections": 8,
    "flag": "provisional",
    "has_data": "full",
-   "processed_at": "2026-11-14T16:59:31+00:00",
+   "processed_at": "2026-11-14T18:07:32+00:00",
    "source": "VIIRS_SNPP_NRT"
   }
  },
@@ -2582,33 +2582,34 @@
  ],
  "record_start": "2000-11-01",
  "row_years": {
-  "2000": "2026-11-14T16:59:04+00:00",
-  "2001": "2026-11-14T16:59:04+00:00",
-  "2002": "2026-11-14T16:59:04+00:00",
-  "2003": "2026-11-14T16:59:04+00:00",
-  "2004": "2026-11-14T16:59:04+00:00",
-  "2005": "2026-11-14T16:59:04+00:00",
-  "2006": "2026-11-14T16:59:04+00:00",
-  "2007": "2026-11-14T16:59:04+00:00",
-  "2008": "2026-11-14T16:59:04+00:00",
-  "2009": "2026-11-14T16:59:04+00:00",
-  "2010": "2026-11-14T16:59:04+00:00",
-  "2011": "2026-11-14T16:59:04+00:00",
-  "2012": "2026-11-14T16:59:04+00:00",
-  "2013": "2026-11-14T16:59:04+00:00",
-  "2014": "2026-11-14T16:59:04+00:00",
-  "2015": "2026-11-14T16:59:04+00:00",
-  "2016": "2026-11-14T16:59:04+00:00",
-  "2017": "2026-11-14T16:59:04+00:00",
-  "2018": "2026-11-14T16:59:04+00:00",
-  "2019": "2026-11-14T16:59:04+00:00",
-  "2020": "2026-11-14T16:59:04+00:00",
-  "2021": "2026-11-14T16:59:04+00:00",
-  "2022": "2026-11-14T16:59:04+00:00",
-  "2023": "2026-11-14T16:59:04+00:00",
-  "2024": "2026-11-14T16:59:04+00:00",
-  "2025": "2026-11-14T16:59:04+00:00"
+  "2000": "2026-11-14T18:07:23+00:00",
+  "2001": "2026-11-14T18:07:23+00:00",
+  "2002": "2026-11-14T18:07:23+00:00",
+  "2003": "2026-11-14T18:07:23+00:00",
+  "2004": "2026-11-14T18:07:23+00:00",
+  "2005": "2026-11-14T18:07:23+00:00",
+  "2006": "2026-11-14T18:07:23+00:00",
+  "2007": "2026-11-14T18:07:23+00:00",
+  "2008": "2026-11-14T18:07:23+00:00",
+  "2009": "2026-11-14T18:07:23+00:00",
+  "2010": "2026-11-14T18:07:23+00:00",
+  "2011": "2026-11-14T18:07:23+00:00",
+  "2012": "2026-11-14T18:07:23+00:00",
+  "2013": "2026-11-14T18:07:23+00:00",
+  "2014": "2026-11-14T18:07:23+00:00",
+  "2015": "2026-11-14T18:07:23+00:00",
+  "2016": "2026-11-14T18:07:23+00:00",
+  "2017": "2026-11-14T18:07:23+00:00",
+  "2018": "2026-11-14T18:07:23+00:00",
+  "2019": "2026-11-14T18:07:23+00:00",
+  "2020": "2026-11-14T18:07:23+00:00",
+  "2021": "2026-11-14T18:07:23+00:00",
+  "2022": "2026-11-14T18:07:23+00:00",
+  "2023": "2026-11-14T18:07:23+00:00",
+  "2024": "2026-11-14T18:07:23+00:00",
+  "2025": "2026-11-14T18:07:23+00:00"
  },
- "updated_at": "2026-11-14T16:59:33+00:00",
+ "totals": true,
+ "updated_at": "2026-11-14T18:07:35+00:00",
  "version": 1
 }

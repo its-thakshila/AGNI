@@ -13,6 +13,12 @@ export function connection(): Promise<duckdb.AsyncDuckDBConnection> {
     const workerUrl = URL.createObjectURL(new Blob([`importScripts("${bundle.mainWorker!}");`], { type: 'text/javascript' }));
     const db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), new Worker(workerUrl));
     await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+    // DuckDB-WASM 1.32 downloads every http(s) file in full unless told otherwise. Read only the
+    // byte ranges a query needs (the Worker answers range requests and the ranged HEAD probe).
+    await db.open({
+      path: ':memory:',
+      filesystem: { forceFullHTTPReads: false, allowFullHTTPReads: true, reliableHeadRequests: true },
+    });
     URL.revokeObjectURL(workerUrl);
     instance = db;
     const conn = await db.connect();

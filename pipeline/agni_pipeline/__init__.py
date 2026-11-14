@@ -6,6 +6,7 @@ Every dataset lives under one storage root (a local folder or an R2 prefix):
     hist/cells.parquet         fire-day x 0.1 deg cell aggregates from the processed data
     hist/cells_month.parquet   the same, summed per month (fast calendar and trends)
     hist/day_status.parquet    per fire-day coverage: full / partial / none
+    hist/day_totals.parquet    all-Australia totals per fire-day and pass (small; the default view)
     hist/rows/YYYY.parquet     individual detections, one file per year (CSV downloads);
                                manifest.row_years lists them with their versions
     live/cells/YYYY-MM.parquet days after the CSV, added by process_days
