@@ -6,7 +6,7 @@ import type {
   Envelope, GridCell, GridData, HasData, Meta, Origin, Warning,
 } from '../types';
 import { ApiError } from '../errors';
-import { connection, day, exportFile, ints, num, query, registerBuffer, str } from './db';
+import { connection, day, exportFile, ints, num, query, registerBuffer, dropBuffer, str } from './db';
 import { boxAreaDeg2, daysBetween, daysInMonth, eachDay, ymd } from '../../lib/dates';
 
 // ---------------------------------------------------------------- dataset
@@ -46,7 +46,10 @@ async function fetchManifest(): Promise<Manifest> {
 // request at a time (~0.3 s each through the Worker), so a dozen small monthly files cost seconds
 // per query when read remotely, but a fraction of a second when fetched in parallel up front.
 // Only the large history files (cells, cells_month, rows) are read remotely with Range requests.
-const memFiles = new Map<string, string>(); // in-memory file name -> version it holds
+//
+// path -> in-memory file name holding its current version. Each version gets its own name:
+// DuckDB keeps details of a registered file, so replacing the bytes under the same name breaks it.
+const memFiles = new Map<string, string>();
 
 async function fetchBytes(path: string): Promise<Uint8Array> {
   let res: Response;
@@ -56,18 +59,29 @@ async function fetchBytes(path: string): Promise<Uint8Array> {
     throw new ApiError('NETWORK', String(e));
   }
   if (!res.ok) throw new ApiError('INTERNAL_ERROR', `Dataset file missing: ${path} (HTTP ${res.status}).`, res.status);
-  return new Uint8Array(await res.arrayBuffer());
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  // a Parquet file starts and ends with "PAR1"; anything else (an error page, a cut-off download)
+  // must not be kept, or every later load would reuse it
+  const magic = (at: number) => String.fromCharCode(...bytes.subarray(at, at + 4)) === 'PAR1';
+  if (path.split('?')[0].endsWith('.parquet') && (bytes.length < 12 || !magic(0) || !magic(bytes.length - 4)))
+    throw new ApiError('INTERNAL_ERROR', `Dataset file is damaged or incomplete: ${path}.`);
+  return bytes;
 }
 
-/** Download the files whose version changed (in parallel) and register them under `mem/…`. */
-async function loadSmallFiles(files: { path: string; version: string }[]): Promise<void> {
+/** Download the files whose version changed (in parallel) and register them in memory. */
+async function loadSmallFiles(files: { path: string; version: string }[]): Promise<string[]> {
+  const loaded: string[] = [];
   await Promise.all(files.map(async ({ path, version }) => {
-    const name = `mem/${path}`;
-    if (memFiles.get(name) === version) return;
+    const name = `mem/${version.replace(/[^\w.-]/g, '_')}/${path}`;
+    const old = memFiles.get(path);
+    if (old === name) return;
     const sep = path.includes('?') ? '&' : '?';
     await registerBuffer(name, await fetchBytes(`${path}${sep}v=${encodeURIComponent(version)}`));
-    memFiles.set(name, version);
+    memFiles.set(path, name);
+    loaded.push(path);
+    if (old) void dropBuffer(old); // the tables built from it are replaced right after
   }));
+  return loaded;
 }
 
 /** A live month's version: changes only when one of its days is (re)processed. */
@@ -84,11 +98,11 @@ async function buildViews(m: Manifest) {
   const hist = (name: string) => str(fileUrl(`hist/${name}.parquet?v=${hv}`));
   const versions = new Map(m.live_months.map((mo) => [mo, monthVersion(m, mo)]));
   const liveCells = m.live_months.map((mo) => `live/cells/${mo}.parquet`);
-  await loadSmallFiles([
+  const loaded = await loadSmallFiles([
     { path: 'hist/day_status.parquet', version: m.local_end },
     ...liveCells.map((path, i) => ({ path, version: versions.get(m.live_months[i])! })),
   ]);
-  const mem = (paths: string[]) => `read_parquet([${paths.map((x) => str(`mem/${x}`)).join(', ')}])`;
+  const mem = (paths: string[]) => `read_parquet([${paths.map((x) => str(memFiles.get(x)!)).join(', ')}])`;
   const stmts = [
     `CREATE OR REPLACE VIEW hist_cells AS SELECT * FROM read_parquet(${hist('cells')})`,
     `CREATE OR REPLACE VIEW hist_cells_month AS SELECT * FROM read_parquet(${hist('cells_month')})`,
@@ -107,21 +121,29 @@ async function buildViews(m: Manifest) {
     `CREATE OR REPLACE VIEW all_cells AS SELECT * FROM hist_cells UNION ALL BY NAME SELECT * FROM live_cells`,
     `CREATE OR REPLACE VIEW all_status AS SELECT * FROM hist_status UNION ALL BY NAME SELECT * FROM live_status`,
   );
-  for (const s of stmts) await query(s);
+  try {
+    for (const s of stmts) await query(s);
+  } catch (e) {
+    for (const path of loaded) memFiles.delete(path); // download them again on the next attempt
+    throw e;
+  }
 }
 
 /** Load (or reload, after new days were processed) the dataset. */
 export function dataset(refresh = false): Promise<Manifest> {
   if (!setup || refresh) {
     const previous = setup;
-    setup = (async () => {
+    const attempt = (async () => {
       // start the SQL engine while the manifest downloads
       const [m] = await Promise.all([fetchManifest(), connection()]);
       if (!manifest || m.updated_at !== manifest.updated_at) await buildViews(m);
       manifest = m;
       return m;
     })();
-    setup.catch(() => { if (setup && previous) setup = previous; });
+    setup = attempt;
+    // A failed reload keeps the last good dataset; a failed first load is retried on the next call
+    // (before, the failed promise stayed cached and every later query failed with it).
+    attempt.catch(() => { if (setup === attempt) setup = previous; });
   }
   return setup;
 }

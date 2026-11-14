@@ -46,6 +46,11 @@ export async function registerBuffer(name: string, bytes: Uint8Array): Promise<v
   await instance!.registerFileBuffer(name, bytes);
 }
 
+/** Remove an in-memory file that is no longer used. */
+export async function dropBuffer(name: string): Promise<void> {
+  try { await instance?.dropFile(name); } catch { /* already gone */ }
+}
+
 // ---- safe SQL literals (all inputs are validated before they reach SQL) ----
 export const num = (v: number) => {
   if (!Number.isFinite(v)) throw new Error('Invalid number');
