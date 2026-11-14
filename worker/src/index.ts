@@ -65,6 +65,14 @@ async function serveFile(request: Request, env: Env, dataset: string, file: stri
   if (request.method === 'HEAD') {
     const head = await env.DATA.head(key);
     if (!head) return new Response(null, { status: 404, headers });
+    // DuckDB-WASM probes with `HEAD` + `Range: bytes=0-` and reads a file in parts only if the
+    // answer is 206 with the full size; a plain 200 makes it download the whole file instead.
+    if (request.headers.has('Range')) {
+      return new Response(null, {
+        status: 206,
+        headers: { ...base, 'Content-Length': String(head.size), 'Content-Range': `bytes 0-${head.size - 1}/${head.size}`, ETag: head.httpEtag },
+      });
+    }
     return new Response(null, { status: 200, headers: { ...base, 'Content-Length': String(head.size), ETag: head.httpEtag } });
   }
   const range = parseRange(request.headers.get('Range'));
