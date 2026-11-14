@@ -29,10 +29,20 @@ export function pick(ramp: string[], t: number): string {
   return ramp[Math.min(ramp.length - 1, Math.floor(x * ramp.length))];
 }
 
+/** Where a number comes from, in the same words everywhere in the app. */
 export const ORIGIN_LABEL: Record<Origin, string> = {
-  real: 'Measured by VIIRS',
-  ml: 'Rebuilt from MODIS (model)',
-  gapfill: 'Filled by the model (satellite outage)',
-  firms_nrt: 'Measured by VIIRS (near real time)',
-  firms_sp: 'Measured by VIIRS (final archive)',
+  real: 'Observed by VIIRS',
+  ml: 'Harmonized from MODIS by Harmonic',
+  gapfill: 'Gap-filled by Harmonic',
+  firms_nrt: 'Observed by VIIRS · near real time',
+  firms_sp: 'Observed by VIIRS · final archive',
+};
+
+/** One-paragraph explanation behind each label (shown on demand). */
+export const ORIGIN_DETAIL: Record<Origin, string> = {
+  real: 'Counted directly from VIIRS satellite passes (Suomi-NPP, 375 m pixels).',
+  ml: 'VIIRS was not flying yet. Harmonic, AGNI’s harmonization model, converted MODIS observations into VIIRS-equivalent detections, so this year compares fairly with recent ones. Reliable as monthly totals (about ±3–5%), not as exact fire locations.',
+  gapfill: 'VIIRS had an outage on some of these days. Harmonic, AGNI’s harmonization model, filled them from MODIS observations, as VIIRS-equivalent detections.',
+  firms_nrt: 'Recent VIIRS data from NASA FIRMS. Near-real-time values can still change for about 3 days.',
+  firms_sp: 'Final, quality-checked VIIRS archive from NASA FIRMS.',
 };

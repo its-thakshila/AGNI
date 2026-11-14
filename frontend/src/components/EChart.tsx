@@ -6,12 +6,15 @@ import { CanvasRenderer } from 'echarts/renderers';
 
 echarts.use([BarChart, CustomChart, LineChart, GridComponent, MarkAreaComponent, MarkLineComponent, TooltipComponent, CanvasRenderer]);
 
-export const AXIS_FONT = { color: '#84838c', fontSize: 11, fontFamily: 'Inter' };
+// chart text follows the type scale: 12px captions for axes, 14px tooltips, 19px tooltip values
+export const AXIS_FONT = { color: '#84838c', fontSize: 12, fontFamily: 'Inter' };
 export const TOOLTIP = {
   backgroundColor: '#1a1a1e',
   borderColor: '#26262c',
-  padding: [8, 10],
-  textStyle: { color: '#f0efec', fontFamily: 'Inter', fontSize: 12 },
+  borderRadius: 8,
+  padding: [8, 13],
+  textStyle: { color: '#f0efec', fontFamily: 'Inter', fontSize: 14, lineHeight: 22 },
+  extraCssText: 'box-shadow: 0 8px 21px rgba(0,0,0,.45);',
 };
 
 interface Props {

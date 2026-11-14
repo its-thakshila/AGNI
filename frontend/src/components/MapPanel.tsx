@@ -138,24 +138,24 @@ export default function MapPanel() {
     <section className="absolute inset-0" aria-label="Map of hotspot detections">
       {/* inline position: MapLibre's own CSS would override a utility class here */}
       <div ref={el} style={{ position: 'absolute', inset: 0 }} />
-      <div className="absolute left-3 top-3 z-10">
+      <div className="absolute left-f4 top-f4 z-10">
         <AreaControl />
       </div>
       {grid.isFetching && (
-        <div className="pointer-events-none absolute right-3 top-3 rounded-full border border-line bg-page/80 px-3 py-1 text-xs text-muted backdrop-blur">Loading…</div>
+        <div className="pointer-events-none absolute right-f4 top-f4 rounded-full border border-line bg-page/80 px-f4 py-f1 text-cap text-muted backdrop-blur">Loading…</div>
       )}
       {grid.error && (
-        <div className="absolute right-3 top-3 max-w-64 rounded-lg border border-line bg-page/85 px-3 py-1.5 text-xs text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>
+        <div className="absolute right-f4 top-f4 max-w-64 rounded-f3 border border-line bg-page/85 px-f4 py-f2 text-cap text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>
       )}
-      <div className="pointer-events-none absolute bottom-3 left-3 rounded-lg border border-line bg-page/80 px-3 py-2 backdrop-blur">
-        <div className="flex items-center gap-2 text-[11px] text-muted">
+      <div className="pointer-events-none absolute bottom-f4 left-f4 rounded-f3 border border-line bg-page/80 px-f4 py-f3 backdrop-blur">
+        <div className="flex items-center gap-f3 text-cap text-muted">
           <span>Some burning</span>
-          <span className="flex gap-0.5">
-            {BAND_COLORS.map((c) => <span key={c} className="h-2 w-5 rounded-sm" style={{ background: c }} />)}
+          <span className="flex gap-f1">
+            {BAND_COLORS.map((c) => <span key={c} className="h-2 w-5 rounded-f2" style={{ background: c }} />)}
           </span>
           <span>Intense</span>
         </div>
-        {modelShare > 0.5 && <div className="mt-1 text-[11px] text-ink-2">Rebuilt from MODIS: where burning was, not exact points</div>}
+        {modelShare > 0.5 && <div className="mt-f1 text-cap text-ink-2">Harmonized by Harmonic: where burning was, not exact points</div>}
       </div>
     </section>
   );

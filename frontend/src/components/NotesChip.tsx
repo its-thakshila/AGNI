@@ -1,7 +1,9 @@
+import { Info } from 'lucide-react';
 import type { Warning } from '../api/types';
 import { useAnomaly, useCalendar, useDaily } from '../hooks/useData';
 import { useSelection } from '../store/useSelection';
 import Popover from './ui/Popover';
+import Icon from './ui/Icon';
 
 // Warnings the UI already shows in its own way (e.g. "days 1–13" in the headline).
 const SHOWN_ELSEWHERE = new Set(['MONTH_IN_PROGRESS']);
@@ -18,34 +20,31 @@ export default function NotesChip() {
   const list = all.filter((w) => !SHOWN_ELSEWHERE.has(w.code) && !seen.has(w.code) && seen.add(w.code));
 
   return (
-    <div className="border-t border-line px-4 py-2">
+    <div className="border-t border-line px-f5 py-f3">
       {list.length ? (
         <Popover
           up
           ariaLabel="Notes about this data"
-          buttonClassName="flex items-center gap-1.5 text-xs text-muted transition-colors hover:text-ink"
+          buttonClassName="flex items-center gap-f2 text-cap text-muted transition-colors hover:text-ink"
           panelClassName="w-80"
           label={
             <>
-              <svg width="13" height="13" viewBox="0 0 14 14" aria-hidden>
-                <circle cx="7" cy="7" r="6" fill="none" stroke="currentColor" strokeWidth="1.2" />
-                <path d="M7 6.2v3.6M7 4.2v.1" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-              </svg>
+              <Icon icon={Info} size="xs" />
               {list.length} {list.length === 1 ? 'note' : 'notes'} about this data
             </>
           }
         >
-          <ul className="space-y-1.5 text-xs leading-relaxed text-ink-2">
+          <ul className="space-y-f3 text-cap text-ink-2">
             {list.map((w) => (
-              <li key={w.code} className="flex gap-2">
-                <span aria-hidden className="mt-[6px] inline-block size-1.5 shrink-0 rounded-full bg-ember-soft/70" />
+              <li key={w.code} className="flex gap-f3">
+                <span aria-hidden className="mt-[6px] inline-block size-f2 shrink-0 rounded-full bg-ember-soft/70" />
                 <span>{w.message}</span>
               </li>
             ))}
           </ul>
         </Popover>
       ) : (
-        <span className="text-xs text-muted/70">Counts are satellite detections, not individual fires.</span>
+        <span className="text-cap text-muted/70">Counts are satellite detections, not individual fires.</span>
       )}
     </div>
   );

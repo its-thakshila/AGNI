@@ -1,13 +1,17 @@
 import { useState, type FormEvent } from 'react';
+import { ChevronDown, Crosshair, Pencil, RotateCcw, X } from 'lucide-react';
 import type { BBox } from '../api/types';
 import { useBox } from '../hooks/useData';
 import { useSelection } from '../store/useSelection';
 import { REGION } from '../config/regions';
 import Popover from './ui/Popover';
+import Icon from './ui/Icon';
 
 const ns = (v: number) => `${Math.abs(v).toFixed(1)}°${v < 0 ? 'S' : 'N'}`;
 const ew = (v: number) => `${Math.abs(v).toFixed(1)}°${v < 0 ? 'W' : 'E'}`;
 export const fmtBox = (b: BBox) => `${ns(b.max_lat)}–${ns(b.min_lat)}, ${ew(b.min_lon)}–${ew(b.max_lon)}`;
+
+const field = 'tabular mt-f1 w-full rounded-f3 border border-line bg-surface px-f3 py-f2 text-body text-ink outline-none transition-colors focus:border-ember';
 
 function CoordsForm({ onDone }: { onDone: () => void }) {
   const setAoi = useSelection((s) => s.setAoi);
@@ -29,81 +33,88 @@ function CoordsForm({ onDone }: { onDone: () => void }) {
   }
 
   return (
-    <form onSubmit={submit} className="grid grid-cols-3 gap-1.5">
+    <form onSubmit={submit} className="grid grid-cols-3 gap-f3">
       {([
         ['Latitude', lat, setLat, '-33.9'],
         ['Longitude', lon, setLon, '151.2'],
         ['Radius km', km, setKm, '50'],
       ] as const).map(([label, v, set, ph]) => (
-        <label key={label} className="text-[11px] text-muted">
+        <label key={label} className="text-cap text-muted">
           {label}
-          <input
-            inputMode="decimal"
-            value={v}
-            placeholder={ph}
-            onChange={(e) => set(e.target.value)}
-            className="tabular mt-0.5 w-full rounded-md border border-line bg-surface px-2 py-1.5 text-sm text-ink outline-none focus:border-ember"
-          />
+          <input inputMode="decimal" value={v} placeholder={ph} onChange={(e) => set(e.target.value)} className={field} />
         </label>
       ))}
-      {err && <p className="col-span-3 text-xs text-ember-soft">{err}</p>}
-      <button type="submit" className="col-span-3 mt-1 rounded-lg bg-surface px-3 py-1.5 text-sm text-ink hover:bg-line">Show this area</button>
+      {err && <p className="col-span-3 text-cap text-ember-soft">{err}</p>}
+      <button type="submit" className="col-span-3 flex items-center justify-center gap-f2 rounded-f3 bg-surface px-f4 py-f3 text-body text-ink transition-colors hover:bg-line">
+        <Icon icon={Crosshair} size="sm" />
+        Show this area
+      </button>
     </form>
   );
 }
+
+const glass = 'border border-line bg-page/85 backdrop-blur';
 
 /** Top-left map control: area name, one-click Draw, and a menu with coordinates and reset. */
 export default function AreaControl() {
   const { aoi, drawing, setAoi, setDrawing } = useSelection();
   const { box, outside, clipped } = useBox();
 
-  const pill = 'flex items-center gap-2 rounded-full border border-line bg-page/85 px-3.5 py-1.5 text-sm backdrop-blur transition-colors';
-
   if (drawing) {
     return (
-      <div className={`${pill} text-ink-2`}>
-        <span className="size-2 animate-pulse rounded-full bg-ember" />
+      <div className={`chip flex items-center gap-f3 rounded-full py-f3 pl-f4 pr-f3 text-body text-ink-2 ${glass}`}>
+        <span className="size-f3 animate-pulse rounded-full bg-ember" />
         Click and drag to draw an area
-        <button onClick={() => setDrawing(false)} className="ml-1 text-muted hover:text-ink">Cancel</button>
+        <button onClick={() => setDrawing(false)} aria-label="Cancel drawing" className="grid size-f5 place-items-center rounded-full text-muted hover:bg-raised hover:text-ink">
+          <Icon icon={X} />
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-start gap-2">
-      <div className="flex items-center gap-1.5">
+    <div className="flex flex-col items-start gap-f3">
+      <div className="flex items-center gap-f3">
         <Popover
           label={
             <>
               <span className="text-ink">{aoi ? 'Custom area' : `All of ${REGION.name}`}</span>
-              <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden className="text-muted"><path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" strokeWidth="1.4" /></svg>
+              <Icon icon={ChevronDown} size="sm" className="text-muted" />
             </>
           }
           ariaLabel="Change area"
-          buttonClassName={`${pill} hover:border-ink-2/40`}
+          buttonClassName={`flex items-center gap-f3 rounded-full px-f4 py-f3 text-body transition-colors hover:border-ink-2/40 ${glass}`}
           panelClassName="w-72"
         >
           {(close) => (
-            <div className="space-y-3">
-              {aoi && box && <div className="tabular text-xs text-ink-2">{fmtBox(box)}</div>}
+            <div className="space-y-f4">
+              {aoi && box && <div className="tabular text-cap text-ink-2">{fmtBox(box)}</div>}
               <div>
-                <div className="mb-1.5 text-xs text-muted">Centre and radius</div>
+                <div className="mb-f3 text-cap text-muted">Centre and radius</div>
                 <CoordsForm onDone={close} />
               </div>
               {aoi && (
-                <button onClick={() => { setAoi(null); close(); }} className="w-full rounded-lg px-3 py-1.5 text-left text-sm text-ink-2 hover:bg-surface hover:text-ink">
+                <button
+                  onClick={() => { setAoi(null); close(); }}
+                  className="flex w-full items-center gap-f3 rounded-f3 px-f3 py-f3 text-body text-ink-2 transition-colors hover:bg-surface hover:text-ink"
+                >
+                  <Icon icon={RotateCcw} size="sm" />
                   Back to all of {REGION.name}
                 </button>
               )}
             </div>
           )}
         </Popover>
-        <button onClick={() => setDrawing(true)} className="rounded-full bg-ember px-3.5 py-1.5 text-sm font-medium text-page transition-colors hover:bg-ember-soft">
+        <button
+          onClick={() => setDrawing(true)}
+          className="flex items-center gap-f2 rounded-full bg-ember px-f4 py-f3 text-body font-medium text-page transition-colors hover:bg-ember-soft"
+        >
+          <Icon icon={Pencil} size="sm" strokeWidth={2.25} />
           Draw area
         </button>
       </div>
       {(outside || clipped) && (
-        <div className="rounded-lg border border-line bg-page/85 px-3 py-1.5 text-xs backdrop-blur">
+        <div className={`rounded-f4 px-f4 py-f3 text-cap ${glass}`}>
           {outside ? <span className="text-ember-soft">This area is outside {REGION.name}. No data there yet.</span> : <span className="text-muted">Trimmed to the part inside {REGION.name}.</span>}
         </div>
       )}

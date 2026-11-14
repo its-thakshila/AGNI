@@ -40,7 +40,7 @@ export default function Popover({ label, ariaLabel, buttonClassName = '', align 
       {open && (
         <div
           id={id}
-          className={`absolute z-30 ${up ? 'bottom-full mb-2' : 'top-full mt-2'} ${align === 'right' ? 'right-0' : 'left-0'} rounded-xl border border-line bg-raised p-3 shadow-2xl shadow-black/50 ${panelClassName}`}
+          className={`absolute z-30 ${up ? 'bottom-full mb-f3' : 'top-full mt-f3'} ${align === 'right' ? 'right-0' : 'left-0'} rounded-f4 border border-line bg-raised p-f4 shadow-2xl shadow-black/50 ${panelClassName}`}
         >
           {typeof children === 'function' ? children(close) : children}
         </div>

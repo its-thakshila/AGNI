@@ -12,10 +12,10 @@ const axisY = { type: 'value', splitNumber: 3, axisLabel: { ...AXIS_FONT, format
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="min-w-0 flex-1 rounded-lg bg-raised/60 px-3 py-2">
-      <div className="truncate text-[11px] text-muted">{label}</div>
-      <div className="tabular text-sm font-medium text-ink">{value}</div>
-      {sub && <div className="tabular text-[11px] text-muted">{sub}</div>}
+    <div className="min-w-0 flex-1 rounded-f4 border border-line/70 bg-page/35 px-f4 py-f3">
+      <div className="truncate text-cap text-muted">{label}</div>
+      <div className="tabular text-body font-medium text-ink">{value}</div>
+      {sub && <div className="tabular text-cap text-muted">{sub}</div>}
     </div>
   );
 }
@@ -63,7 +63,7 @@ export default function TrendsTab() {
         ...TOOLTIP,
         formatter: (p: { dataIndex: number }) => {
           const r = t.rows[p.dataIndex];
-          return `<b>${r.year}</b>${r.complete ? '' : ` <span style="color:${INK.muted}">(not complete)</span>`}<br/><span style="font-size:15px;font-weight:600">${fmt(r.total)}</span> detections${r.model ? `<br/><span style="color:${INK.secondary}">Rebuilt from MODIS (model)</span>` : ''}`;
+          return `<b>${r.year}</b>${r.complete ? '' : ` <span style="color:${INK.muted}">(not complete)</span>`}<br/><span style="font-size:19px;font-weight:600">${fmt(r.total)}</span> detections${r.model ? `<br/><span style="color:${INK.secondary}">Harmonized from MODIS by Harmonic</span>` : ''}`;
         },
       },
       series: [{
@@ -111,21 +111,21 @@ export default function TrendsTab() {
     };
   }, [d, t, year]);
 
-  if (error) return <p className="py-4 text-sm text-ember-soft">{friendlyError(error)}</p>;
-  if (!t) return <div className="flex-1 animate-pulse rounded-lg bg-raised/40" />;
+  if (error) return <p className="py-f5 text-body text-ember-soft">{friendlyError(error)}</p>;
+  if (!t) return <div className="flex-1 animate-pulse rounded-f3 bg-raised/40" />;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4">
-      <div className="flex gap-2">
+    <div className="flex min-h-0 flex-1 flex-col gap-f4">
+      <div className="flex gap-f3">
         <Stat label="Fire season peaks in" value={MONTHS_LONG[t.topMonth]} sub="usually" />
         <Stat label="Busiest month" value={t.peak ? `${MONTHS[t.peak.month - 1]} ${t.peak.year}` : '—'} sub={t.peak ? `${compact(t.peak.count!)}` : undefined} />
         <Stat label="Busiest year" value={t.busiestYear ? String(t.busiestYear.year) : '—'} sub={t.quietestYear ? `quietest ${t.quietestYear.year}` : undefined} />
       </div>
 
-      <div className="flex min-h-[150px] flex-1 flex-col">
-        <div className="flex items-baseline justify-between gap-2">
-          <h3 className="text-sm font-medium text-ink">Every year</h3>
-          <span className="text-[11px] text-muted">Darker bars: rebuilt from MODIS</span>
+      <div className="flex min-h-[150px] flex-1 flex-col rounded-f4 border border-line/70 bg-page/35 p-f4">
+        <div className="flex items-baseline justify-between gap-f3">
+          <h3 className="text-body font-medium text-ink">Every year</h3>
+          <span className="text-cap text-muted">Darker bars: harmonized by Harmonic</span>
         </div>
         <div className="relative min-h-0 flex-1">
           <EChart
@@ -139,12 +139,12 @@ export default function TrendsTab() {
         </div>
       </div>
 
-      <div className="flex min-h-[150px] flex-1 flex-col">
-        <div className="flex items-baseline justify-between gap-2">
-          <h3 className="text-sm font-medium text-ink">A typical year</h3>
-          <span className="flex items-center gap-3 text-[11px] text-muted">
-            <span className="flex items-center gap-1"><span className="inline-block h-0 w-3 border-t border-dashed border-ink-2" />Usual</span>
-            <span className="flex items-center gap-1"><span className="inline-block h-0.5 w-3 rounded bg-[#f2803d]" />{year}</span>
+      <div className="flex min-h-[150px] flex-1 flex-col rounded-f4 border border-line/70 bg-page/35 p-f4">
+        <div className="flex items-baseline justify-between gap-f3">
+          <h3 className="text-body font-medium text-ink">A typical year</h3>
+          <span className="flex items-center gap-f4 text-cap text-muted">
+            <span className="flex items-center gap-f1"><span className="inline-block h-0 w-3 border-t border-dashed border-ink-2" />Usual</span>
+            <span className="flex items-center gap-f1"><span className="inline-block h-0.5 w-3 rounded bg-[#f2803d]" />{year}</span>
           </span>
         </div>
         <div className="relative min-h-0 flex-1">

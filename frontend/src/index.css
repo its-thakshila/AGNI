@@ -1,8 +1,20 @@
 @import 'tailwindcss';
 @import 'maplibre-gl/dist/maplibre-gl.css';
 
+/*
+ * AGNI design tokens. Everything is derived from the golden ratio, φ ≈ 1.618.
+ *
+ * Spacing  f1…f7 = Fibonacci 3, 5, 8, 13, 21, 34, 55 px (each step ≈ previous × φ)
+ * Radius   f2…f5 = 5, 8, 13, 21 px (cells · controls · overlays · panels)
+ * Type     15 px body (tablet-like reading size), steps of √φ (≈1.272) so every
+ *          other step is ×φ: cap 12 · body 15 · lead 19 · title 24 · display 39
+ * Icons    14 px beside caption/body text, 18 px on their own
+ * Lines    body leading = φ (1.618); tighter for large sizes
+ * Layout   map : side panel = φ : 1 → panel takes 1/φ² ≈ 38.2% of the width
+ */
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
   --color-page: #0b0b0d;
   --color-surface: #131316;
   --color-raised: #1a1a1e;
@@ -12,6 +24,34 @@
   --color-muted: #84838c;
   --color-ember: #f2793a;
   --color-ember-soft: #f8a466;
+
+  --spacing-f1: 3px;
+  --spacing-f2: 5px;
+  --spacing-f3: 8px;
+  --spacing-f4: 13px;
+  --spacing-f5: 21px;
+  --spacing-f6: 34px;
+  --spacing-f7: 55px;
+
+  --radius-f2: 5px;
+  --radius-f3: 8px;
+  --radius-f4: 13px;
+  --radius-f5: 21px;
+
+  --text-cap: 12px;
+  --text-cap--line-height: 1.5;
+  --text-body: 15px;
+  --text-body--line-height: 1.618;
+  --text-lead: 19px;
+  --text-lead--line-height: 1.35;
+  --text-title: 24px;
+  --text-title--line-height: 1.25;
+  --text-display: 39px;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.02em;
+
+  --icon-sm: 14px;
+  --icon-md: 18px;
 }
 
 :root {
@@ -23,29 +63,62 @@ body {
   background: var(--color-page);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: 1.618;
+  /* Inter: tailed l (tells l, I and 1 apart) and open digits, for legible figures */
+  font-feature-settings: 'cv05', 'ss01';
   -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Icon + label alignment: a label inside a tall body line box sits off-centre from
+ * its icon. Controls use a tight line box so flex centring lines up icon and letters.
+ */
+button,
+[role='tab'],
+.chip {
+  line-height: 1.25;
+}
+.lucide {
+  flex-shrink: 0;
 }
 
 .tabular {
   font-variant-numeric: tabular-nums;
 }
 
+/* one focus style everywhere; the outline follows each element's own rounded corners */
+:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 2px;
+}
+
 .maplibregl-ctrl-attrib {
   background: rgb(11 11 13 / 0.7) !important;
   color: var(--color-muted);
   font-size: 10px;
+  border-radius: var(--radius-f3) !important;
 }
 .maplibregl-ctrl-attrib a {
   color: var(--color-ink-2) !important;
 }
 .maplibregl-ctrl-group {
-  background: var(--color-surface) !important;
+  background: rgb(11 11 13 / 0.85) !important;
   border: 1px solid var(--color-line);
+  border-radius: var(--radius-f4) !important;
   box-shadow: none !important;
+  overflow: hidden;
+}
+.maplibregl-ctrl-group button {
+  width: 34px !important;
+  height: 34px !important;
 }
 .maplibregl-ctrl-group button + button {
   border-top-color: var(--color-line) !important;
 }
 .maplibregl-ctrl-icon {
   filter: invert(0.85);
+}
+.maplibregl-ctrl-bottom-right .maplibregl-ctrl {
+  margin: 0 13px 13px 0 !important;
 }

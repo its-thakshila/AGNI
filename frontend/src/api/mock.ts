@@ -133,7 +133,7 @@ function warningsFor(b: BBox, start: string, end: string): Warning[] {
     if (inRanges(d, KNOWN_GAPS)) outage = true;
   }
   const small = b.max_lat - b.min_lat < LIMITS.small_box_deg && b.max_lon - b.min_lon < LIMITS.small_box_deg;
-  if (model) w.push({ code: 'MODEL_DATA_INCLUDED', message: 'Part of this period is rebuilt from MODIS by the harmonization model.' });
+  if (model) w.push({ code: 'MODEL_DATA_INCLUDED', message: 'Part of this period is harmonized from MODIS by Harmonic, AGNI’s harmonization model.' });
   if (model && small) w.push({ code: 'SMALL_BOX_MODEL_PERIOD', message: 'Model-based years are reliable only as totals for small areas.' });
   if (outage) w.push({ code: 'KNOWN_OUTAGE', message: 'Some days have no satellite data at all (MODIS outage).' });
   if (gapRecent) w.push({ code: 'DAYNIGHT_UNRELIABLE', message: 'Day/night split is not shown on gap-filled days.' });
