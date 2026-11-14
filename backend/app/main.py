@@ -80,7 +80,7 @@ def query_year(value, field, default):
 
 
 def create_app(data_dir=None, firms_source=None):
-    app = FastAPI(title="AGNI API", version="1.1")
+    app = FastAPI(title="AGNI API", version="1.2")
     default_dir = Path(__file__).resolve().parents[1] / "data"
     configured_dir = data_dir or os.getenv("AGNI_DATA_DIR")
     source = LocalSource(Path(configured_dir) if configured_dir else default_dir)
@@ -133,7 +133,7 @@ def create_app(data_dir=None, firms_source=None):
                       [(0, "Vegetation fire"), (2, "Static / industrial source"), (3, "Offshore")]],
             "limits": LIMITS,
             "firms": {"status": "ok" if fetched else "unavailable", "last_fetch": fetched},
-            "contract_version": "1.1",
+            "contract_version": "1.2",
         }
 
     def report(kind, lat1, lon1, lat2, lon2, start, end, types, *, periods=None,
@@ -293,14 +293,19 @@ def create_app(data_dir=None, firms_source=None):
         first = query_year(baseline_start_year, "baseline_start_year", 2001)
         last = query_year(baseline_end_year, "baseline_end_year", assessed.year - 1)
         empty_default = baseline_start_year is None and baseline_end_year is None and last < first
-        if not empty_default and not RECORD_START.year <= first <= last < assessed.year:
-            raise ApiError("INVALID_DATE_RANGE", "Baseline years must precede the assessed month.")
+        # Contract v1.2: the baseline may include the assessed year (the frontend compares finished
+        # months with the whole record). That year is then one of the baseline years, listed once.
+        if not empty_default and not RECORD_START.year <= first <= last <= today.year:
+            raise ApiError("INVALID_DATE_RANGE", "Choose baseline years inside the record.")
         periods = []
         month_to_date = assessed == today.replace(day=1)
-        for year in [*range(first, last + 1), assessed.year]:
+        for year in sorted({*range(first, last + 1), assessed.year}):
             start = date(year, assessed.month, 1)
+            if start > today:
+                continue
             day_count = monthrange(year, assessed.month)[1]
             end = start.replace(day=min(day_count, today.day) if month_to_date else day_count)
+            end = min(end, today)
             if end >= RECORD_START:
                 periods.append((max(start, RECORD_START), end))
         return report("daily", lat1, lon1, lat2, lon2, str(periods[0][0]), str(periods[-1][1]), types,

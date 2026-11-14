@@ -9,6 +9,9 @@ import { useSelection } from '../store/useSelection';
 import { EMBER } from '../lib/colors';
 import { hotspotShapes } from '../lib/hotspotShapes';
 import AreaControl from './AreaControl';
+import Icon from './ui/Icon';
+import { LoaderCircle } from 'lucide-react';
+import { useLive } from '../hooks/useLiveSync';
 
 const STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 const EMPTY: GeoJSON.FeatureCollection = { type: 'FeatureCollection', features: [] };
@@ -37,6 +40,8 @@ export default function MapPanel() {
   const { data: meta } = useMeta();
   const { box } = useBox();
   const grid = useGrid();
+  const pending = useLive((s) => s.pending);
+  const liveError = useLive((s) => s.error);
 
   useEffect(() => {
     const map = new maplibregl.Map({
@@ -141,8 +146,16 @@ export default function MapPanel() {
       <div className="absolute left-f4 top-f4 z-10">
         <AreaControl />
       </div>
-      {grid.isFetching && (
+      {pending.length > 0 ? (
+        <div role="status" className="chip pointer-events-none absolute right-f4 top-f4 flex items-center gap-f2 rounded-full border border-line bg-page/85 px-f4 py-f2 text-cap text-ink-2 backdrop-blur">
+          <Icon icon={LoaderCircle} size="xs" className="animate-spin text-ember" />
+          Fetching new satellite data for {pending.length} {pending.length === 1 ? 'day' : 'days'}… usually 1–2 minutes
+        </div>
+      ) : grid.isFetching ? (
         <div className="pointer-events-none absolute right-f4 top-f4 rounded-full border border-line bg-page/80 px-f4 py-f1 text-cap text-muted backdrop-blur">Loading…</div>
+      ) : null}
+      {liveError && (
+        <div className="absolute bottom-f4 right-f6 max-w-64 rounded-f4 border border-line bg-page/85 px-f4 py-f3 text-cap text-ember-soft backdrop-blur">{liveError}</div>
       )}
       {grid.error && (
         <div className="absolute right-f4 top-f4 max-w-64 rounded-f3 border border-line bg-page/85 px-f4 py-f2 text-cap text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>

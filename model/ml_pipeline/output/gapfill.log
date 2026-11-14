@@ -1,7 +1,0 @@
-09:28:36 gapfill: 2012: 21 UTC dates / 21 fire-days missing in VIIRS -> 70105 model rows
-09:29:01 gapfill: 2022: 16 UTC dates / 16 fire-days missing in VIIRS -> 28529 model rows
-09:29:05 gapfill: 2023: 2 UTC dates / 2 fire-days missing in VIIRS -> 4552 model rows
-09:29:11 gapfill: 2024: 20 UTC dates / 20 fire-days missing in VIIRS -> 67743 model rows
-09:29:14 gapfill: 2025: 1 UTC dates / 1 fire-days missing in VIIRS -> 4508 model rows
-09:29:14 gapfill: daily: 60 gap days filled -> D:\NASA\ml_pipeline\output\unified\unified_daily_gapfilled.csv
-09:31:34 gapfill: rows: 175437 gap rows inserted, 30886254 rows total -> D:\NASA\ml_pipeline\output\unified\unified_viirs_format_gapfilled.csv

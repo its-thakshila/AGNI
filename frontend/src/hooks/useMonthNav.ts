@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useMeta } from './useData';
 import { useSelection } from '../store/useSelection';
+import { LIVE_ENABLED } from './useLiveSync';
 
 /** Previous / next month within the record, plus ← → keyboard shortcuts. */
 export function useMonthNav() {
@@ -8,7 +9,10 @@ export function useMonthNav() {
   const { year, month, setMonth } = useSelection();
   const idx = year * 12 + (month - 1);
   const min = meta ? +meta.coverage.record_start.slice(0, 4) * 12 + (+meta.coverage.record_start.slice(5, 7) - 1) : -Infinity;
-  const max = meta ? +meta.coverage.latest_fire_date.slice(0, 4) * 12 + (+meta.coverage.latest_fire_date.slice(5, 7) - 1) : Infinity;
+  // with live processing, months up to today can be opened (they're fetched on demand)
+  const now = new Date();
+  const latestIdx = meta ? +meta.coverage.latest_fire_date.slice(0, 4) * 12 + (+meta.coverage.latest_fire_date.slice(5, 7) - 1) : Infinity;
+  const max = LIVE_ENABLED ? Math.max(latestIdx, now.getUTCFullYear() * 12 + now.getUTCMonth()) : latestIdx;
   const canPrev = idx > min;
   const canNext = idx < max;
 

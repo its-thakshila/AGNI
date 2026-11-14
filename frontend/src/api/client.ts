@@ -1,18 +1,19 @@
-// Thin client for the AGNI API (docs/API_CONTRACT.md v1.1).
-// With no VITE_API_BASE set, every call is answered by the in-browser mock.
+// Client for the AGNI API (docs/API_CONTRACT.md v1.2).
+// Default: answered in the browser by the DuckDB-WASM engine from the dataset files
+// (VITE_DATA_URL, or the bundled mock dataset). With VITE_API_BASE set, calls go to the
+// FastAPI backend instead (useful for backend development).
 
 import type {
   AnomalyData, AreaQuery, BBox, CalendarData, DailyData, Envelope, GridData, Meta, ApiErrorBody,
 } from './types';
-import * as mock from './mock';
+import * as engine from './engine';
 import { ApiError } from './errors';
 
 export { ApiError };
 
 const BASE = ((import.meta.env.VITE_API_BASE as string | undefined) ?? '').replace(/\/$/, '');
-export const USING_MOCK = !BASE;
-const TIMEOUT_MS = 60_000; // 2026 days not yet cached can take 5-20 s (contract §14.1)
-
+export const USING_ENGINE = !BASE;
+const TIMEOUT_MS = 60_000;
 
 /** Plain-language messages for the error codes in contract §11. */
 export function friendlyError(e: unknown): string {
@@ -24,7 +25,7 @@ export function friendlyError(e: unknown): string {
     case 'INVALID_DATE_RANGE': return 'Those dates are outside the record.';
     case 'UPSTREAM_ERROR': return 'Recent satellite data is temporarily unavailable. Older years still work.';
     case 'TIMEOUT': return 'The server took too long to answer. Please try again.';
-    case 'NETWORK': return 'Can’t reach the AGNI server. Check your connection.';
+    case 'NETWORK': return 'Can’t reach the AGNI data. Check your connection.';
     default: return e.message || 'Something went wrong. Please try again.';
   }
 }
@@ -56,33 +57,45 @@ async function get<T>(path: string, params: Record<string, string | number | num
   return res.json() as Promise<T>;
 }
 
+/** Engine errors that aren't ApiErrors (e.g. a failed file read) become a generic API error. */
+async function local<T>(work: Promise<T>): Promise<T> {
+  try {
+    return await work;
+  } catch (e) {
+    if (e instanceof ApiError) throw e;
+    console.error(e);
+    throw new ApiError('INTERNAL_ERROR', 'Could not read the fire data. Please try again.');
+  }
+}
+
 const areaParams = (q: AreaQuery) => ({ ...boxParams(q.bbox), start: q.start, end: q.end, types: q.types });
 
 export const api = {
-  meta: (): Promise<Meta> => (USING_MOCK ? mock.meta() : get('/api/meta')),
+  meta: (): Promise<Meta> => (USING_ENGINE ? local(engine.meta()) : get('/api/meta')),
 
   calendar: (bbox: BBox, types: number[]): Promise<Envelope<CalendarData>> =>
-    USING_MOCK ? mock.calendar(bbox, types) : get('/api/calendar', { ...boxParams(bbox), types }),
+    USING_ENGINE ? local(engine.calendar(bbox, types)) : get('/api/calendar', { ...boxParams(bbox), types }),
 
-  /** month = "YYYY-MM"; the backend compares month-to-date for the current month.
+  /** month = "YYYY-MM"; the month in progress is compared month-to-date.
    *  baseline = [first, last] year; omit for the default (2001 to the year before the month). */
   anomaly: (bbox: BBox, month: string, types: number[], baseline?: [number, number]): Promise<Envelope<AnomalyData>> =>
-    USING_MOCK
-      ? mock.anomaly(bbox, month, types, baseline)
+    USING_ENGINE
+      ? local(engine.anomaly(bbox, month, types, baseline))
       : get('/api/anomaly', { ...boxParams(bbox), month, types, baseline_start_year: baseline?.[0], baseline_end_year: baseline?.[1] }),
 
-  daily: (q: AreaQuery): Promise<Envelope<DailyData>> => (USING_MOCK ? mock.daily(q) : get('/api/daily', areaParams(q))),
+  daily: (q: AreaQuery): Promise<Envelope<DailyData>> => (USING_ENGINE ? local(engine.daily(q)) : get('/api/daily', areaParams(q))),
 
-  grid: (q: AreaQuery): Promise<Envelope<GridData>> => (USING_MOCK ? mock.grid(q) : get('/api/grid', areaParams(q))),
+  grid: (q: AreaQuery): Promise<Envelope<GridData>> => (USING_ENGINE ? local(engine.grid(q)) : get('/api/grid', areaParams(q))),
 };
 
 /** Download the hotspots CSV for a query (contract §9). */
 export async function downloadCsv(q: AreaQuery) {
-  if (USING_MOCK) {
-    const csv = await mock.hotspotsCsv(q);
-    const href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-    const b = q.bbox;
-    save(href, `hotspots_${b.min_lat}_${b.min_lon}_${b.max_lat}_${b.max_lon}_${q.start}_${q.end}.csv`);
+  const b = q.bbox;
+  const name = `hotspots_${b.min_lat}_${b.min_lon}_${b.max_lat}_${b.max_lon}_${q.start}_${q.end}.csv`;
+  if (USING_ENGINE) {
+    const csv = await local(engine.hotspotsCsv(q));
+    const href = URL.createObjectURL(new Blob([csv as BlobPart], { type: 'text/csv' }));
+    save(href, name);
     setTimeout(() => URL.revokeObjectURL(href), 1000);
     return;
   }

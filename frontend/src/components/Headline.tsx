@@ -7,6 +7,7 @@ import { useSelection } from '../store/useSelection';
 import { CATEGORY_COLOR, CATEGORY_LABEL, ORIGIN_DETAIL, ORIGIN_LABEL } from '../lib/colors';
 import { MONTHS_LONG, fmt, ordinal, percentText } from '../lib/stats';
 import { REGION } from '../config/regions';
+import { friendlyError } from '../api/client';
 import Icon from './ui/Icon';
 import Popover from './ui/Popover';
 
@@ -49,7 +50,8 @@ export default function Headline() {
   const { year, month, aoi, tab, setTab } = useSelection();
   const { outside } = useBox();
   const nav = useMonthNav();
-  const an = useAnomaly().data?.data;
+  const anomaly = useAnomaly();
+  const an = anomaly.data?.data;
   const cell = useCalendar().data?.data.cells.find((c) => c.year === year && c.month === month);
   const current = an && an.month === `${year}-${String(month).padStart(2, '0')}` ? an : undefined;
   const value = current ? current.value : cell?.count ?? null;
@@ -95,6 +97,8 @@ export default function Headline() {
                   {current.rank ? ` · ${ordinal(current.rank)} of ${current.rank_of} years` : ''}
                 </div>
               </>
+            ) : anomaly.error && !anomaly.isFetching ? (
+              <div className="max-w-48 text-cap text-ember-soft" title={friendlyError(anomaly.error)}>Comparison unavailable right now</div>
             ) : !current ? (
               <div className="text-cap text-muted">Comparing…</div>
             ) : value === null ? (

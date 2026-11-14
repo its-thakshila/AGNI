@@ -1,12 +1,13 @@
 import { useRef } from 'react';
 import { Flame, Info, MapPin } from 'lucide-react';
-import { USING_MOCK } from '../api/client';
+import { useMeta } from '../hooks/useData';
 import { REGION } from '../config/regions';
 import AboutDialog from './AboutDialog';
 import Icon from './ui/Icon';
 
 export default function Header() {
   const about = useRef<HTMLDialogElement>(null);
+  const demo = useMeta().data?.dataset === 'mock';
   return (
     <header className="flex h-f7 shrink-0 items-center justify-between gap-f4 px-f5">
       <div className="flex min-w-0 items-center gap-f3">
@@ -17,8 +18,8 @@ export default function Header() {
         <span className="hidden truncate text-cap text-muted sm:inline">Active-fire Global Normalized Inventory</span>
       </div>
       <div className="flex items-center gap-f3">
-        {USING_MOCK && (
-          <span className="chip whitespace-nowrap rounded-full border border-line px-f3 py-f1 text-cap text-muted" title="The backend is not connected yet. Numbers are synthetic.">
+        {demo && (
+          <span className="chip whitespace-nowrap rounded-full border border-line px-f3 py-f1 text-cap text-muted" title="This is the mock dataset: the numbers are synthetic.">
             Demo data
           </span>
         )}

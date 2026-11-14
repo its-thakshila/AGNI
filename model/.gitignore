@@ -1,6 +1,0 @@
-*.csv
-
-# Files over 100 MB (GitHub's limit); git can't ignore by size, so they're listed by path
-ml_pipeline/output/archive/2026-11-14_model_and_tests/models/training_table_full.pkl
-ml_pipeline/output/models/training_table_full.pkl
-ml_pipeline/output/models_backup_before_full_run/training_table_full.pkl

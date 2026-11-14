@@ -150,8 +150,11 @@ def anomaly(days, assessed, baseline_start, baseline_end, today):
     for day in days:
         by_year[day["fire_date"].year].append(day)
 
+    # Contract v1.2: the assessed year may sit inside the baseline. Every year appears once in
+    # history; the assessed year counts as a baseline year only when it is inside the range.
+    in_baseline = baseline_start <= assessed.year <= baseline_end
     history = []
-    for year in [*range(baseline_start, baseline_end + 1), assessed.year]:
+    for year in sorted({*range(baseline_start, baseline_end + 1), assessed.year}):
         expected = monthrange(year, assessed.month)[1]
         if month_to_date:
             expected = min(expected, last_day)
@@ -159,9 +162,11 @@ def anomaly(days, assessed, baseline_start, baseline_end, today):
         history.append({"year": year, "value": summary["count"],
                         "has_data": summary["has_data"], "main_origin": summary["main_origin"]})
 
-    current = history[-1]
+    current = next(entry for entry in history if entry["year"] == assessed.year)
     value = current["value"]
-    values = [entry["value"] for entry in history[:-1] if entry["has_data"] == "full"]
+    values = [entry["value"] for entry in history
+              if entry["has_data"] == "full" and baseline_start <= entry["year"] <= baseline_end]
+    counted = in_baseline and current["has_data"] == "full"
     average = mean(values) if values else 0.0
     std = pstdev(values) if values else 0.0
     p10, p25, median, p75, p90 = (percentile(values, p) for p in (0.1, 0.25, 0.5, 0.75, 0.9))
@@ -182,7 +187,7 @@ def anomaly(days, assessed, baseline_start, baseline_end, today):
         "percent_of_median": 100 * value / median if value is not None and median else None,
         "z_score": (value - average) / std if value is not None and std else None,
         "rank": 1 + sum(other > value for other in values) if value is not None else None,
-        "rank_of": len(values) + int(value is not None),
+        "rank_of": len(values) + int(value is not None and not counted),
         "category": category,
         "has_data": current["has_data"],
         "history": history,

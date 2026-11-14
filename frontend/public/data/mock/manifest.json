@@ -1,0 +1,2586 @@
+{
+ "dataset": "mock",
+ "days": {
+  "2026-01-01": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:42+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-02": {
+   "daynight_reliable": true,
+   "detections": 13,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:42+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-03": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:42+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-04": {
+   "daynight_reliable": true,
+   "detections": 13,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:42+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-05": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:42+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-06": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:42+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-07": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:42+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-08": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:42+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-09": {
+   "daynight_reliable": false,
+   "detections": 19,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-01-10": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-11": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-12": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-13": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-14": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-15": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-16": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-17": {
+   "daynight_reliable": true,
+   "detections": 8,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-18": {
+   "daynight_reliable": true,
+   "detections": 13,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-19": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-20": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-21": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-22": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-23": {
+   "daynight_reliable": false,
+   "detections": 18,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-01-24": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-25": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-26": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-27": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-28": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-29": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-30": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-01-31": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-01": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-02": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-03": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-04": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-05": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-06": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-07": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-08": {
+   "daynight_reliable": true,
+   "detections": 13,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-09": {
+   "daynight_reliable": false,
+   "detections": 18,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-02-10": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-11": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-12": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-13": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-14": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-15": {
+   "daynight_reliable": true,
+   "detections": 9,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-16": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-17": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-18": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-19": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-20": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-21": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-22": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-23": {
+   "daynight_reliable": false,
+   "detections": 12,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-02-24": {
+   "daynight_reliable": true,
+   "detections": 13,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-25": {
+   "daynight_reliable": true,
+   "detections": 8,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:43+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-26": {
+   "daynight_reliable": true,
+   "detections": 12,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-27": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-02-28": {
+   "daynight_reliable": true,
+   "detections": 8,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-01": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-02": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-03": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-04": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-05": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-06": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-07": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-08": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-09": {
+   "daynight_reliable": false,
+   "detections": 3,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-03-10": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-11": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-12": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-13": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-14": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-15": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-16": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-17": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-18": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-19": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-20": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-21": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-22": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-23": {
+   "daynight_reliable": false,
+   "detections": 15,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-03-24": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-25": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-26": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-27": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-28": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-29": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-30": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-03-31": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-01": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-02": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-03": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-04": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-05": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-06": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-07": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-08": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-09": {
+   "daynight_reliable": false,
+   "detections": 8,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-04-10": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-11": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-12": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-13": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-14": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-15": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-16": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-17": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-18": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-19": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-20": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-21": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-22": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-23": {
+   "daynight_reliable": false,
+   "detections": 4,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-04-24": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-25": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-26": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-27": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:44+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-28": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-29": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-04-30": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-01": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-02": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-03": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-04": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-05": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-06": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-07": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-08": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-09": {
+   "daynight_reliable": false,
+   "detections": 5,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-05-10": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-11": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-12": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-13": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-14": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-15": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-16": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-17": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-18": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-19": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-20": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-21": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-22": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-23": {
+   "daynight_reliable": false,
+   "detections": 8,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-05-24": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-25": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-26": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-27": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-28": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-29": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-30": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-05-31": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-01": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-02": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-03": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-04": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-05": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-06": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-07": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-08": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-09": {
+   "daynight_reliable": false,
+   "detections": 7,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-06-10": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-11": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-12": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-13": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-14": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-15": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-16": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-17": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-18": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-19": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-20": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-21": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-22": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-23": {
+   "daynight_reliable": false,
+   "detections": 10,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-06-24": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-25": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-26": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-27": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-28": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:45+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-29": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-06-30": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-01": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-02": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-03": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-04": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-05": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-06": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-07": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-08": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-09": {
+   "daynight_reliable": false,
+   "detections": 14,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-07-10": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-11": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-12": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-13": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-14": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-15": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-16": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-17": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-18": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-19": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-20": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-21": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-22": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-23": {
+   "daynight_reliable": false,
+   "detections": 11,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-07-24": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-25": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-26": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-27": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-28": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-29": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-30": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-07-31": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-01": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-02": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-03": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-04": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-05": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-06": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-07": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-08": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-09": {
+   "daynight_reliable": false,
+   "detections": 5,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-08-10": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-11": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-12": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-13": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-14": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-15": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-16": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-17": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-18": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-19": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-20": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-21": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-22": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-23": {
+   "daynight_reliable": false,
+   "detections": 4,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-08-24": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-25": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-26": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:46+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-27": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-28": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-29": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-30": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-08-31": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-01": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-02": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-03": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-04": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-05": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-06": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-07": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-08": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-09": {
+   "daynight_reliable": false,
+   "detections": 6,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "MODIS_SP+ML-XGB-1.0-gapfill"
+  },
+  "2026-09-10": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-11": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-12": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-13": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-14": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_SP"
+  },
+  "2026-09-15": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-16": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-17": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-18": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-19": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-20": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-21": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-22": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-23": {
+   "daynight_reliable": false,
+   "detections": 6,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "MODIS_NRT+ML-XGB-1.0-gapfill"
+  },
+  "2026-09-24": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-25": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-26": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-27": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-28": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-29": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-09-30": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-01": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-02": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-03": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-04": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-05": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-06": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-07": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-08": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-09": {
+   "daynight_reliable": false,
+   "detections": 4,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "MODIS_NRT+ML-XGB-1.0-gapfill"
+  },
+  "2026-10-10": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-11": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-12": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-13": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-14": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-15": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-16": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-17": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-18": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-19": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-20": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-21": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-22": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-23": {
+   "daynight_reliable": false,
+   "detections": 4,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "MODIS_NRT+ML-XGB-1.0-gapfill"
+  },
+  "2026-10-24": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-25": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:47+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-26": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-27": {
+   "daynight_reliable": true,
+   "detections": 3,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-28": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-29": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-30": {
+   "daynight_reliable": true,
+   "detections": 5,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-10-31": {
+   "daynight_reliable": true,
+   "detections": 4,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-01": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-02": {
+   "daynight_reliable": true,
+   "detections": 14,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-03": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-04": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-05": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-06": {
+   "daynight_reliable": true,
+   "detections": 13,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-07": {
+   "daynight_reliable": true,
+   "detections": 10,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-08": {
+   "daynight_reliable": true,
+   "detections": 8,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-09": {
+   "daynight_reliable": false,
+   "detections": 21,
+   "flag": "viirs_offline",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "MODIS_NRT+ML-XGB-1.0-gapfill"
+  },
+  "2026-11-10": {
+   "daynight_reliable": true,
+   "detections": 8,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-11": {
+   "daynight_reliable": true,
+   "detections": 11,
+   "flag": null,
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  },
+  "2026-11-12": {
+   "daynight_reliable": true,
+   "detections": 8,
+   "flag": "provisional",
+   "has_data": "full",
+   "processed_at": "2026-11-14T14:53:48+00:00",
+   "source": "VIIRS_SNPP_NRT"
+  }
+ },
+ "known_gaps": [
+  {
+   "from": "2001-06-17",
+   "reason": "No satellite data",
+   "to": "2001-07-02"
+  },
+  {
+   "from": "2002-03-21",
+   "reason": "No satellite data",
+   "to": "2002-03-27"
+  }
+ ],
+ "latest_fire_date": "2026-11-12",
+ "live_months": [
+  "2026-01",
+  "2026-02",
+  "2026-03",
+  "2026-04",
+  "2026-05",
+  "2026-06",
+  "2026-07",
+  "2026-08",
+  "2026-09",
+  "2026-10",
+  "2026-11"
+ ],
+ "local_end": "2025-12-31",
+ "periods": [
+  {
+   "from": "2000-11-01",
+   "label": "Harmonized from MODIS Terra by Harmonic",
+   "origin": "ml",
+   "to": "2002-07-03",
+   "uncertainty": 0.16
+  },
+  {
+   "from": "2002-07-04",
+   "label": "Harmonized from MODIS Terra + Aqua by Harmonic",
+   "origin": "ml",
+   "to": "2011-12-31",
+   "uncertainty": 0.11
+  },
+  {
+   "from": "2012-01-01",
+   "label": "VIIRS S-NPP observations",
+   "origin": "real",
+   "to": null,
+   "uncertainty": 0.0
+  }
+ ],
+ "record_start": "2000-11-01",
+ "updated_at": "2026-11-14T14:53:49+00:00",
+ "version": 1
+}

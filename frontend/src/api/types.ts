@@ -89,6 +89,8 @@ export interface Meta {
   };
   firms: { status: string; last_fetch: string | null };
   contract_version: string;
+  /** frontend engine only: "mock" or "real" (drives the Demo data badge) */
+  dataset?: string;
 }
 
 export interface ApiErrorBody {

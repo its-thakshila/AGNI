@@ -2,7 +2,7 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { api } from '../api/client';
 import type { AreaQuery, BBox } from '../api/types';
 import { useSelection } from '../store/useSelection';
-import { clipBox, monthRange, ym } from '../lib/dates';
+import { clipBox, daysInMonth, monthRange, ym } from '../lib/dates';
 
 const round = (b: BBox): BBox => ({
   min_lat: +b.min_lat.toFixed(3), max_lat: +b.max_lat.toFixed(3),
@@ -62,13 +62,16 @@ export function useAnomaly() {
   const { data: meta } = useMeta();
   const { year, month, types } = useSelection();
   const latest = meta?.coverage.latest_fire_date;
-  const inProgress = !!latest && ym(year, month) === latest.slice(0, 7);
+  // "in progress" = the newest month with data, and its last day isn't in yet
+  const inProgress = !!latest && ym(year, month) === latest.slice(0, 7) && +latest.slice(8, 10) < daysInMonth(year, month);
   const lastFullYear = latest ? (latest.endsWith('-12-31') ? +latest.slice(0, 4) : +latest.slice(0, 4) - 1) : 0;
   const baseline: [number, number] | undefined = inProgress ? undefined : [2001, lastFullYear];
+  // don't ask about months after the newest data (e.g. before the app has moved to the latest month)
+  const inRecord = !!latest && ym(year, month) <= latest.slice(0, 7);
   return gated(useQuery({
     queryKey: ['anomaly', box, year, month, types, baseline],
     queryFn: () => api.anomaly(box!, ym(year, month), types, baseline),
-    enabled: !!box && !!meta,
+    enabled: !!box && inRecord,
     placeholderData: keepPreviousData,
   }), !!box);
 }

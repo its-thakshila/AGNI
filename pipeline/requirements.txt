@@ -1,0 +1,9 @@
+duckdb==2.0.0
+boto3>=1.34
+
+# Harmonic (pipeline/harmonic): prediction only. CPU build of xgboost, at the version the model
+# was trained with (see pipeline/harmonic/ml_pipeline/output/models/training_report.json).
+xgboost-cpu==3.2.0
+pandas>=2.0,<4  # features.py uses Series.dt.dayofyear, removed in pandas 4
+numpy>=1.24
+joblib>=1.3

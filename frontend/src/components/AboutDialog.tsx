@@ -1,7 +1,6 @@
 import type { Ref } from 'react';
 import { X } from 'lucide-react';
 import { useMeta } from '../hooks/useData';
-import { USING_MOCK } from '../api/client';
 import Icon from './ui/Icon';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -72,7 +71,7 @@ export default function AboutDialog({ ref }: { ref: Ref<HTMLDialogElement> }) {
           )}
           <p className="text-cap text-muted">
             Source: NASA FIRMS (MODIS, VIIRS S-NPP), harmonized by Harmonic · AGNI team · NASA Space Apps Challenge 2026
-            {USING_MOCK ? ' · This preview runs on synthetic demo data.' : ''}
+            {meta?.dataset === 'mock' ? ' · This preview runs on synthetic demo data.' : ''}
           </p>
         </div>
       </div>

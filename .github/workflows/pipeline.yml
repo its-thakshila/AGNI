@@ -1,0 +1,56 @@
+name: Process new fire-days
+
+# Adds days after the processed CSV to the dataset in R2:
+#   VIIRS S-NPP from NASA FIRMS when it has data for the day,
+#   otherwise MODIS from FIRMS converted by Harmonic.
+# Runs every 3 hours, and on demand when the Worker starts it for days a user asked for.
+
+on:
+  schedule:
+    - cron: '17 */3 * * *'
+  workflow_dispatch:
+    inputs:
+      dataset:
+        description: 'Dataset prefix in R2 (mock or real)'
+        default: 'mock'
+      days:
+        description: 'Days to (re)process, e.g. 2026-11-01:2026-11-13,2026-10-05 (empty = only missing/recent days)'
+        default: ''
+      fake:
+        description: 'Use fake FIRMS data (no FIRMS key needed)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+# one writer per dataset at a time (this and consolidate both update manifest.json)
+concurrency:
+  group: agni-data-${{ inputs.dataset || vars.AGNI_DATASET || 'mock' }}
+  cancel-in-progress: false
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      DATASET: ${{ inputs.dataset || vars.AGNI_DATASET || 'mock' }}
+      FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+      R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+      R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      R2_BUCKET: ${{ vars.R2_BUCKET || 'agni-data' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: pipeline/requirements.txt
+      - run: pip install -r pipeline/requirements.txt
+      - name: Process days
+        working-directory: pipeline
+        env:
+          DAYS: ${{ inputs.days }}
+          FAKE: ${{ inputs.fake && '--fake' || (vars.AGNI_FAKE_FIRMS == 'true' && '--fake' || '') }}
+        run: python -m agni_pipeline.process_days --store "r2:$DATASET" --days "$DAYS" --recent 3 --fill-missing $FAKE

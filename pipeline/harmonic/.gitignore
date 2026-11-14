@@ -1,0 +1,13 @@
+# Training data stays local (large); see README.md
+*.csv
+data/
+__pycache__/
+*.pyc
+
+# Keep only the trained model files from output/: reports, figures, logs and backups stay local
+ml_pipeline/output/*
+!ml_pipeline/output/models/
+ml_pipeline/output/models/*
+!ml_pipeline/output/models/hgb_modis_to_viirs.joblib
+!ml_pipeline/output/models/synthesis_stats.joblib
+!ml_pipeline/output/models/training_report.json

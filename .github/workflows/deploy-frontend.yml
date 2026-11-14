@@ -32,8 +32,12 @@ jobs:
       - run: npm run build
         env:
           VITE_BASE: /${{ github.event.repository.name }}/
-          # Set this repository variable once the Worker is deployed; empty = demo data.
-          VITE_API_BASE: ${{ vars.VITE_API_BASE }}
+          # Repository variables (Settings > Secrets and variables > Actions > Variables).
+          # Unset = the site uses the mock dataset bundled with the frontend.
+          #   VITE_DATA_URL   https://agni-api.<account>.workers.dev/data/mock  (or /data/real)
+          #   VITE_WORKER_URL https://agni-api.<account>.workers.dev            (on-demand processing)
+          VITE_DATA_URL: ${{ vars.VITE_DATA_URL }}
+          VITE_WORKER_URL: ${{ vars.VITE_WORKER_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist

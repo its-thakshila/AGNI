@@ -12,9 +12,10 @@ export function compact(n: number): string {
   return String(Math.round(n));
 }
 
-/** "2.6× usual", "28% above usual", "about usual", "40% below usual" from percent_of_median. */
+/** "2.6× usual", "28% above usual", "about usual", "4% below usual" from percent_of_median.
+ *  "About usual" only within ±1%, so it never contradicts the category label beside it. */
 export function percentText(pct: number): string {
-  if (pct >= 95 && pct <= 105) return 'About usual';
+  if (Math.abs(pct - 100) < 1) return 'About usual';
   if (pct >= 200) return `${(pct / 100).toFixed(pct >= 1000 ? 0 : 1)}× usual`;
   if (pct > 100) return `${Math.round(pct - 100)}% above usual`;
   return `${Math.round(100 - pct)}% below usual`;

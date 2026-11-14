@@ -1,0 +1,16 @@
+// Cloudflare Worker for AGNI (free plan). Deployed by .github/workflows/deploy-worker.yml.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "agni-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-01",
+  "r2_buckets": [{ "binding": "DATA", "bucket_name": "agni-data" }],
+  "vars": {
+    "DATASETS": "mock,real",
+    "ALLOWED_ORIGINS": "https://its-thakshila.github.io,http://localhost:5173,http://localhost:5174",
+    "GITHUB_REPO": "its-thakshila/AGNI",
+    "GITHUB_WORKFLOW": "pipeline.yml",
+    "GITHUB_REF": "main"
+  }
+  // Secret (not in this file): DISPATCH_TOKEN, set by the deploy workflow from the GitHub secret.
+}
