@@ -1,0 +1,2 @@
+01:54:35 predict: modis_2025_Australia: 255336 MODIS detections 2025-01-01 .. 2025-12-31
+01:55:37 predict: {'modis_rows': 255336, 'viirs_equiv_expected': 1177734.286139773, 'viirs_equiv_rows': 1177259, 'days': 365, 'viirs_actual_rows': 1251438, 'daily_r2_vs_actual': 0.9784941093490465, 'note': 'in-sample if this year was used for training; use training_report.json CV for honest scores'}

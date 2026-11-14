@@ -1,0 +1,39 @@
+17:32:46 train: modis_2012_Australia.csv: 1568941 candidate rows, 201604 with VIIRS, reachable VIIRS pixels 92.7% | dropped 69121 rows on 23 no-VIIRS days | kept 478162 rows (30%), 126 MB
+17:33:03 train: modis_2013_Australia.csv: 922407 candidate rows, 105480 with VIIRS, reachable VIIRS pixels 87.4% | dropped 2303 rows on 3 no-VIIRS days | kept 279618 rows (30%), 74 MB
+17:33:23 train: modis_2014_Australia.csv: 1065845 candidate rows, 133444 with VIIRS, reachable VIIRS pixels 88.9% | dropped 1310 rows on 2 no-VIIRS days | kept 331857 rows (31%), 88 MB
+17:33:43 train: modis_2015_Australia.csv: 1041217 candidate rows, 128883 with VIIRS, reachable VIIRS pixels 88.3% | dropped 772 rows on 2 no-VIIRS days | kept 322881 rows (31%), 85 MB
+17:33:59 train: modis_2016_Australia.csv: 838503 candidate rows, 93306 with VIIRS, reachable VIIRS pixels 84.7% | dropped 698 rows on 2 no-VIIRS days | kept 252015 rows (30%), 67 MB
+17:34:23 train: modis_2017_Australia.csv: 1202074 candidate rows, 138603 with VIIRS, reachable VIIRS pixels 87.9% | dropped 1229 rows on 2 no-VIIRS days | kept 365912 rows (30%), 97 MB
+17:34:49 train: modis_2018_Australia.csv: 1256650 candidate rows, 157020 with VIIRS, reachable VIIRS pixels 89.4% | dropped 2183 rows on 3 no-VIIRS days | kept 390606 rows (31%), 103 MB
+17:35:11 train: modis_2019_Australia.csv: 1068617 candidate rows, 133226 with VIIRS, reachable VIIRS pixels 91.2% | dropped 4790 rows on 3 no-VIIRS days | kept 331704 rows (31%), 88 MB
+17:35:25 train: modis_2020_Australia.csv: 750565 candidate rows, 87449 with VIIRS, reachable VIIRS pixels 85.6% | dropped 3318 rows on 2 no-VIIRS days | kept 228109 rows (30%), 60 MB
+17:35:42 train: modis_2021_Australia.csv: 868669 candidate rows, 99004 with VIIRS, reachable VIIRS pixels 86.0% | dropped 616 rows on 2 no-VIIRS days | kept 263119 rows (30%), 69 MB
+17:35:55 train: modis_2022_Australia.csv: 779079 candidate rows, 91496 with VIIRS, reachable VIIRS pixels 85.1% | dropped 38301 rows on 19 no-VIIRS days | kept 230779 rows (30%), 61 MB
+17:36:22 train: modis_2023_Australia.csv: 1294574 candidate rows, 173195 with VIIRS, reachable VIIRS pixels 92.5% | dropped 9219 rows on 5 no-VIIRS days | kept 411797 rows (32%), 109 MB
+17:36:42 train: modis_2024_Australia.csv: 1023388 candidate rows, 108748 with VIIRS, reachable VIIRS pixels 87.9% | dropped 61551 rows on 23 no-VIIRS days | kept 293450 rows (29%), 77 MB
+17:37:05 train: modis_2025_Australia.csv: 1138741 candidate rows, 132306 with VIIRS, reachable VIIRS pixels 88.8% | dropped 5504 rows on 4 no-VIIRS days | kept 349917 rows (31%), 92 MB
+17:37:12 improve: table: 4529926 rows, 66 columns in 302 s, peak 3.77 GB
+17:41:14 improve: V0 baseline               daily 10.85% (normal) | 2024 13.73% | monthly 2.76% | iters [600, 600, 600, 600, 600, 600] | 4.0 min
+17:41:14 improve:    calibrated: daily 10.83% (normal) | 2024 13.92% | monthly 2.91% | |bias| 1.55%
+17:52:40 improve: V8 final: A+fire hist+Aqua+overpass daily 10.52% (normal) | 2024 12.79% | monthly 2.87% | iters [2000, 2000, 1999, 1999, 2000, 2000] | 11.4 min
+17:52:40 improve:    calibrated: daily 10.47% (normal) | 2024 12.84% | monthly 2.99% | |bias| 1.79%
+17:53:02 train: modis_2012_Australia.csv: 1018689 candidate rows, 163001 with VIIRS, reachable VIIRS pixels 83.6% | dropped 47388 rows on 23 no-VIIRS days | kept 333127 rows (33%), 68 MB
+17:53:13 train: modis_2013_Australia.csv: 543725 candidate rows, 76687 with VIIRS, reachable VIIRS pixels 73.3% | dropped 1793 rows on 3 no-VIIRS days | kept 175565 rows (32%), 36 MB
+17:53:26 train: modis_2014_Australia.csv: 660687 candidate rows, 101917 with VIIRS, reachable VIIRS pixels 76.8% | dropped 525 rows on 2 no-VIIRS days | kept 219754 rows (33%), 45 MB
+17:53:39 train: modis_2015_Australia.csv: 645894 candidate rows, 97981 with VIIRS, reachable VIIRS pixels 75.7% | dropped 330 rows on 2 no-VIIRS days | kept 213492 rows (33%), 44 MB
+17:53:48 train: modis_2016_Australia.csv: 475430 candidate rows, 65431 with VIIRS, reachable VIIRS pixels 68.3% | dropped 388 rows on 2 no-VIIRS days | kept 152309 rows (32%), 31 MB
+17:54:02 train: modis_2017_Australia.csv: 710703 candidate rows, 100981 with VIIRS, reachable VIIRS pixels 74.2% | dropped 832 rows on 2 no-VIIRS days | kept 230290 rows (32%), 47 MB
+17:54:19 train: modis_2018_Australia.csv: 796942 candidate rows, 122050 with VIIRS, reachable VIIRS pixels 78.0% | dropped 1530 rows on 3 no-VIIRS days | kept 264501 rows (33%), 54 MB
+17:54:34 train: modis_2019_Australia.csv: 691369 candidate rows, 105566 with VIIRS, reachable VIIRS pixels 82.5% | dropped 2813 rows on 3 no-VIIRS days | kept 228877 rows (33%), 47 MB
+17:54:42 train: modis_2020_Australia.csv: 449678 candidate rows, 63381 with VIIRS, reachable VIIRS pixels 71.6% | dropped 2215 rows on 2 no-VIIRS days | kept 145085 rows (32%), 30 MB
+17:54:52 train: modis_2021_Australia.csv: 486907 candidate rows, 68131 with VIIRS, reachable VIIRS pixels 67.7% | dropped 341 rows on 2 no-VIIRS days | kept 156667 rows (32%), 32 MB
+17:55:00 train: modis_2022_Australia.csv: 440759 candidate rows, 64832 with VIIRS, reachable VIIRS pixels 67.5% | dropped 19820 rows on 19 no-VIIRS days | kept 140390 rows (32%), 29 MB
+17:55:19 train: modis_2023_Australia.csv: 798099 candidate rows, 133790 with VIIRS, reachable VIIRS pixels 81.5% | dropped 5095 rows on 5 no-VIIRS days | kept 273527 rows (34%), 56 MB
+17:55:32 train: modis_2024_Australia.csv: 542703 candidate rows, 71909 with VIIRS, reachable VIIRS pixels 68.7% | dropped 33424 rows on 23 no-VIIRS days | kept 165443 rows (30%), 34 MB
+17:55:46 train: modis_2025_Australia.csv: 619283 candidate rows, 91797 with VIIRS, reachable VIIRS pixels 71.2% | dropped 3390 rows on 4 no-VIIRS days | kept 203182 rows (33%), 41 MB
+17:55:48 improve: table: 2902209 rows, 51 columns in 188 s, peak 4.44 GB
+17:58:13 improve: V0 baseline               daily 16.16% (normal) | 2024 19.63% | monthly 4.71% | iters [600, 599, 600, 600, 600, 600] | 2.4 min
+17:58:13 improve:    calibrated: daily 16.14% (normal) | 2024 19.93% | monthly 4.74% | |bias| 2.19%
+18:04:52 improve: V8 final: A+fire hist+Aqua+overpass daily 15.54% (normal) | 2024 18.74% | monthly 4.57% | iters [2000, 2000, 2000, 2000, 2000, 2000] | 6.6 min
+18:04:52 improve:    calibrated: daily 15.53% (normal) | 2024 18.89% | monthly 4.67% | |bias| 2.25%
+18:04:52 improve: saved D:\NASA\ml_pipeline\output\improve\improve_results.json
