@@ -1,4 +1,4 @@
-import { ArrowRight, Blend, ChevronLeft, ChevronRight, Satellite } from 'lucide-react';
+import { Blend, ChevronLeft, ChevronRight, Satellite } from 'lucide-react';
 import type { Origin } from '../api/types';
 import { isModelled } from '../api/types';
 import { useAnomaly, useBox, useCalendar, useDaily, useDayAnomaly } from '../hooks/useData';
@@ -47,7 +47,7 @@ function NavButton({ dir, onClick, disabled }: { dir: 'prev' | 'next'; onClick: 
 
 /** Always-visible answer for the selected month: how much burning, and is that unusual? */
 export default function Headline() {
-  const { year, month, day, aoi, tab, setTab } = useSelection();
+  const { year, month, day, aoi } = useSelection();
   const { outside } = useBox();
   const nav = useMonthNav();
   const monthAnomaly = useAnomaly();
@@ -81,12 +81,6 @@ export default function Headline() {
           </h1>
           <NavButton dir="next" onClick={nav.next} disabled={!nav.canNext} />
         </div>
-        {tab !== 'month' && !outside && (
-          <button onClick={() => setTab('month')} className="flex items-center gap-f2 rounded-full px-f3 py-f1 text-cap text-muted transition-colors hover:bg-raised hover:text-ink">
-            Month details
-            <Icon icon={ArrowRight} size="xs" />
-          </button>
-        )}
       </div>
 
       {outside ? (

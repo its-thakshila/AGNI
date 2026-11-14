@@ -1,4 +1,4 @@
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Pause, Play } from 'lucide-react';
 import type { DailyValue, Origin } from '../../api/types';
 import { isModelled } from '../../api/types';
 import { friendlyError } from '../../api/client';
@@ -8,6 +8,7 @@ import { EMBER, NO_DATA, ORIGIN_LABEL, pick } from '../../lib/colors';
 import { daysInMonth } from '../../lib/dates';
 import { MONTHS_LONG, compact, fmt } from '../../lib/stats';
 import Icon from '../ui/Icon';
+import SpeedButton from '../SpeedButton';
 import { overlayInk } from './calendarInk';
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -21,9 +22,9 @@ const mainOrigin = (x: DailyValue) =>
  * "Whole month") to go back to the month on the map.
  */
 export default function DaysView() {
-  const { year, month, day, setDay, setCalView } = useSelection();
+  const { year, month, day, playing, setDay, setPlaying, setCalView } = useSelection();
   const q = useMonthQuery();
-  const { data, error, isFetching } = useDaily();
+  const { data, error } = useDaily();
   const days = data?.data.days ?? [];
   const byDay = new Map(days.map((x) => [+x.fire_date.slice(8, 10), x]));
   const max = Math.max(1, ...days.map((x) => x.count ?? 0));
@@ -46,13 +47,22 @@ export default function DaysView() {
           <Icon icon={ChevronLeft} size="sm" />
           All months
         </button>
-        {day === null ? (
-          <p className="min-w-0 truncate text-cap text-muted">Click a day to show it on the map.</p>
-        ) : (
-          <button onClick={() => setDay(null)} className="chip whitespace-nowrap rounded-full border border-line px-f3 py-f1 text-cap text-ink-2 transition-colors hover:text-ink">
-            Map the whole month
+        <div className="flex min-w-0 items-center gap-f2">
+          {day !== null && (
+            <button onClick={() => setDay(null)} className="chip whitespace-nowrap rounded-full border border-line px-f3 py-f1 text-cap text-ink-2 transition-colors hover:text-ink">
+              Whole month
+            </button>
+          )}
+          <button
+            onClick={() => setPlaying(!playing)}
+            className={`chip flex shrink-0 items-center gap-f1 whitespace-nowrap rounded-full border px-f3 py-f1 text-cap transition-colors ${playing ? 'border-ember/60 text-ember' : 'border-line text-ink-2 hover:text-ink'}`}
+            title="Play the map through the month, day by day"
+          >
+            <Icon icon={playing ? Pause : Play} size="xs" />
+            {playing ? 'Pause' : 'Play month'}
           </button>
-        )}
+          <SpeedButton className="border border-line px-f3 py-f1" />
+        </div>
       </div>
 
       <div className="relative mt-f3 flex min-h-[280px] flex-1 flex-col">
@@ -93,7 +103,7 @@ export default function DaysView() {
                     title={tip}
                     aria-label={tip}
                     aria-pressed={selected}
-                    className="relative flex min-h-0 flex-col items-start justify-between overflow-hidden rounded-[3px] p-f1 text-left transition-[filter] hover:brightness-125 focus-visible:outline-2 focus-visible:outline-ink"
+                    className="relative flex min-h-0 flex-col items-start justify-between overflow-hidden rounded-[3px] p-f1 text-left transition-[filter] hover:brightness-125"
                     style={{ background: color, boxShadow: selected ? `inset 0 0 0 2px #f0efec` : undefined }}
                   >
                     <span className="text-cap font-medium leading-none" style={{ color: ink }}>{d}</span>
@@ -115,7 +125,6 @@ export default function DaysView() {
             </div>
           </>
         )}
-        {isFetching && data && <div className="absolute right-0 top-0 text-cap text-muted">Updating…</div>}
       </div>
 
       <div className="mt-f3 flex items-center gap-f2 text-cap text-muted">

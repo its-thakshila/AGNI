@@ -1,7 +1,6 @@
 import { useRef } from 'react';
-import { Flame, Info, MapPin } from 'lucide-react';
+import { Flame, Info } from 'lucide-react';
 import { useMeta } from '../hooks/useData';
-import { REGION } from '../config/regions';
 import AboutDialog from './AboutDialog';
 import Icon from './ui/Icon';
 
@@ -23,10 +22,6 @@ export default function Header() {
             Demo data
           </span>
         )}
-        <span className="chip flex items-center gap-f2 whitespace-nowrap rounded-full bg-raised px-f4 py-f1 text-body text-ink-2">
-          <Icon icon={MapPin} size="sm" className="text-muted" />
-          {REGION.name}
-        </span>
         <button
           onClick={() => about.current?.showModal()}
           aria-label="About AGNI"

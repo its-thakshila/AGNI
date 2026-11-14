@@ -74,7 +74,6 @@ function DailyChart() {
     <div className="flex min-h-[150px] flex-1 flex-col rounded-f4 border border-line/70 bg-page/35 p-f4">
       <div className="flex items-baseline justify-between gap-f3">
         <h3 className="text-body font-medium text-ink">Day by day</h3>
-        {!d?.days.some((x) => (x.uncertainty ?? 0) > 0) && <span className="text-cap text-muted">Click a day to map it</span>}
         {d?.days.some((x) => (x.uncertainty ?? 0) > 0) && <span className="text-cap text-muted">Shaded: model uncertainty</span>}
       </div>
       <div className="relative min-h-0 flex-1">

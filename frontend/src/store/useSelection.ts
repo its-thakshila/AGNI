@@ -4,6 +4,8 @@ import type { BBox } from '../api/types';
 export type CalendarMode = 'count' | 'anomaly';
 export type Tab = 'calendar' | 'month' | 'trends';
 export type CalView = 'months' | 'days';
+export const PLAY_SPEEDS = [0.5, 1, 2, 4, 8] as const;
+export type PlaySpeed = (typeof PLAY_SPEEDS)[number];
 
 interface SelectionState {
   /** area the user drew or typed (not yet clipped to coverage); null = whole region */
@@ -12,6 +14,10 @@ interface SelectionState {
   month: number;
   /** a single day of the selected month shown on the map; null = the whole month */
   day: number | null;
+  /** the map is playing through the month's days */
+  playing: boolean;
+  /** playback speed: days per frame-time multiplier (1 = about 1.5 days a second) */
+  speed: PlaySpeed;
   mode: CalendarMode;
   /** the Calendar tab shows every month, or the selected month's days */
   calView: CalView;
@@ -21,6 +27,8 @@ interface SelectionState {
   setAoi: (b: BBox | null) => void;
   setMonth: (year: number, month: number) => void;
   setDay: (day: number | null) => void;
+  setPlaying: (playing: boolean) => void;
+  setSpeed: (speed: PlaySpeed) => void;
   /** jump to a day of another month (stepping days across a month boundary) */
   setMonthDay: (year: number, month: number, day: number) => void;
   setMode: (m: CalendarMode) => void;
@@ -38,14 +46,18 @@ export const useSelection = create<SelectionState>((set) => ({
   year: latest.getUTCFullYear(),
   month: latest.getUTCMonth() + 1,
   day: null,
+  playing: false,
+  speed: 1,
   mode: 'count',
   calView: 'months',
   tab: 'calendar',
   types: [0],
   drawing: false,
-  setAoi: (aoi) => set({ aoi, drawing: false }),
-  setMonth: (year, month) => set({ year, month, day: null }),
-  setDay: (day) => set({ day }),
+  setAoi: (aoi) => set({ aoi, drawing: false, playing: false }),
+  setMonth: (year, month) => set({ year, month, day: null, playing: false }),
+  setDay: (day) => set(day === null ? { day, playing: false } : { day }),
+  setPlaying: (playing) => set({ playing }),
+  setSpeed: (speed) => set({ speed }),
   setMonthDay: (year, month, day) => set({ year, month, day }),
   setMode: (mode) => set({ mode }),
   setCalView: (calView) => set({ calView }),

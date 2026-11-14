@@ -6,9 +6,10 @@ import { isModelled } from '../api/types';
 import { friendlyError } from '../api/client';
 import { useBox, useGrid, useMeta } from '../hooks/useData';
 import DayControl from './DayControl';
+import { FRAME_MS, usePlayback } from '../hooks/usePlayback';
 import { useSelection } from '../store/useSelection';
 import { EMBER } from '../lib/colors';
-import { hotspotShapes } from '../lib/hotspotShapes';
+import { shapesFor } from '../lib/shapeCache';
 import AreaControl from './AreaControl';
 import Icon from './ui/Icon';
 import { LoaderCircle } from 'lucide-react';
@@ -31,6 +32,8 @@ const rect = (b: BBox): GeoJSON.Feature => ({
 // One flat colour per contour level, from "some burning" to "intense". The first step is
 // already clearly visible on the dark basemap; no blur, no outline, no glow.
 export const BAND_COLORS = [EMBER[4], EMBER[6], EMBER[7], EMBER[8]];
+const FILL_OPACITY = 0.95;
+const FADE_MS = 300;
 const BAND_FILL = ['match', ['get', 'band'], 0, BAND_COLORS[0], 1, BAND_COLORS[1], 2, BAND_COLORS[2], BAND_COLORS[3]];
 
 export default function MapPanel() {
@@ -43,9 +46,11 @@ export default function MapPanel() {
   const grid = useGrid();
   const pending = useLive((s) => s.pending);
   const day = useSelection((s) => s.day);
+  const playing = useSelection((s) => s.playing);
+  usePlayback();
   // dim the map while a new period loads, so the old map is never mistaken for the new one;
   // shown only if loading takes more than a moment, to avoid a flash on quick updates
-  const loading = grid.isFetching && (grid.isPlaceholderData || !grid.data);
+  const loading = grid.isFetching && (grid.isPlaceholderData || !grid.data) && !playing;
   const [showLoading, setShowLoading] = useState(false);
   useEffect(() => {
     if (!loading) { setShowLoading(false); return; }
@@ -68,16 +73,23 @@ export default function MapPanel() {
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
     map.on('load', () => {
       const firstSymbol = map.getStyle().layers.find((l: { type: string }) => l.type === 'symbol')?.id;
-      map.addSource('grid', { type: 'geojson', data: EMPTY });
-      map.addLayer(
-        {
-          id: 'grid', type: 'fill', source: 'grid',
-          // nested levels: draw the brighter, inner shapes on top
-          layout: { 'fill-sort-key': ['get', 'band'] as never },
-          paint: { 'fill-color': BAND_FILL as never, 'fill-opacity': 0.95, 'fill-antialias': true },
-        },
-        firstSymbol,
-      );
+      // two identical layers: a new map fades in on the idle one while the shown one fades out,
+      // so changing month or day (and playback) crossfades instead of flipping
+      for (const id of ['grid-a', 'grid-b']) {
+        map.addSource(id, { type: 'geojson', data: EMPTY });
+        map.addLayer(
+          {
+            id, type: 'fill', source: id,
+            // nested levels: draw the brighter, inner shapes on top
+            layout: { 'fill-sort-key': ['get', 'band'] as never },
+            paint: {
+              'fill-color': BAND_FILL as never, 'fill-opacity': id === 'grid-a' ? FILL_OPACITY : 0, 'fill-antialias': true,
+              'fill-opacity-transition': { duration: FADE_MS, delay: 0 },
+            },
+          },
+          firstSymbol,
+        );
+      }
       map.addSource('aoi', { type: 'geojson', data: EMPTY });
       map.addLayer({ id: 'aoi-fill', type: 'fill', source: 'aoi', paint: { 'fill-color': '#f2793a', 'fill-opacity': 0.04 } });
       map.addLayer({ id: 'aoi-line', type: 'line', source: 'aoi', paint: { 'line-color': '#f2793a', 'line-width': 1.5 } });
@@ -96,11 +108,28 @@ export default function MapPanel() {
 
   const shapes = useMemo(() => {
     const g = grid.data?.data;
-    return g && box ? hotspotShapes(g.cells, g.max_count, g.res) : EMPTY;
+    return g && box ? shapesFor(g) : EMPTY;
   }, [grid.data, box]);
 
+  const speed = useSelection((s) => s.speed);
+  // the crossfade fits the frame: half a frame at normal speeds; at the top speed it lasts the whole
+  // frame, so the map is always blending into the next day (continuous, no pause between days)
   useEffect(() => {
-    if (ready) (mapRef.current!.getSource('grid') as GeoJSONSource).setData(shapes);
+    if (!ready) return;
+    const frame = FRAME_MS / speed;
+    const duration = speed >= 8 ? Math.round(frame) : Math.min(FADE_MS, Math.round(frame * 0.5));
+    for (const id of ['grid-a', 'grid-b']) mapRef.current!.setPaintProperty(id, 'fill-opacity-transition', { duration, delay: 0 });
+  }, [ready, speed]);
+
+  const shownLayer = useRef<'grid-a' | 'grid-b'>('grid-a');
+  useEffect(() => {
+    if (!ready) return;
+    const map = mapRef.current!;
+    const next = shownLayer.current === 'grid-a' ? 'grid-b' : 'grid-a';
+    (map.getSource(next) as GeoJSONSource).setData(shapes);
+    map.setPaintProperty(next, 'fill-opacity', FILL_OPACITY);
+    map.setPaintProperty(shownLayer.current, 'fill-opacity', 0);
+    shownLayer.current = next;
   }, [ready, shapes]);
 
   // outline + fit to the queried box

@@ -30,7 +30,7 @@ export default function CalendarTab() {
 }
 
 function MonthsView() {
-  const { data, isFetching, error } = useCalendar();
+  const { data, error } = useCalendar();
   const anomaly = useAnomaly().data?.data;
   const { box } = useBox();
   const { year, month, mode, setMode, setMonth, setCalView } = useSelection();
@@ -128,9 +128,8 @@ function MonthsView() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center justify-between gap-f3">
-        {/* phones: no room; the Days button (and tapping the selected month again) does the same */}
-        <p className="hidden min-w-0 text-cap text-muted sm:block">Double-click a month for its days.</p>
-        <div className="flex shrink-0 items-center gap-f2">
+        {/* contents: Days sits left, the colour switch right */}
+        <div className="contents">
         <button
           onClick={() => setCalView('days')}
           className="chip flex items-center gap-f1 rounded-f3 border border-line px-f3 py-f1 text-cap text-ink-2 transition-colors hover:text-ink"
@@ -162,7 +161,6 @@ function MonthsView() {
           />
         )}
         {box && !model && !error && <div className="absolute inset-0 animate-pulse rounded-f3 bg-raised/40" />}
-        {isFetching && model && <div className="absolute right-0 top-0 text-cap text-muted">Updating…</div>}
         {error && <p className="py-f5 text-body text-ember-soft">{friendlyError(error)}</p>}
       </div>
 

@@ -87,10 +87,23 @@ button,
   font-variant-numeric: tabular-nums;
 }
 
-/* one focus style everywhere; the outline follows each element's own rounded corners */
-:focus-visible {
+/* one focus style everywhere; the outline follows each element's own rounded corners.
+   Only while navigating with the keyboard (Tab): browsers also show :focus-visible on a clicked
+   button once any key is pressed (e.g. ← → after clicking), which reads as a stuck orange ring.
+   lib/focusMode.ts sets data-keyboard on <html> on Tab and clears it on any pointer press. */
+:root[data-keyboard] :focus-visible {
   outline: 2px solid var(--color-ember);
   outline-offset: 2px;
+}
+:root:not([data-keyboard]) :focus-visible {
+  outline: none;
+}
+/* MapLibre's zoom buttons draw their own blue focus glow: same rule, in the app's colour */
+:root .maplibregl-ctrl-group button:focus-visible {
+  box-shadow: none;
+}
+:root[data-keyboard] .maplibregl-ctrl-group button:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--color-ember);
 }
 
 .maplibregl-ctrl-attrib {

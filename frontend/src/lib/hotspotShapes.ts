@@ -64,12 +64,16 @@ export function hotspotShapes(cells: GridCell[], maxCount: number, res: number):
   const w = Math.ceil((maxLon - minLon) / step);
   const h = Math.ceil((maxLat - minLat) / step);
 
-  // one weight per cell, placed at the raster pixel holding the cell centre (row 0 = north)
+  // one weight per cell, placed at the raster pixel holding the cell centre (row 0 = north).
+  // The cell index is rounded, never floored: cell corners are multiples of 0.1°, and flooring a
+  // float like 12.9999999 put some cells one pixel off, so neighbours piled up or left gaps and
+  // dense areas showed a stripe/grid pattern.
   const lm = Math.log10(Math.max(1, maxCount) + 1);
   const a = new Float32Array(w * h);
+  const half = Math.floor(UP / 2);
   for (const c of cells) {
-    const x = Math.min(w - 1, Math.max(0, Math.floor((c.lon + res / 2 - minLon) / step)));
-    const y = Math.min(h - 1, Math.max(0, Math.floor((maxLat - (c.lat + res / 2)) / step)));
+    const x = Math.min(w - 1, Math.max(0, Math.round((c.lon - minLon) / res) * UP + half));
+    const y = Math.min(h - 1, Math.max(0, Math.round((maxLat - c.lat) / res) * UP - UP + half));
     a[y * w + x] += 0.3 + 0.7 * (Math.log10(c.count + 1) / lm);
   }
 
@@ -79,8 +83,10 @@ export function hotspotShapes(cells: GridCell[], maxCount: number, res: number):
   blur1d(a, b, w, h, true, kernel);
   blur1d(b, a, w, h, false, kernel);
 
-  // pixel (i, j) has its value at (i + 0.5, j + 0.5) in d3-contour's coordinates
-  const toLonLat = ([x, y]: number[]) => [+(minLon + x * step).toFixed(5), +(maxLat - y * step).toFixed(5)];
+  // d3-contour puts pixel (i, j)'s value at (i + 0.5, j + 0.5); a cell's weight sits at pixel
+  // (k·UP + half), so shift back by half a pixel to land shapes exactly on the cell centres
+  const shift = half + 0.5 - UP / 2;
+  const toLonLat = ([x, y]: number[]) => [+(minLon + (x - shift) * step).toFixed(5), +(maxLat - (y - shift) * step).toFixed(5)];
   const bands = contours().size([w, h]).thresholds(LEVELS)(Array.from(a));
   return {
     type: 'FeatureCollection',
