@@ -7,7 +7,7 @@ import type {
 } from '../types';
 import { ApiError } from '../errors';
 import { connection, day, exportFile, ints, num, query, registerBuffer, dropBuffer, str } from './db';
-import { boxAreaDeg2, daysBetween, daysInMonth, eachDay, ymd } from '../../lib/dates';
+import { boxAreaDeg2, daysBetween, daysInMonth, eachDay, minDate, ymd } from '../../lib/dates';
 
 // ---------------------------------------------------------------- dataset
 
@@ -19,6 +19,8 @@ export interface Manifest {
   version: number; dataset: string; record_start: string; local_end: string; latest_fire_date: string;
   known_gaps: { from: string; to: string; reason: string }[]; periods: Meta['periods'];
   days: Record<string, ManifestDay>; live_months: string[]; updated_at: string;
+  /** history detection files, one per year: year -> version (older datasets: one hist/rows.parquet) */
+  row_years?: Record<string, string>;
 }
 
 const BASE = new URL(((import.meta.env.VITE_DATA_URL as string | undefined) || `${import.meta.env.BASE_URL}data/mock`).replace(/\/?$/, '/'), location.href).href;
@@ -446,6 +448,16 @@ export async function anomaly(b: BBox, month: string, types: number[], baseline?
 const CSV_COLUMNS = ['latitude', 'longitude', 'bright_ti4', 'scan', 'track', 'acq_date', 'acq_time', 'satellite', 'instrument',
   'confidence', 'version', 'bright_ti5', 'frp', 'daynight', 'type', 'fire_date', 'origin', 'weight'];
 
+/** History detection files for a period: one per year (manifest.row_years), or the older single file. */
+function histRowFiles(m: Manifest, start: string, end: string): string[] {
+  if (start > m.local_end) return [];
+  if (!m.row_years) return [fileUrl(`hist/rows.parquet?v=${encodeURIComponent(m.local_end)}`)];
+  const last = minDate(end, m.local_end).slice(0, 4);
+  return Object.entries(m.row_years)
+    .filter(([year]) => year >= start.slice(0, 4) && year <= last)
+    .map(([year, v]) => fileUrl(`hist/rows/${year}.parquet?v=${encodeURIComponent(v)}`));
+}
+
 export async function hotspotsCsv(q: AreaQuery): Promise<Uint8Array> {
   checkBox(q.bbox);
   if (boxAreaDeg2(q.bbox) * daysBetween(q.start, q.end) > LIMITS.csv_max_deg2_days)
@@ -455,7 +467,7 @@ export async function hotspotsCsv(q: AreaQuery): Promise<Uint8Array> {
   // period touches (opening each remote file costs a couple of round trips).
   const months = m.live_months.filter((mo) => mo >= q.start.slice(0, 7) && mo <= q.end.slice(0, 7));
   const files = [
-    ...(q.start <= m.local_end ? [fileUrl(`hist/rows.parquet?v=${encodeURIComponent(m.local_end)}`)] : []),
+    ...histRowFiles(m, q.start, q.end),
     ...months.map((mo) => fileUrl(`live/rows/${mo}.parquet?v=${encodeURIComponent(monthVersion(m, mo))}`)),
   ];
   if (!files.length) throw new ApiError('NOT_FOUND', 'No detections are stored for this period yet.', 404);

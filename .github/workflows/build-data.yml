@@ -2,9 +2,10 @@ name: Build dataset
 
 # Builds the browser files in R2 from the processed data (or the synthetic mock).
 #   mock: the backend's synthetic dataset (no input files needed)
-#   real: reads every per-year Parquet file under real/source/ in the bucket
-#         (15 CSV columns), plus real/source/day_status.csv if present
-#         (otherwise days with detections count as covered)
+#   real: reads every per-year Parquet file under real/source/ in the bucket, subfolders
+#         included (e.g. real/source/year=2025/part-0.parquet). Day coverage comes from
+#         real/source/day_status.parquet (or .csv) if present, otherwise it is worked out
+#         from the detections (full / partial / none, day-night reliability).
 
 on:
   workflow_dispatch:
@@ -43,7 +44,7 @@ jobs:
         if: inputs.dataset == 'mock'
         working-directory: pipeline
         run: python -m agni_pipeline.build_hist --store r2:mock --synthetic
-      - name: Build real dataset from the processed CSV
+      - name: Build real dataset from the per-year Parquet files
         if: inputs.dataset == 'real'
         working-directory: pipeline
-        run: python -m agni_pipeline.build_hist --store r2:real --parquet-prefix source/ --status-key source/day_status.csv
+        run: python -m agni_pipeline.build_hist --store r2:real --parquet-prefix source/ --status-key source/day_status.parquet

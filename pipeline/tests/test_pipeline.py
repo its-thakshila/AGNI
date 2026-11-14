@@ -98,6 +98,34 @@ class DatasetTest(unittest.TestCase):
         self.assertTrue(set(wanted) <= set(days))
         self.assertEqual(days[0], date(2026, 8, 10))  # the rest of the cap goes to the oldest gap
 
+    def test_consolidate_leaves_other_years_untouched(self):
+        root = Path(self.tmp.name)
+        before = (root / "hist/rows/2025.parquet").read_bytes()
+        process_days.run(self.store, FakeFirms(), process_days.parse_days("2026-01-01:2026-01-05"), TODAY, log=lambda *_: None)
+        consolidate.consolidate(self.store)
+        self.assertEqual((root / "hist/rows/2025.parquet").read_bytes(), before)
+
+    def test_consolidate_converts_the_old_single_rows_file(self):
+        root = Path(self.tmp.name)
+        with duckdb.connect() as db:
+            db.execute("COPY (SELECT * FROM read_parquet(?)) TO (?) (FORMAT PARQUET)",
+                       [str(root / "hist/rows/*.parquet"), str(root / "hist/rows.parquet")])
+            n = db.execute("SELECT count(*) FROM read_parquet(?)", [str(root / "hist/rows.parquet")]).fetchone()[0]
+        for f in (root / "hist/rows").glob("*.parquet"):
+            f.unlink()
+        manifest = json.loads((root / "manifest.json").read_text())
+        del manifest["row_years"]
+        (root / "manifest.json").write_text(json.dumps(manifest))
+        process_days.run(self.store, FakeFirms(), process_days.parse_days("2026-01-01:2026-01-05"), TODAY, log=lambda *_: None)
+        manifest = consolidate.consolidate(self.store)
+        self.assertFalse((root / "hist/rows.parquet").exists())
+        self.assertIn("2000", manifest["row_years"])
+        self.assertIn("2026", manifest["row_years"])
+        with duckdb.connect() as db:
+            after = db.execute("SELECT count(*) FROM read_parquet(?) WHERE fire_date < DATE '2026-01-01'",
+                               [str(root / "hist/rows/*.parquet")]).fetchone()[0]
+        self.assertEqual(after, n)
+
     def test_missing_days_fill_from_csv_end(self):
         manifest = json.loads((Path(self.tmp.name) / "manifest.json").read_text())
         self.assertEqual(process_days.missing_days(manifest, date(2026, 1, 3), 10),
@@ -116,6 +144,10 @@ class DatasetTest(unittest.TestCase):
             after = db.execute("SELECT sum(count) FROM read_parquet(?)", [str(Path(self.tmp.name) / "hist/cells.parquet")]).fetchone()[0]
         self.assertAlmostEqual(before, after, places=6)
         self.assertFalse((Path(self.tmp.name) / "live/cells/2026-01.parquet").exists())
+        self.assertIn("2026", manifest["row_years"])
+        with duckdb.connect() as db:
+            self.assertEqual(db.execute("SELECT min(fire_date)::VARCHAR, max(fire_date)::VARCHAR FROM read_parquet(?)",
+                                        [str(Path(self.tmp.name) / "hist/rows/2026.parquet")]).fetchone(), ("2026-01-01", "2026-02-05"))
         header = (Path(self.tmp.name) / "csv/export.csv").read_text().split("\n", 1)[0]
         self.assertEqual(header.split(","), list(process_days.VIIRS_COLUMNS))
 
@@ -172,12 +204,12 @@ class ParquetInputTest(unittest.TestCase):
             build_hist.build(from_csv, csv_path, status_path, "real")
             build_hist.build(from_parquet, None, status_path, "real", parquet_files=sorted(years.glob("*.parquet")))
             with duckdb.connect() as db:
-                for name in ("cells", "rows"):
+                for name, glob in (("cells", "hist/cells.parquet"), ("rows", "hist/rows/*.parquet")):
                     a, b = (db.execute("SELECT count(*), round(sum(count), 6) FROM read_parquet(?)" if name == "cells"
                                        else "SELECT count(*), count(DISTINCT acq_time) FROM read_parquet(?)",
-                                       [str(root / s / f"hist/{name}.parquet")]).fetchone() for s in ("a", "b"))
+                                       [str(root / s / glob)]).fetchone() for s in ("a", "b"))
                     self.assertEqual(a, b, name)
-                times = db.execute("SELECT DISTINCT acq_time FROM read_parquet(?)", [str(root / "b/hist/rows.parquet")]).fetchall()
+                times = db.execute("SELECT DISTINCT acq_time FROM read_parquet(?)", [str(root / "b/hist/rows/*.parquet")]).fetchall()
                 self.assertTrue(all(len(t) == 4 for (t,) in times))  # "0401" kept, not "401"
 
             # without a status file, coverage is derived from the detections
@@ -185,6 +217,34 @@ class ParquetInputTest(unittest.TestCase):
             manifest = build_hist.build(derived, None, None, "real", parquet_files=sorted(years.glob("*.parquet")))
             self.assertEqual(manifest["record_start"], "2000-11-01")
             self.assertTrue(any(g["from"] == "2001-06-17" for g in manifest["known_gaps"]))
+            self.assertEqual(sorted(manifest["row_years"]), [str(y) for y in range(2000, 2026)])
+            self.assertFalse((root / "c/hist/rows.parquet").exists())
+
+
+class DerivedStatusTest(unittest.TestCase):
+    """Day coverage worked out from the detections when no status file is uploaded."""
+
+    def test_full_partial_none_and_daynight(self):
+        from agni_pipeline.common import derive_day_status
+        with tempfile.TemporaryDirectory() as tmp, duckdb.connect() as db:
+            # per day: number of rows and origin
+            plan = {"2021-12-30": (150, "real"), "2021-12-31": (150, "real"), "2022-01-01": (0, None),
+                    "2022-01-02": (150, "real"), "2022-01-03": (150, "real"), "2022-01-04": (40, "real"),
+                    "2022-01-05": (150, "gapfill"), "2022-01-06": (150, "real")}
+            db.execute("CREATE TABLE r (fire_date DATE, origin VARCHAR)")
+            for d, (n, origin) in plan.items():
+                if n:
+                    db.execute(f"INSERT INTO r SELECT DATE '{d}', '{origin}' FROM range({n})")
+            out = Path(tmp) / "status.parquet"
+            derive_day_status(db, "r", out)
+            got = {str(d): (h, r, f) for d, h, r, f in db.execute(
+                "SELECT fire_date, has_data, daynight_reliable, flag FROM read_parquet(?)", [str(out)]).fetchall()}
+        self.assertEqual(got["2021-12-30"], ("full", True, None))
+        self.assertEqual(got["2021-12-31"][0], "partial")        # next to an outage day
+        self.assertEqual(got["2022-01-01"], ("none", True, "outage"))
+        self.assertEqual(got["2022-01-02"][0], "partial")
+        self.assertEqual(got["2022-01-04"], ("partial", True, "low_coverage"))
+        self.assertEqual(got["2022-01-05"], ("full", False, None))  # gap-filled from 2022: day/night unreliable
 
 
 if __name__ == "__main__":

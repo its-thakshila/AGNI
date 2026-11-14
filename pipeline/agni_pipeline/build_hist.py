@@ -27,8 +27,15 @@ PERIODS = [
 ]
 
 
-def write_hist(store, folder: Path, db) -> dict:
-    """folder holds cells/rows/day_status parquet; write sorted copies + cells_month to the store."""
+def write_hist(store, folder: Path, db, years: list[int] | None = None) -> dict:
+    """Write the history files to the store.
+
+    `folder` holds cells.parquet, day_status.parquet and rows.parquet. The detections are stored
+    one file per year (hist/rows/<year>.parquet), so adding days later rewrites only that year.
+    years=None writes every year in rows.parquet (a full build, which also removes year files
+    that no longer exist); otherwise only those years (rows.parquet must hold them in full).
+    Returns the coverage info and {year: version} of the row files written.
+    """
     out = folder / "out"
     out.mkdir(exist_ok=True)
     cells, rows, status = (str(folder / n) for n in ("cells.parquet", "rows.parquet", "day_status.parquet"))
@@ -37,18 +44,34 @@ def write_hist(store, folder: Path, db) -> dict:
                [cells, str(out / "cells.parquet")])
     db.execute(f"COPY ({CELLS_MONTH_SELECT.format(source='read_parquet(?)')} ORDER BY cj, ci, year, month) "
                "TO (?) (FORMAT PARQUET, PARQUET_VERSION V1, ROW_GROUP_SIZE 50000)", [cells, str(out / "cells_month.parquet")])
-    db.execute("COPY (SELECT * FROM read_parquet(?) ORDER BY fire_date, cj, ci) TO (?) (FORMAT PARQUET, PARQUET_VERSION V1, ROW_GROUP_SIZE 50000)",
-               [rows, str(out / "rows.parquet")])
     db.execute("COPY (SELECT * FROM read_parquet(?) ORDER BY fire_date) TO (?) (FORMAT PARQUET, PARQUET_VERSION V1)", [status, str(out / "day_status.parquet")])
-    for name in ("cells", "cells_month", "rows", "day_status"):
+    for name in ("cells", "cells_month", "day_status"):
         store.write(f"hist/{name}.parquet", (out / f"{name}.parquet").read_bytes())
+
+    present = [y for (y,) in db.execute("SELECT DISTINCT year(fire_date)::INT FROM read_parquet(?) ORDER BY 1", [rows]).fetchall()]
+    stamp = datetime.now(UTC).isoformat(timespec="seconds")
+    row_years = {}
+    for year in (present if years is None else [y for y in years if y in present]):
+        path = out / f"rows_{year}.parquet"
+        db.execute("COPY (SELECT * FROM read_parquet(?) WHERE year(fire_date) = ? ORDER BY fire_date, cj, ci) "
+                   "TO (?) (FORMAT PARQUET, PARQUET_VERSION V1, ROW_GROUP_SIZE 50000)", [rows, year, str(path)])
+        store.write(f"hist/rows/{year}.parquet", path.read_bytes())
+        path.unlink()
+        row_years[str(year)] = stamp
+    if years is None:
+        for key in store.list("hist/rows/"):
+            if key.removeprefix("hist/rows/").removesuffix(".parquet") not in row_years:
+                store.delete(key)
+    store.delete("hist/rows.parquet")  # the older single-file layout
+
     first, last = db.execute(
         "SELECT min(fire_date), max(fire_date) FROM read_parquet(?) WHERE has_data <> 'none'", [status]).fetchone()
     gaps = db.execute("""
         SELECT min(fire_date)::VARCHAR, max(fire_date)::VARCHAR FROM (
             SELECT fire_date, fire_date - (row_number() OVER (ORDER BY fire_date))::INT AS grp
             FROM read_parquet(?) WHERE has_data = 'none') GROUP BY grp ORDER BY 1""", [status]).fetchall()
-    return {"record_start": str(first), "local_end": str(last), "known_gaps": [{"from": a, "to": b, "reason": "No satellite data"} for a, b in gaps]}
+    return {"record_start": str(first), "local_end": str(last), "row_years": row_years,
+            "known_gaps": [{"from": a, "to": b, "reason": "No satellite data"} for a, b in gaps]}
 
 
 def build(store, csv_path: Path | None, status_path: Path | None, dataset: str, parquet_files: list[Path] | None = None) -> dict:
@@ -88,7 +111,8 @@ def main():
     parser.add_argument("--csv", type=Path, help="processed CSV (15 VIIRS columns)")
     parser.add_argument("--status", type=Path, help="day status CSV: fire_date,has_data,daynight_reliable,flag")
     parser.add_argument("--csv-key", help="read the processed CSV from this key in the store (e.g. csv/processed.csv)")
-    parser.add_argument("--status-key", help="read the day status (CSV or Parquet) from this key in the store")
+    parser.add_argument("--status-key", help="read the day status (CSV or Parquet) from this key in the store; "
+                        "if missing, the same name with the other extension is tried, then coverage is derived")
     parser.add_argument("--parquet", type=Path, help="folder of per-year Parquet files (15 CSV columns)")
     parser.add_argument("--parquet-prefix", help="read every .parquet under this prefix in the store (e.g. source/)")
     args = parser.parse_args()
@@ -113,12 +137,16 @@ def main():
             if not files:
                 raise SystemExit("No .parquet files found.")
             if args.status_key:
-                data = store.read(args.status_key)
-                if data is None:
-                    print(f"{args.status_key} not found: coverage will be derived from the detections")
+                stem = args.status_key.rsplit(".", 1)[0]
+                for key in dict.fromkeys([args.status_key, stem + ".parquet", stem + ".csv"]):
+                    data = store.read(key)
+                    if data is not None:
+                        status_path = Path(tmp) / Path(key).name
+                        status_path.write_bytes(data)
+                        print(f"Day status from {key}")
+                        break
                 else:
-                    status_path = Path(tmp) / Path(args.status_key).name
-                    status_path.write_bytes(data)
+                    print(f"{args.status_key} not found: coverage will be derived from the detections")
             print(f"Reading {len(files)} Parquet file(s)" + ("" if status_path else " (no status file: coverage derived from detections)"))
             manifest = build(store, None, status_path, dataset, parquet_files=files)
             print(f"{store}: {dataset} data {manifest['record_start']} to {manifest['local_end']}, "

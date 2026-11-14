@@ -203,7 +203,8 @@ pipeline/data_build/data/
 Also send the console output of `verify_build.py`.
 
 For the AGNI website (free tier), upload the `rows/year=*/part-0.parquet` files to the R2 bucket under
-`real/source/` and run the **Build dataset** workflow (see `docs/DEPLOYMENT.md`).
+`real/source/`, keeping the `year=*` folders (optionally also `day_status.parquet`), and run the
+**Build dataset** workflow (see `docs/DEPLOYMENT.md`).
 
 - `data/` is git-ignored; don't commit it. For deployment, copy the folder to the server (about 1 GB). The 3 GB CSV doesn't need to be deployed.
 - The backend reads the rows with DuckDB: `read_parquet('data/parquet/rows/year=*/*.parquet', hive_partitioning = true)`. Filter on `fire_date`, never on `acq_date`, and sum `weight`, never `count(*)`.

@@ -19,7 +19,7 @@ export interface Env {
   DISPATCH_TOKEN?: string; // secret: fine-grained GitHub token with Actions: read & write on the repo
 }
 
-const FILE = /^(manifest\.json|hist\/[a-z_]+\.parquet|live\/(cells|rows)\/\d{4}-\d{2}\.parquet)$/;
+const FILE = /^(manifest\.json|hist\/[a-z_]+\.parquet|hist\/rows\/\d{4}\.parquet|live\/(cells|rows)\/\d{4}-\d{2}\.parquet)$/;
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const MAX_DAYS = 62; // per request
 const PENDING_TTL_MS = 15 * 60_000; // a day stays "being processed" for at most 15 minutes

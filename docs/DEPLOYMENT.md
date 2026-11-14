@@ -12,17 +12,19 @@ Cloudflare Worker  ── serves files from R2, and starts processing for days n
 R2 bucket "agni-data"
   mock/ or real/
     manifest.json             what exists, and where each day after the CSV came from
-    hist/*.parquet            built once from the processed CSV
-    live/{cells,rows}/YYYY-MM.parquet   days after the CSV
-    source/*.parquet          (real only) the processed per-year Parquet files you upload
-    source/day_status.csv     (real only, optional) per-day coverage: fire_date,has_data,daynight_reliable,flag
+    hist/cells.parquet, cells_month.parquet, day_status.parquet   built from the processed data
+    hist/rows/YYYY.parquet    every detection, one file per year (CSV downloads)
+    live/{cells,rows}/YYYY-MM.parquet   days after the processed data, one file per month
+    source/year=YYYY/part-0.parquet     (real only) the processed per-year Parquet files you upload
+    source/day_status.parquet (real only, optional) per-day coverage; worked out from the detections if absent
 
 GitHub Actions
   Build dataset            per-year Parquet -> hist/*          (manual)
   Process new fire-days    every 3 h + on demand from the Worker:
                            VIIRS S-NPP from FIRMS if it has data for the day,
                            otherwise MODIS from FIRMS -> Harmonic
-  Add processed days       nightly: live days -> main dataset (optionally re-export the CSV)
+  Add processed days       nightly: finished live days -> hist/ (rewrites only the current year's
+                           detection file; optionally exports a full CSV)
   Deploy Worker            on push to worker/
   Deploy frontend          on push to frontend/
 ```
@@ -68,13 +70,19 @@ Repository → Settings → Secrets and variables → Actions.
 4. Set the two `VITE_*` variables, then Actions → **Deploy frontend to GitHub Pages**.
 
 ## Switching to the real data
-1. Upload the per-year Parquet files to the bucket under `real/source/`
-   (for example `real/source/viirs_2019.parquet`; the names don't matter, the dashboard upload works).
-   They are built from the unified CSV by `pipeline/data_build/` (see `DATA_BUILD_GUIDE.md` there).
-   Optionally add `real/source/day_status.csv` so outage days are told apart from quiet days;
-   without it, days with detections count as covered and days without as "no data".
+1. Upload the per-year Parquet files to the bucket under `real/source/`, keeping their year
+   folders (`real/source/year=2000/part-0.parquet` … `year=2025/part-0.parquet`; any names work
+   as long as they are unique). They are built by `pipeline/data_build/` (see `DATA_BUILD_GUIDE.md`).
+   With the AWS CLI (R2 access key from step 1.2, region `auto`), from the folder holding `year=*`:
+   `aws s3 cp . s3://agni-data/real/source/ --recursive --exclude "*" --include "year=*/*.parquet" --endpoint-url https://<R2_ACCOUNT_ID>.r2.cloudflarestorage.com`
+   The CSV is not needed. Day coverage (full / partial / none) is worked out from the detections;
+   `real/source/day_status.parquet` from `data_build` is used instead if you upload it.
 2. Actions → **Build dataset** → `real`.
-3. Set `AGNI_DATASET=real` and `VITE_DATA_URL=…/data/real`, redeploy the frontend.
+3. Set `AGNI_DATASET=real` and `VITE_DATA_URL=…/data/real`, remove `AGNI_FAKE_FIRMS`, and redeploy the frontend.
+
+To replace the data later (for example with an improved model's output), upload the new files over
+the same paths and run **Build dataset → real** again. The record then ends at the last day of those
+files again; days after it that were already added are fetched again by the next pipeline runs.
 
 ## Harmonic
 The ML team's model lives in `pipeline/harmonic/` (code + trained files). On days when VIIRS has

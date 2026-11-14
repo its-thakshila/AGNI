@@ -10,6 +10,11 @@ REPO = Path(__file__).resolve().parents[2]
 BBOX = (112.0, -44.0, 154.0, -9.0)  # min_lon, min_lat, max_lon, max_lat (Australia)
 RECORD_START = date(2000, 11, 1)
 
+# Day coverage rules (the same as pipeline/data_build/build_aggregates.py), used when no day
+# status file is given: Australia-wide detections per fire-day decide full / partial / none.
+MIN_DAY_ROWS = 100                         # fewer detections Australia-wide -> "partial"
+DAYNIGHT_UNRELIABLE_FROM = "2022-01-01"    # gap-filled days from here: day/night split unreliable
+
 # The 15 FIRMS VIIRS columns, in the documented order (same as the processed CSV).
 VIIRS_COLUMNS = (
     "latitude", "longitude", "bright_ti4", "scan", "track", "acq_date", "acq_time",
@@ -56,8 +61,7 @@ def build_from_parquet(db, files: list[str], status_path: str | None, output: Pa
 
     Same logic as the backend's CSV builder, but read straight from Parquet and tolerant of
     writer differences (acq_time stored as a number, version as 2 / "2" / "2.0", text dates).
-    Without a status file, days with detections count as "full" and days without as "none"
-    (fine for Australia, where some detection happens every day the satellite delivers).
+    Without a status file, day coverage is derived from the detections (see derive_day_status).
     """
     day_weights, night_weights = weights
     # The team's processed files may already carry weight (more precise than the rounded
@@ -103,18 +107,35 @@ def build_from_parquet(db, files: list[str], status_path: str | None, output: Pa
                [str(output / "rows.parquet")])
     if status_path:
         reader = "read_parquet(?)" if status_path.endswith(".parquet") else "read_csv(?, header=true)"
+        given = {name for name, *_ in db.execute(f"DESCRIBE SELECT * FROM {reader}", [status_path]).fetchall()}
+        flag = "flag::VARCHAR" if "flag" in given else "NULL::VARCHAR"  # data_build's file has no flag column
         db.execute(f"""COPY (SELECT fire_date::DATE AS fire_date, has_data::VARCHAR AS has_data,
-                              daynight_reliable::BOOLEAN AS daynight_reliable, flag::VARCHAR AS flag FROM {reader})
+                              daynight_reliable::BOOLEAN AS daynight_reliable, {flag} AS flag FROM {reader})
                        TO (?) (FORMAT PARQUET, PARQUET_VERSION V1)""", [status_path, str(output / "day_status.parquet")])
     else:
-        db.execute("""COPY (
-            WITH span AS (SELECT min(fire_date) AS a, max(fire_date) AS b FROM detections),
-                 days AS (SELECT unnest(generate_series(a, b, INTERVAL 1 DAY))::DATE AS fire_date FROM span),
-                 seen AS (SELECT DISTINCT fire_date FROM detections)
-            SELECT d.fire_date, CASE WHEN s.fire_date IS NULL THEN 'none' ELSE 'full' END AS has_data,
-                   true AS daynight_reliable, CASE WHEN s.fire_date IS NULL THEN 'outage' END AS flag
-            FROM days d LEFT JOIN seen s USING (fire_date) ORDER BY 1
-        ) TO (?) (FORMAT PARQUET, PARQUET_VERSION V1)""", [str(output / "day_status.parquet")])
+        derive_day_status(db, "detections", output / "day_status.parquet")
+
+
+def derive_day_status(db, rows: str, path: Path) -> None:
+    """Per fire-day coverage from the detections themselves (no status file needed):
+    none = no detections (outage), partial = fewer than MIN_DAY_ROWS or next to an outage day,
+    daynight_reliable = false on gap-filled days from DAYNIGHT_UNRELIABLE_FROM (MODIS orbit drift)."""
+    db.execute(f"""COPY (
+        WITH span AS (SELECT min(fire_date) AS a, max(fire_date) AS b FROM {rows}),
+             days AS (SELECT unnest(generate_series(a, b, INTERVAL 1 DAY))::DATE AS fire_date FROM span),
+             seen AS (SELECT fire_date, count(*) AS n, count(*) FILTER (WHERE origin = 'gapfill') AS n_gapfill
+                      FROM {rows} GROUP BY 1),
+             j AS (SELECT d.fire_date, COALESCE(s.n, 0) AS n, COALESCE(s.n_gapfill, 0) AS n_gapfill
+                   FROM days d LEFT JOIN seen s USING (fire_date)),
+             k AS (SELECT *, lag(n) OVER (ORDER BY fire_date) AS prev_n, lead(n) OVER (ORDER BY fire_date) AS next_n FROM j)
+        SELECT fire_date,
+               CASE WHEN n = 0 THEN 'none'
+                    WHEN n < {MIN_DAY_ROWS} OR prev_n = 0 OR next_n = 0 THEN 'partial'
+                    ELSE 'full' END AS has_data,
+               NOT (n_gapfill > 0 AND fire_date >= DATE '{DAYNIGHT_UNRELIABLE_FROM}') AS daynight_reliable,
+               CASE WHEN n = 0 THEN 'outage' WHEN n < {MIN_DAY_ROWS} THEN 'low_coverage' END AS flag
+        FROM k ORDER BY 1
+    ) TO (?) (FORMAT PARQUET, PARQUET_VERSION V1)""", [str(path)])
 
 
 def month_key(day: date) -> str:
