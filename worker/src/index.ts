@@ -1,7 +1,7 @@
 /**
  * AGNI Worker (Cloudflare Workers free plan).
  *
- *   GET|HEAD /data/<dataset>/<file>   serve a dataset file from R2 (supports Range, for DuckDB-WASM)
+ *   GET|HEAD /data/<dataset>/<file>   serve a dataset file from R2 (supports Range, so the site reads only the parts it needs)
  *   GET      /pending/<dataset>       days currently being processed
  *   POST     /ensure                  {dataset, start, end}: start processing days that aren't stored yet
  *
@@ -65,8 +65,8 @@ async function serveFile(request: Request, env: Env, dataset: string, file: stri
   if (request.method === 'HEAD') {
     const head = await env.DATA.head(key);
     if (!head) return new Response(null, { status: 404, headers });
-    // DuckDB-WASM probes with `HEAD` + `Range: bytes=0-` and reads a file in parts only if the
-    // answer is 206 with the full size; a plain 200 makes it download the whole file instead.
+    // Range-aware readers (e.g. DuckDB-WASM) probe with `HEAD` + `Range: bytes=0-` and read a file in
+    // parts only if the answer is 206 with the full size; a plain 200 makes them download it whole.
     if (request.headers.has('Range')) {
       return new Response(null, {
         status: 206,

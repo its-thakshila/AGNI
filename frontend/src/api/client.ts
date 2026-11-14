@@ -1,5 +1,5 @@
 // Client for the AGNI API (docs/API_CONTRACT.md v1.2).
-// Default: answered in the browser by the DuckDB-WASM engine from the dataset files
+// Default: answered in the browser (plain JS over hyparquet) from the dataset files
 // (VITE_DATA_URL, or the bundled mock dataset). With VITE_API_BASE set, calls go to the
 // FastAPI backend instead (useful for backend development).
 

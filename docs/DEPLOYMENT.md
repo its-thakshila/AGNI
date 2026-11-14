@@ -5,7 +5,8 @@ There is no always-on server.
 
 ```
 GitHub Pages (website)
-  │  DuckDB-WASM in the browser reads the dataset files (only the parts a query needs)
+  │  the browser reads the dataset files with hyparquet (21 KB): small files whole,
+  │  large ones only the row groups a query needs, in parallel
   ▼
 Cloudflare Worker  ── serves files from R2, and starts processing for days not stored yet
   ▼

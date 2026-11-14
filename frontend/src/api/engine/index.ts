@@ -1,12 +1,15 @@
 // The AGNI API, answered in the browser from the dataset files (manifest.json + Parquet).
 // Same shapes as docs/API_CONTRACT.md v1.2; the logic is a port of backend/app/analytics.py.
+//
+// Plain JavaScript over hyparquet (no database engine to download): small files are loaded whole
+// and kept in memory; large history files are read in parts, only the row groups a query can use.
 
 import type {
   AnomalyData, AreaQuery, BBox, CalendarCell, CalendarData, Category, Climatology, DailyData, DailyValue,
   Envelope, GridCell, GridData, HasData, Meta, Origin, Warning,
 } from '../types';
 import { ApiError } from '../errors';
-import { connection, day, exportFile, ints, num, query, registerBuffer, dropBuffer, str } from './db';
+import { num, readRemote, readWholeFile, text, type Prune, type Row } from './parquet';
 import { boxAreaDeg2, daysBetween, daysInMonth, eachDay, minDate, ymd } from '../../lib/dates';
 
 // ---------------------------------------------------------------- dataset
@@ -32,8 +35,28 @@ const fileUrl = (path: string) => new URL(path, BASE).href;
 const COVERAGE: BBox = { min_lat: -44, max_lat: -9, min_lon: 112, max_lon: 154 };
 const LIMITS: Meta['limits'] = { hotspots_max_limit: 20000, small_box_deg: 0.5, hotspots_max_deg2_days: 4000, csv_max_deg2_days: 20000, grid_max_days: 366 };
 
-let manifest: Manifest | null = null;
-let setup: Promise<Manifest> | null = null;
+/** One 0.1° cell × fire-day × pass × type × origin (hist/cells.parquet, live/cells/*.parquet). */
+interface Cell { d: string; p: string; t: number; o: string; ci: number; cj: number; lat: number; lon: number; c: number; f: number; n: number }
+/** All-Australia totals per fire-day × pass × type × origin (hist/day_totals.parquet). */
+interface Total { d: string; p: string; t: number; o: string; c: number; f: number; n: number }
+interface StatusRow { d: string; h: HasData; r: boolean; fl: string | null }
+
+interface Data {
+  m: Manifest;
+  status: Map<string, StatusRow>; // every fire-day: history + days added later
+  statusList: StatusRow[];
+  live: Cell[];                   // cells of the days added after the history
+  totals: Total[] | null;         // all-Australia totals (history + live), when the dataset has them
+}
+
+const CELL_COLUMNS = ['fire_date', 'pass', 'type', 'origin', 'ci', 'cj', 'cell_lat', 'cell_lon', 'count', 'frp_sum', 'n_rows'];
+const toCell = (r: Row): Cell => ({
+  d: text(r.fire_date)!, p: String(r.pass), t: num(r.type), o: String(r.origin), ci: num(r.ci), cj: num(r.cj),
+  lat: num(r.cell_lat), lon: num(r.cell_lon), c: num(r.count), f: num(r.frp_sum), n: num(r.n_rows),
+});
+
+let current: Data | null = null;
+let setup: Promise<Data> | null = null;
 
 async function fetchManifest(): Promise<Manifest> {
   let res: Response;
@@ -46,46 +69,15 @@ async function fetchManifest(): Promise<Manifest> {
   return res.json();
 }
 
-// Small files are downloaded whole, all at once, and kept in memory: DuckDB reads remote files one
-// request at a time (~0.3 s each through the Worker), so a dozen small monthly files cost seconds
-// per query when read remotely, but a fraction of a second when fetched in parallel up front.
-// Only the large history files (cells, cells_month, rows) are read remotely with Range requests.
-//
-// path -> in-memory file name holding its current version. Each version gets its own name:
-// DuckDB keeps details of a registered file, so replacing the bytes under the same name breaks it.
-const memFiles = new Map<string, string>();
-
-async function fetchBytes(path: string): Promise<Uint8Array> {
-  let res: Response;
-  try {
-    res = await fetch(fileUrl(path));
-  } catch (e) {
-    throw new ApiError('NETWORK', String(e));
-  }
-  if (!res.ok) throw new ApiError('INTERNAL_ERROR', `Dataset file missing: ${path} (HTTP ${res.status}).`, res.status);
-  const bytes = new Uint8Array(await res.arrayBuffer());
-  // a Parquet file starts and ends with "PAR1"; anything else (an error page, a cut-off download)
-  // must not be kept, or every later load would reuse it
-  const magic = (at: number) => String.fromCharCode(...bytes.subarray(at, at + 4)) === 'PAR1';
-  if (path.split('?')[0].endsWith('.parquet') && (bytes.length < 12 || !magic(0) || !magic(bytes.length - 4)))
-    throw new ApiError('INTERNAL_ERROR', `Dataset file is damaged or incomplete: ${path}.`);
-  return bytes;
-}
-
-/** Download the files whose version changed (in parallel) and register them in memory. */
-async function loadSmallFiles(files: { path: string; version: string }[]): Promise<string[]> {
-  const loaded: string[] = [];
-  await Promise.all(files.map(async ({ path, version }) => {
-    const name = `mem/${version.replace(/[^\w.-]/g, '_')}/${path}`;
-    const old = memFiles.get(path);
-    if (old === name) return;
-    const sep = path.includes('?') ? '&' : '?';
-    await registerBuffer(name, await fetchBytes(`${path}${sep}v=${encodeURIComponent(version)}`));
-    memFiles.set(path, name);
-    loaded.push(path);
-    if (old) void dropBuffer(old); // the tables built from it are replaced right after
-  }));
-  return loaded;
+// Small files, parsed, by path; reused across dataset reloads while their version is unchanged.
+const small = new Map<string, { version: string; rows: Promise<Row[]> }>();
+function smallFile(path: string, version: string, columns?: string[]): Promise<Row[]> {
+  const hit = small.get(path);
+  if (hit && hit.version === version) return hit.rows;
+  const rows = readWholeFile(fileUrl(`${path}?v=${encodeURIComponent(version)}`), columns);
+  small.set(path, { version, rows });
+  rows.catch(() => { if (small.get(path)?.rows === rows) small.delete(path); }); // download again next time
+  return rows;
 }
 
 /** A live month's version: changes only when one of its days is (re)processed. */
@@ -95,71 +87,59 @@ function monthVersion(m: Manifest, month: string): string {
   return v || m.updated_at;
 }
 
-async function buildViews(m: Manifest) {
-  // history files only change when days are consolidated (local_end moves): new URL then, so neither the
-  // browser nor DuckDB's footer cache can mix an old file with a new one
-  const hv = encodeURIComponent(m.local_end);
-  const hist = (name: string) => str(fileUrl(`hist/${name}.parquet?v=${hv}`));
-  const versions = new Map(m.live_months.map((mo) => [mo, monthVersion(m, mo)]));
-  const liveCells = m.live_months.map((mo) => `live/cells/${mo}.parquet`);
-  const loaded = await loadSmallFiles([
-    { path: 'hist/day_status.parquet', version: m.local_end },
-    ...(m.totals ? [{ path: 'hist/day_totals.parquet', version: m.local_end }] : []),
-    ...liveCells.map((path, i) => ({ path, version: versions.get(m.live_months[i])! })),
+const histUrl = (m: Manifest, name: string) => fileUrl(`hist/${name}.parquet?v=${encodeURIComponent(m.local_end)}`);
+
+async function load(m: Manifest): Promise<Data> {
+  // everything small, in parallel: day coverage, all-Australia totals, the live months' cells
+  const [statusRows, totalRows, liveParts] = await Promise.all([
+    smallFile('hist/day_status.parquet', m.local_end, ['fire_date', 'has_data', 'daynight_reliable', 'flag']),
+    m.totals ? smallFile('hist/day_totals.parquet', m.local_end) : Promise.resolve(null),
+    Promise.all(m.live_months.map((mo) => smallFile(`live/cells/${mo}.parquet`, monthVersion(m, mo), CELL_COLUMNS))),
   ]);
-  const mem = (paths: string[]) => `read_parquet([${paths.map((x) => str(memFiles.get(x)!)).join(', ')}])`;
-  const stmts = [
-    `CREATE OR REPLACE VIEW hist_cells AS SELECT * FROM read_parquet(${hist('cells')})`,
-    `CREATE OR REPLACE VIEW hist_cells_month AS SELECT * FROM read_parquet(${hist('cells_month')})`,
-    `CREATE OR REPLACE TABLE hist_status AS SELECT fire_date, has_data, daynight_reliable, flag FROM ${mem(['hist/day_status.parquet'])}`,
-    liveCells.length
-      ? `CREATE OR REPLACE TABLE live_cells AS SELECT * FROM ${mem(liveCells)}`
-      : `CREATE OR REPLACE VIEW live_cells AS SELECT * FROM hist_cells WHERE false`,
-    `CREATE OR REPLACE TABLE live_status (fire_date DATE, has_data VARCHAR, daynight_reliable BOOLEAN, flag VARCHAR)`,
-  ];
-  const days = Object.entries(m.days);
-  if (days.length) {
-    stmts.push(`INSERT INTO live_status VALUES ${days.map(([d, s]) =>
-      `(${day(d)}, ${str(s.has_data)}, ${s.daynight_reliable ? 'true' : 'false'}, ${s.flag ? str(s.flag) : 'NULL'})`).join(', ')}`);
+  const status = new Map<string, StatusRow>();
+  for (const r of statusRows) {
+    const d = text(r.fire_date)!;
+    status.set(d, { d, h: String(r.has_data) as HasData, r: r.daynight_reliable !== false, fl: text(r.flag) });
   }
-  if (m.totals) {
-    const inside = `cell_lat BETWEEN ${num(COVERAGE.min_lat)} AND ${num(COVERAGE.max_lat)} AND cell_lon BETWEEN ${num(COVERAGE.min_lon)} AND ${num(COVERAGE.max_lon)}`;
-    stmts.push(
-      `CREATE OR REPLACE TABLE hist_totals AS SELECT * FROM ${mem(['hist/day_totals.parquet'])}`,
-      `CREATE OR REPLACE VIEW all_totals AS SELECT * FROM hist_totals UNION ALL BY NAME
-         SELECT fire_date, "pass", type, origin, SUM(count) AS count, SUM(frp_sum) AS frp_sum, SUM(n_rows) AS n_rows
-         FROM live_cells WHERE ${inside} GROUP BY ALL`,
-    );
+  for (const [d, s] of Object.entries(m.days)) status.set(d, { d, h: s.has_data, r: s.daynight_reliable !== false, fl: s.flag });
+  const live = liveParts.flat().map(toCell);
+
+  let totals: Total[] | null = null;
+  if (totalRows) {
+    totals = totalRows.map((r) => ({ d: text(r.fire_date)!, p: String(r.pass), t: num(r.type), o: String(r.origin), c: num(r.count), f: num(r.frp_sum), n: num(r.n_rows) }));
+    // the live days, summed over the cells inside the coverage box (as the pipeline does)
+    const sums = new Map<string, Total>();
+    for (const c of live) {
+      if (!inBox(c, COVERAGE)) continue;
+      const key = `${c.d}|${c.p}|${c.t}|${c.o}`;
+      const s = sums.get(key) ?? { d: c.d, p: c.p, t: c.t, o: c.o, c: 0, f: 0, n: 0 };
+      s.c += c.c; s.f += c.f; s.n += c.n;
+      sums.set(key, s);
+    }
+    totals.push(...sums.values());
   }
-  stmts.push(
-    `CREATE OR REPLACE VIEW all_cells AS SELECT * FROM hist_cells UNION ALL BY NAME SELECT * FROM live_cells`,
-    `CREATE OR REPLACE VIEW all_status AS SELECT * FROM hist_status UNION ALL BY NAME SELECT * FROM live_status`,
-  );
-  try {
-    for (const s of stmts) await query(s);
-  } catch (e) {
-    for (const path of loaded) memFiles.delete(path); // download them again on the next attempt
-    throw e;
-  }
+  const statusList = [...status.values()].sort((a, b) => (a.d < b.d ? -1 : 1));
+  return { m, status, statusList, live, totals };
 }
 
 /** Load (or reload, after new days were processed) the dataset. */
-export function dataset(refresh = false): Promise<Manifest> {
+async function data(refresh = false): Promise<Data> {
   if (!setup || refresh) {
     const previous = setup;
     const attempt = (async () => {
-      // start the SQL engine while the manifest downloads
-      const [m] = await Promise.all([fetchManifest(), connection()]);
-      if (!manifest || m.updated_at !== manifest.updated_at) await buildViews(m);
-      manifest = m;
-      return m;
+      const m = await fetchManifest();
+      if (!current || m.updated_at !== current.m.updated_at) current = await load(m);
+      return current;
     })();
     setup = attempt;
-    // A failed reload keeps the last good dataset; a failed first load is retried on the next call
-    // (before, the failed promise stayed cached and every later query failed with it).
+    // A failed reload keeps the last good dataset; a failed first load is retried on the next call.
     attempt.catch(() => { if (setup === attempt) setup = previous; });
   }
   return setup;
+}
+
+export async function dataset(refresh = false): Promise<Manifest> {
+  return (await data(refresh)).m;
 }
 
 // ---------------------------------------------------------------- helpers
@@ -180,18 +160,62 @@ function percentile(values: number[], p: number): number {
   return s[lo] + (s[hi] - s[lo]) * (pos - lo);
 }
 
-const boxSql = (b: BBox, types: number[], lat = 'cell_lat', lon = 'cell_lon') =>
-  `${lat} BETWEEN ${num(b.min_lat)} AND ${num(b.max_lat)} AND ${lon} BETWEEN ${num(b.min_lon)} AND ${num(b.max_lon)} AND type IN ${ints(types)}`;
+const inBox = (c: { lat: number; lon: number }, b: BBox) =>
+  c.lat >= b.min_lat && c.lat <= b.max_lat && c.lon >= b.min_lon && c.lon <= b.max_lon;
 
-interface Area { from: string; where: string; totals: boolean }
+const isWhole = (b: BBox) =>
+  b.min_lat <= COVERAGE.min_lat && b.max_lat >= COVERAGE.max_lat && b.min_lon <= COVERAGE.min_lon && b.max_lon >= COVERAGE.max_lon;
 
-/** Where to sum detections for an area: the small all-Australia totals when the area is the whole
- *  coverage (the default view), otherwise the 0.1° cells inside the box. */
-function area(m: Manifest, b: BBox, types: number[]): Area {
-  const whole = b.min_lat <= COVERAGE.min_lat && b.max_lat >= COVERAGE.max_lat && b.min_lon <= COVERAGE.min_lon && b.max_lon >= COVERAGE.max_lon;
-  return m.totals && whole
-    ? { from: 'all_totals', where: `type IN ${ints(types)}`, totals: true }
-    : { from: 'all_cells', where: boxSql(b, types), totals: false };
+/** Row groups of the 0.1° files are sorted by date (cells) or by grid row (cells_month): skip by stats. */
+const dateOverlap = (start: string, end: string): Prune => (min, max) => String(min) <= end && String(max) >= start;
+const cjRange = (b: BBox): Prune => {
+  const lo = Math.floor(b.min_lat * 10) - 1, hi = Math.floor(b.max_lat * 10) + 1;
+  return (min, max) => num(min) <= hi && num(max) >= lo;
+};
+
+/** History cells between two dates (inclusive), read in parts; plus the live cells. */
+async function cellsBetween(dt: Data, start: string, end: string, b: BBox, types: number[]): Promise<Cell[]> {
+  const out: Cell[] = [];
+  const keep = (c: Cell) => c.d >= start && c.d <= end && types.includes(c.t) && inBox(c, b);
+  if (start <= dt.m.local_end) {
+    const last = minDate(end, dt.m.local_end);
+    const rows = await readRemote(histUrl(dt.m, 'cells'), CELL_COLUMNS, { fire_date: dateOverlap(start, last) });
+    for (const r of rows) { const c = toCell(r); if (keep(c)) out.push(c); }
+  }
+  for (const c of dt.live) if (keep(c)) out.push(c);
+  return out;
+}
+
+/** Day totals or cells for an area and period: the small totals for the whole coverage, else cells. */
+async function dayValues(dt: Data, start: string, end: string, b: BBox, types: number[]): Promise<Total[]> {
+  if (dt.totals && isWhole(b)) return dt.totals.filter((x) => x.d >= start && x.d <= end && types.includes(x.t));
+  return cellsBetween(dt, start, end, b, types);
+}
+
+interface MonthSum { y: number; m: number; o: string; c: number }
+
+/** Totals per year × month × origin for an area, for the months `want(y, m)` selects. */
+async function monthSums(dt: Data, b: BBox, types: number[], want: (y: number, m: number) => boolean = () => true): Promise<MonthSum[]> {
+  const sums = new Map<string, MonthSum>();
+  const add = (y: number, m: number, o: string, c: number) => {
+    if (!want(y, m)) return;
+    const key = `${y}|${m}|${o}`;
+    const s = sums.get(key) ?? { y, m, o, c: 0 };
+    s.c += c;
+    sums.set(key, s);
+  };
+  if (dt.totals && isWhole(b)) {
+    for (const x of dt.totals) if (types.includes(x.t)) add(+x.d.slice(0, 4), +x.d.slice(5, 7), x.o, x.c);
+  } else {
+    // history: the monthly cell file, only the row groups covering the box's grid rows
+    const rows = await readRemote(histUrl(dt.m, 'cells_month'), ['year', 'month', 'type', 'origin', 'cell_lat', 'cell_lon', 'count', 'cj'], { cj: cjRange(b) });
+    for (const r of rows) {
+      if (types.includes(num(r.type)) && inBox({ lat: num(r.cell_lat), lon: num(r.cell_lon) }, b))
+        add(num(r.year), num(r.month), String(r.origin), num(r.count));
+    }
+    for (const c of dt.live) if (types.includes(c.t) && inBox(c, b)) add(+c.d.slice(0, 4), +c.d.slice(5, 7), c.o, c.c);
+  }
+  return [...sums.values()];
 }
 
 function checkBox(b: BBox) {
@@ -199,8 +223,6 @@ function checkBox(b: BBox) {
   if (b.min_lat < COVERAGE.min_lat || b.max_lat > COVERAGE.max_lat || b.min_lon < COVERAGE.min_lon || b.max_lon > COVERAGE.max_lon)
     throw new ApiError('BOX_OUTSIDE_COVERAGE', 'The selected area must be inside Australia.', 400);
 }
-
-interface StatusRow { d: string; h: HasData; r: boolean; fl: string | null }
 
 const FLAG_WARNINGS: Record<string, Warning> = {
   outage: { code: 'KNOWN_OUTAGE', message: 'Some days have no satellite data at all (satellite outage).' },
@@ -235,10 +257,7 @@ function envelope<T>(b: BBox, types: number[], data: T, extra: { start?: string;
   };
 }
 
-async function statusRows(where: string): Promise<StatusRow[]> {
-  return query<StatusRow>(`SELECT strftime(fire_date, '%Y-%m-%d') AS d, has_data AS h, COALESCE(daynight_reliable, true) AS r, flag AS fl
-                           FROM all_status WHERE ${where}`);
-}
+const statusBetween = (dt: Data, start: string, end: string) => dt.statusList.filter((s) => s.d >= start && s.d <= end);
 
 // ---------------------------------------------------------------- endpoints
 
@@ -262,21 +281,18 @@ export async function meta(): Promise<Meta> {
 
 export async function daily(q: AreaQuery): Promise<Envelope<DailyData>> {
   checkBox(q.bbox);
-  const a = area(await dataset(), q.bbox, q.types);
-  const range = `fire_date BETWEEN ${day(q.start)} AND ${day(q.end)}`;
-  const [rows, status] = await Promise.all([
-    query<{ d: string; p: string; o: string; c: number; f: number; n: number }>(
-      `SELECT strftime(fire_date, '%Y-%m-%d') AS d, "pass" AS p, origin AS o, SUM(count)::DOUBLE AS c, SUM(frp_sum)::DOUBLE AS f, SUM(n_rows)::DOUBLE AS n
-       FROM ${a.from} WHERE ${range} AND ${a.where} GROUP BY ALL`),
-    statusRows(range),
-  ]);
-  const byDay = new Map<string, typeof rows>();
-  for (const r of rows) byDay.set(r.d, [...(byDay.get(r.d) ?? []), r]);
-  const st = new Map(status.map((s) => [s.d, s]));
+  const dt = await data();
+  const rows = await dayValues(dt, q.start, q.end, q.bbox, q.types);
+  const status = statusBetween(dt, q.start, q.end);
+  const byDay = new Map<string, Total[]>();
+  for (const r of rows) {
+    const list = byDay.get(r.d);
+    if (list) list.push(r); else byDay.set(r.d, [r]);
+  }
   const days: DailyValue[] = [];
   const missing: string[] = [];
   for (const d of eachDay(q.start, q.end)) {
-    const s = st.get(d);
+    const s = dt.status.get(d);
     const coverage: HasData = s?.h ?? 'none';
     const values = byDay.get(d) ?? [];
     const weights: Record<string, number> = {};
@@ -312,21 +328,16 @@ export async function grid(q: AreaQuery): Promise<Envelope<GridData>> {
   checkBox(q.bbox);
   if (daysBetween(q.start, q.end) > LIMITS.grid_max_days)
     throw new ApiError('QUERY_TOO_LARGE', `The map can show at most ${LIMITS.grid_max_days} days at once.`, 400);
-  await dataset();
-  const range = `fire_date BETWEEN ${day(q.start)} AND ${day(q.end)}`;
-  const [rows, status] = await Promise.all([
-    query<{ ci: number; cj: number; o: string; c: number; f: number }>(
-      `SELECT ci::INT AS ci, cj::INT AS cj, origin AS o, SUM(count)::DOUBLE AS c, SUM(frp_sum)::DOUBLE AS f
-       FROM all_cells WHERE ${range} AND ${boxSql(q.bbox, q.types)} GROUP BY ALL`),
-    statusRows(range),
-  ]);
-  const cells = new Map<string, { ci: number; cj: number; w: Record<string, number>; f: number }>();
+  const dt = await data();
+  const rows = await cellsBetween(dt, q.start, q.end, q.bbox, q.types);
+  const status = statusBetween(dt, q.start, q.end);
+  const cells = new Map<number, { ci: number; cj: number; w: Record<string, number>; f: number }>();
   for (const r of rows) {
-    const key = `${r.ci},${r.cj}`;
-    const cell = cells.get(key) ?? { ci: r.ci, cj: r.cj, w: {}, f: 0 };
+    const key = r.ci * 10_000 + r.cj;
+    let cell = cells.get(key);
+    if (!cell) { cell = { ci: r.ci, cj: r.cj, w: {}, f: 0 }; cells.set(key, cell); }
     cell.w[r.o] = (cell.w[r.o] ?? 0) + r.c;
     cell.f += r.f;
-    cells.set(key, cell);
   }
   const out: GridCell[] = [];
   for (const c of cells.values()) {
@@ -335,15 +346,28 @@ export async function grid(q: AreaQuery): Promise<Envelope<GridData>> {
     const main = Object.entries(c.w).sort((a, b) => b[1] - a[1])[0][0] as Origin;
     out.push({ lat: c.cj / 10, lon: c.ci / 10, count, frp_sum: c.f, main_origin: main });
   }
-  const st = new Map(status.map((s) => [s.d, s.h]));
-  const missing = [...eachDay(q.start, q.end)].filter((d) => st.get(d) !== 'full');
+  const missing = [...eachDay(q.start, q.end)].filter((d) => dt.status.get(d)?.h !== 'full');
   return envelope(q.bbox, q.types, {
-    res: 0.1, total: out.reduce((a, c) => a + c.count, 0), max_count: Math.max(0, ...out.map((c) => c.count)), cells: out,
+    res: 0.1, total: out.reduce((a, c) => a + c.count, 0), max_count: out.reduce((a, c) => Math.max(a, c.count), 0), cells: out,
   }, { start: q.start, end: q.end, missing, warnings: warnings(status, new Set(rows.map((r) => r.o)), q.bbox, q.start) });
 }
 
-interface MonthSum { y: number; m: number; o: string; c: number }
-interface MonthStatus { y: number; m: number; obs: number; allfull: boolean | null }
+interface MonthStatus { obs: number; allfull: boolean }
+
+/** Days with data per year-month (optionally only up to a day of the month). */
+function monthStatus(dt: Data, want: (y: number, m: number) => boolean, toDay = 31): Map<string, MonthStatus> {
+  const out = new Map<string, MonthStatus>();
+  for (const s of dt.statusList) {
+    const y = +s.d.slice(0, 4), m = +s.d.slice(5, 7);
+    if (+s.d.slice(8, 10) > toDay || !want(y, m) || s.h === 'none') continue;
+    const key = `${y}-${m}`;
+    const st = out.get(key) ?? { obs: 0, allfull: true };
+    st.obs += 1;
+    st.allfull &&= s.h === 'full';
+    out.set(key, st);
+  }
+  return out;
+}
 
 function summary(sums: MonthSum[], st: MonthStatus | undefined, expected: number, monthUncertainty: (o: string) => number) {
   const obs = st?.obs ?? 0;
@@ -361,36 +385,23 @@ function summary(sums: MonthSum[], st: MonthStatus | undefined, expected: number
   };
 }
 
-const monthSql = (a: Area, extra = 'true') => a.totals ? `
-  SELECT year(fire_date)::INT AS y, month(fire_date)::INT AS m, origin AS o, SUM(count)::DOUBLE AS c FROM all_totals
-  WHERE ${a.where} AND ${extra.replace(/\$Y/g, 'year(fire_date)').replace(/\$M/g, 'month(fire_date)')} GROUP BY ALL` : `
-  SELECT year::INT AS y, month::INT AS m, origin AS o, SUM(count)::DOUBLE AS c FROM hist_cells_month WHERE ${a.where} AND ${extra.replace(/\$Y/g, 'year').replace(/\$M/g, 'month')} GROUP BY ALL
-  UNION ALL
-  SELECT year(fire_date)::INT, month(fire_date)::INT, origin, SUM(count)::DOUBLE FROM live_cells WHERE ${a.where} AND ${extra.replace(/\$Y/g, 'year(fire_date)').replace(/\$M/g, 'month(fire_date)')} GROUP BY ALL`;
-
 export async function calendar(b: BBox, types: number[]): Promise<Envelope<CalendarData>> {
   checkBox(b);
-  const m = await dataset();
-  const [sums, status, statusAll] = await Promise.all([
-    query<MonthSum>(monthSql(area(m, b, types))),
-    query<MonthStatus>(`SELECT year(fire_date)::INT AS y, month(fire_date)::INT AS m,
-                          COUNT(*) FILTER (WHERE has_data <> 'none')::INT AS obs,
-                          bool_and(has_data = 'full') FILTER (WHERE has_data <> 'none') AS allfull
-                        FROM all_status GROUP BY ALL`),
-    statusRows('true'),
-  ]);
+  const dt = await data();
+  const m = dt.m;
+  const sums = await monthSums(dt, b, types);
+  const status = monthStatus(dt, () => true);
   const t = today();
   const [ty, tm] = [+t.slice(0, 4), +t.slice(5, 7)];
   const [sy, sm] = [+m.record_start.slice(0, 4), +m.record_start.slice(5, 7)];
   const sumsBy = new Map<string, MonthSum[]>();
   for (const s of sums) sumsBy.set(`${s.y}-${s.m}`, [...(sumsBy.get(`${s.y}-${s.m}`) ?? []), s]);
-  const stBy = new Map(status.map((s) => [`${s.y}-${s.m}`, s]));
   const cells: CalendarCell[] = [];
   for (let y = sy; y <= ty; y++) {
     for (let mo = y === sy ? sm : 1; mo <= (y === ty ? tm : 12); mo++) {
       const total = daysInMonth(y, mo);
       const mid = ymd(y, mo, 15);
-      const s = summary(sumsBy.get(`${y}-${mo}`) ?? [], stBy.get(`${y}-${mo}`), total, (o) => uncertaintyOf(o, mid));
+      const s = summary(sumsBy.get(`${y}-${mo}`) ?? [], status.get(`${y}-${mo}`), total, (o) => uncertaintyOf(o, mid));
       cells.push({ year: y, month: mo, days_total: total, complete: y * 12 + mo < ty * 12 + tm, ...s });
     }
   }
@@ -401,9 +412,9 @@ export async function calendar(b: BBox, types: number[]): Promise<Envelope<Calen
     p75: percentile(v, 0.75), p90: percentile(v, 0.9), min: v.length ? Math.min(...v) : 0, max: v.length ? Math.max(...v) : 0, years_used: v.length,
   }));
   const counts = cells.filter((c) => c.count !== null).map((c) => c.count!);
-  return envelope(b, types, { cells, climatology, scale: { min: 0, max: Math.max(0, ...counts), p95: percentile(counts, 0.95) } }, {
+  return envelope(b, types, { cells, climatology, scale: { min: 0, max: counts.reduce((a, x) => Math.max(a, x), 0), p95: percentile(counts, 0.95) } }, {
     query: { start_year: sy, end_year: ty },
-    warnings: warnings(statusAll.filter((s) => s.fl !== 'provisional'), new Set(sums.map((s) => s.o)), b, m.record_start),
+    warnings: warnings(dt.statusList.filter((s) => s.fl !== 'provisional'), new Set(sums.map((s) => s.o)), b, m.record_start),
   });
 }
 
@@ -417,8 +428,8 @@ function categoryOf(v: number, s: { p10: number; p25: number; p75: number; p90: 
 
 export async function anomaly(b: BBox, month: string, types: number[], baseline?: [number, number]): Promise<Envelope<AnomalyData>> {
   checkBox(b);
-  const m = await dataset();
-  const a = area(m, b, types);
+  const dt = await data();
+  const m = dt.m;
   const y = +month.slice(0, 4), mo = +month.slice(5, 7);
   const latest = m.latest_fire_date;
   const latestDay = +latest.slice(8, 10);
@@ -430,32 +441,41 @@ export async function anomaly(b: BBox, month: string, types: number[], baseline?
   const years = [...new Set([...Array.from({ length: Math.max(0, last - first + 1) }, (_, i) => first + i), y])]
     .filter((yy) => ymd(yy, mo, daysInMonth(yy, mo)) >= m.record_start && ymd(yy, mo, 1) <= latest)
     .sort((a, c) => a - c);
-  const yearList = ints(years.length ? years : [y]);
-  const sums = mtd
-    ? await query<MonthSum>(`SELECT year(fire_date)::INT AS y, ${mo} AS m, origin AS o, SUM(count)::DOUBLE AS c FROM ${a.from}
-                             WHERE month(fire_date) = ${mo} AND day(fire_date) <= ${toDay} AND year(fire_date) IN ${yearList}
-                               AND ${a.where} GROUP BY ALL`)
-    : await query<MonthSum>(monthSql(a, `$M = ${mo} AND $Y IN ${yearList}`));
-  const status = await query<MonthStatus>(`SELECT year(fire_date)::INT AS y, ${mo} AS m,
-                    COUNT(*) FILTER (WHERE has_data <> 'none')::INT AS obs,
-                    bool_and(has_data = 'full') FILTER (WHERE has_data <> 'none') AS allfull
-                  FROM all_status WHERE month(fire_date) = ${mo} AND day(fire_date) <= ${toDay} AND year(fire_date) IN ${yearList} GROUP BY ALL`);
-  const stBy = new Map(status.map((s) => [s.y, s]));
+  const yearSet = new Set(years.length ? years : [y]);
+  const want = (yy: number, mm: number) => mm === mo && yearSet.has(yy);
+
+  let sums: MonthSum[];
+  if (mtd) {
+    // month to date: the same days 1..toDay in every year, from the day values
+    const ranges = [...yearSet].map((yy) => [ymd(yy, mo, 1), ymd(yy, mo, Math.min(toDay, daysInMonth(yy, mo)))] as const);
+    const parts = await Promise.all(ranges.map(([s, e]) => dayValues(dt, s, e, b, types)));
+    const by = new Map<string, MonthSum>();
+    for (const x of parts.flat()) {
+      const key = `${x.d.slice(0, 4)}|${x.o}`;
+      const s = by.get(key) ?? { y: +x.d.slice(0, 4), m: mo, o: x.o, c: 0 };
+      s.c += x.c;
+      by.set(key, s);
+    }
+    sums = [...by.values()];
+  } else {
+    sums = await monthSums(dt, b, types, want);
+  }
+  const status = monthStatus(dt, want, toDay);
   const history = years.map((yy) => {
     const expected = Math.min(daysInMonth(yy, mo), toDay);
-    const s = summary(sums.filter((x) => x.y === yy), stBy.get(yy), expected, (o) => uncertaintyOf(o, ymd(yy, mo, 15)));
+    const s = summary(sums.filter((x) => x.y === yy), status.get(`${yy}-${mo}`), expected, (o) => uncertaintyOf(o, ymd(yy, mo, 15)));
     return { year: yy, value: s.count, has_data: s.has_data, main_origin: s.main_origin };
   });
-  const current = history.find((h) => h.year === y) ?? { year: y, value: null, has_data: 'none' as HasData, main_origin: null };
+  const cur = history.find((h) => h.year === y) ?? { year: y, value: null, has_data: 'none' as HasData, main_origin: null };
   const inBaseline = first <= y && y <= last;
   const values = history.filter((h) => h.has_data === 'full' && h.year >= first && h.year <= last).map((h) => h.value!);
-  const counted = inBaseline && current.has_data === 'full';
-  const value = current.value;
+  const counted = inBaseline && cur.has_data === 'full';
+  const value = cur.value;
   const mean = values.length ? values.reduce((a, x) => a + x, 0) / values.length : 0;
   const std = values.length ? Math.sqrt(values.reduce((a, x) => a + (x - mean) ** 2, 0) / values.length) : 0;
   const stats = { p10: percentile(values, 0.1), p25: percentile(values, 0.25), p75: percentile(values, 0.75), p90: percentile(values, 0.9) };
   const median = percentile(values, 0.5);
-  const st = await statusRows(`month(fire_date) = ${mo} AND year(fire_date) = ${y} AND day(fire_date) <= ${toDay}`);
+  const st = statusBetween(dt, ymd(y, mo, 1), ymd(y, mo, Math.min(toDay, daysInMonth(y, mo))));
   const w = warnings(st, new Set(sums.filter((x) => x.y === y).map((x) => x.o)), b, ymd(y, mo, 1));
   if (mtd) w.unshift({ code: 'MONTH_IN_PROGRESS', message: `Month to date: days 1–${toDay} compared with the same days in other years.` });
   return envelope(b, types, {
@@ -466,7 +486,7 @@ export async function anomaly(b: BBox, month: string, types: number[], baseline?
     rank: value !== null ? 1 + values.filter((x) => x > value).length : null,
     rank_of: values.length + (value !== null && !counted ? 1 : 0),
     category: value !== null && values.length ? categoryOf(value, stats) : null,
-    has_data: current.has_data,
+    has_data: cur.has_data,
     history,
   }, { query: { month, baseline_start_year: first, baseline_end_year: last }, warnings: w });
 }
@@ -484,24 +504,34 @@ function histRowFiles(m: Manifest, start: string, end: string): string[] {
     .map(([year, v]) => fileUrl(`hist/rows/${year}.parquet?v=${encodeURIComponent(v)}`));
 }
 
+const csvValue = (v: unknown): string => {
+  if (v === null || v === undefined) return '';
+  const s = typeof v === 'number' || typeof v === 'bigint' ? String(v) : text(v)!;
+  return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+
 export async function hotspotsCsv(q: AreaQuery): Promise<Uint8Array> {
   checkBox(q.bbox);
   if (boxAreaDeg2(q.bbox) * daysBetween(q.start, q.end) > LIMITS.csv_max_deg2_days)
     throw new ApiError('QUERY_TOO_LARGE', 'Too large for one CSV. Choose a smaller area or shorter period.', 400);
   const m = await dataset();
-  // Detection rows are only needed here, so their files are opened only now, and only the ones the
-  // period touches (opening each remote file costs a couple of round trips).
+  // detection files are only opened here, and only the ones (and row groups) the period touches
   const months = m.live_months.filter((mo) => mo >= q.start.slice(0, 7) && mo <= q.end.slice(0, 7));
-  const files = [
-    ...histRowFiles(m, q.start, q.end),
-    ...months.map((mo) => fileUrl(`live/rows/${mo}.parquet?v=${encodeURIComponent(monthVersion(m, mo))}`)),
-  ];
-  if (!files.length) throw new ApiError('NOT_FOUND', 'No detections are stored for this period yet.', 404);
-  const cols = CSV_COLUMNS.map((c) => (c === 'acq_date' || c === 'fire_date' ? `strftime(${c}, '%Y-%m-%d') AS ${c}` : `"${c}"`)).join(', ');
-  return exportFile(`
-    COPY (SELECT ${cols} FROM read_parquet([${files.map(str).join(', ')}], union_by_name = true)
-          WHERE fire_date BETWEEN ${day(q.start)} AND ${day(q.end)} AND ${boxSql(q.bbox, q.types, 'latitude', 'longitude')}
-          ORDER BY acq_date, acq_time) TO 'hotspots.csv' (HEADER, DELIMITER ',')`, 'hotspots.csv');
+  const hist = histRowFiles(m, q.start, q.end);
+  if (!hist.length && !months.length) throw new ApiError('NOT_FOUND', 'No detections are stored for this period yet.', 404);
+  const parts = await Promise.all([
+    ...hist.map((url) => readRemote(url, CSV_COLUMNS, { fire_date: dateOverlap(q.start, q.end) })),
+    ...months.map((mo) => readWholeFile(fileUrl(`live/rows/${mo}.parquet?v=${encodeURIComponent(monthVersion(m, mo))}`), CSV_COLUMNS)),
+  ]);
+  const b = q.bbox;
+  const rows = parts.flat().filter((r) => {
+    const d = text(r.fire_date)!, lat = num(r.latitude), lon = num(r.longitude);
+    return d >= q.start && d <= q.end && lat >= b.min_lat && lat <= b.max_lat && lon >= b.min_lon && lon <= b.max_lon && q.types.includes(num(r.type));
+  });
+  const key = (r: Row) => `${text(r.acq_date)} ${text(r.acq_time)}`;
+  rows.sort((x, y) => (key(x) < key(y) ? -1 : key(x) > key(y) ? 1 : 0));
+  const lines = [CSV_COLUMNS.join(','), ...rows.map((r) => CSV_COLUMNS.map((c) => csvValue(r[c])).join(','))];
+  return new TextEncoder().encode(lines.join('\n') + '\n');
 }
 
 // ---------------------------------------------------------------- live processing (Worker)
