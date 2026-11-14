@@ -1,8 +1,9 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../api/client';
 import type { AreaQuery, BBox } from '../api/types';
 import { useSelection } from '../store/useSelection';
-import { clipBox, daysInMonth, monthRange, ym } from '../lib/dates';
+import { clipBox, daysInMonth, monthRange, ym, ymd } from '../lib/dates';
 
 const round = (b: BBox): BBox => ({
   min_lat: +b.min_lat.toFixed(3), max_lat: +b.max_lat.toFixed(3),
@@ -76,12 +77,52 @@ export function useAnomaly() {
   }), !!box);
 }
 
+/** The selected day compared with the same date in other years (only while a day is selected). */
+export function useDayAnomaly() {
+  const { box } = useBox();
+  const { year, month, day, types } = useSelection();
+  const date = day === null ? null : ymd(year, month, day);
+  return gated(useQuery({
+    queryKey: ['dayAnomaly', box, date, types],
+    queryFn: () => api.dayAnomaly(box!, date!, types),
+    enabled: !!box && !!date,
+    placeholderData: keepPreviousData,
+  }), !!box && !!date);
+}
+
 export function useDaily() {
   const q = useMonthQuery();
   return gated(useQuery({ queryKey: ['daily', q], queryFn: () => api.daily(q!), enabled: !!q, placeholderData: keepPreviousData }), !!q);
 }
 
-export function useGrid() {
+/** The map's period: the selected day when one is chosen (inside the month's range), else the month. */
+export function useMapQuery(): AreaQuery | null {
   const q = useMonthQuery();
-  return gated(useQuery({ queryKey: ['grid', q], queryFn: () => api.grid(q!), enabled: !!q, placeholderData: keepPreviousData }), !!q);
+  const { year, month, day } = useSelection();
+  if (!q || day === null) return q;
+  const d = ymd(year, month, day);
+  return d >= q.start && d <= q.end ? { ...q, start: d, end: d } : q;
+}
+
+export function useGrid() {
+  const q = useMapQuery();
+  const qc = useQueryClient();
+  const month = useMonthQuery();
+  const { data: meta } = useMeta();
+  // once a month's map is in, fetch the neighbouring months' maps in the background, so stepping
+  // through months with the arrows shows the next map straight away
+  const r = useQuery({ queryKey: ['grid', q], queryFn: () => api.grid(q!), enabled: !!q, placeholderData: keepPreviousData });
+  const settled = r.isSuccess && !r.isPlaceholderData;
+  useEffect(() => {
+    if (!settled || !month || !meta || q?.start !== month.start || q?.end !== month.end) return;
+    const [y, m] = [+month.start.slice(0, 4), +month.start.slice(5, 7)];
+    for (const delta of [-1, 1]) {
+      const n = y * 12 + (m - 1) + delta;
+      const range = monthRange(Math.floor(n / 12), (n % 12) + 1, meta.coverage.record_start, meta.coverage.latest_fire_date);
+      if (!range) continue;
+      const nq = { ...month, ...range };
+      void qc.prefetchQuery({ queryKey: ['grid', nq], queryFn: () => api.grid(nq), staleTime: 5 * 60_000 });
+    }
+  }, [settled, month, q, meta, qc]);
+  return gated(r, !!q);
 }

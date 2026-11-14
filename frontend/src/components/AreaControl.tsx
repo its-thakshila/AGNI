@@ -64,7 +64,7 @@ export default function AreaControl() {
     return (
       <div className={`chip flex items-center gap-f3 rounded-full py-f3 pl-f4 pr-f3 text-body text-ink-2 ${glass}`}>
         <span className="size-f3 animate-pulse rounded-full bg-ember" />
-        Click and drag to draw an area
+        Drag across the map to draw an area
         <button onClick={() => setDrawing(false)} aria-label="Cancel drawing" className="grid size-f5 place-items-center rounded-full text-muted hover:bg-raised hover:text-ink">
           <Icon icon={X} />
         </button>

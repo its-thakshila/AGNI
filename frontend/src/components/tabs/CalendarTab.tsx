@@ -7,9 +7,11 @@ import { useSelection } from '../../store/useSelection';
 import { CATEGORIES, CATEGORY_COLOR, CATEGORY_LABEL, EMBER, INK, NO_DATA, ORIGIN_LABEL, pick } from '../../lib/colors';
 import { MONTHS, MONTHS_LONG, compact, fmt, percentText } from '../../lib/stats';
 import EChart, { AXIS_FONT, TOOLTIP } from '../EChart';
-import { CircleHelp } from 'lucide-react';
+import { CalendarDays, CircleHelp } from 'lucide-react';
 import Popover from '../ui/Popover';
 import Icon from '../ui/Icon';
+import DaysView from './DaysView';
+import { overlayInk } from './calendarInk';
 
 function categoryOf(v: number, c: Climatology): Category {
   if (v < c.p10) return 'well_below';
@@ -19,21 +21,19 @@ function categoryOf(v: number, c: Climatology): Category {
   return 'well_above';
 }
 
-/** Overlay ink that stays visible on both dark and light cells. */
-function overlayInk(hex: string, alpha: number): string {
-  const n = parseInt(hex.slice(1), 16);
-  const lum = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
-  return lum > 0.45 ? `rgba(11,11,13,${alpha + 0.2})` : `rgba(240,239,236,${alpha})`;
-}
-
 interface Drawn { value: [number, number, number]; cell: CalendarCell; color: string; selected: boolean; category: Category | null }
 type Api = { value: (i: number) => number; coord: (v: number[]) => number[]; size: (v: number[]) => number[] };
 
 export default function CalendarTab() {
+  const calView = useSelection((s) => s.calView);
+  return calView === 'days' ? <DaysView /> : <MonthsView />;
+}
+
+function MonthsView() {
   const { data, isFetching, error } = useCalendar();
   const anomaly = useAnomaly().data?.data;
   const { box } = useBox();
-  const { year, month, mode, setMode, setMonth } = useSelection();
+  const { year, month, mode, setMode, setMonth, setCalView } = useSelection();
 
   const model = useMemo(() => {
     const d = data?.data;
@@ -128,10 +128,21 @@ export default function CalendarTab() {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="flex items-center justify-between gap-f3">
-        <p className="text-cap text-muted">Detections per month. Click a month to show it.</p>
+        {/* phones: no room; the Days button (and tapping the selected month again) does the same */}
+        <p className="hidden min-w-0 text-cap text-muted sm:block">Double-click a month for its days.</p>
+        <div className="flex shrink-0 items-center gap-f2">
+        <button
+          onClick={() => setCalView('days')}
+          className="chip flex items-center gap-f1 rounded-f3 border border-line px-f3 py-f1 text-cap text-ink-2 transition-colors hover:text-ink"
+          title={`Show ${MONTHS_LONG[month - 1]} ${year} day by day`}
+        >
+          <Icon icon={CalendarDays} size="xs" />
+          Days
+        </button>
         <div className="flex shrink-0 rounded-f3 border border-line p-f1" role="group" aria-label="Colour the calendar by">
           <button className={seg(mode === 'count')} onClick={() => setMode('count')} aria-pressed={mode === 'count'}>Amount</button>
           <button className={seg(mode === 'anomaly')} onClick={() => setMode('anomaly')} aria-pressed={mode === 'anomaly'}>vs usual</button>
+        </div>
         </div>
       </div>
 
@@ -142,7 +153,11 @@ export default function CalendarTab() {
             ariaLabel="Calendar of hotspot detections by year and month"
             onClick={(p) => {
               const d = (p.data as Drawn | undefined)?.cell;
-              if (d) setMonth(d.year, d.month);
+              if (!d) return;
+              // a second click (or tap) on the selected month opens its days: a double-click on
+              // desktop, "tap, tap again" on a phone, where double-tap is not a reliable gesture
+              if (d.year === year && d.month === month) setCalView('days');
+              else setMonth(d.year, d.month);
             }}
           />
         )}

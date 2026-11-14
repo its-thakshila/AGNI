@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from '../lib/maplibre';
-import type { GeoJSONSource, LngLat, Map as MLMap, MapMouseEvent } from 'maplibre-gl';
+import type { GeoJSONSource, LngLat, Map as MLMap, MapMouseEvent, MapTouchEvent } from 'maplibre-gl';
 import type { BBox } from '../api/types';
 import { isModelled } from '../api/types';
 import { friendlyError } from '../api/client';
 import { useBox, useGrid, useMeta } from '../hooks/useData';
+import DayControl from './DayControl';
 import { useSelection } from '../store/useSelection';
 import { EMBER } from '../lib/colors';
 import { hotspotShapes } from '../lib/hotspotShapes';
@@ -41,6 +42,16 @@ export default function MapPanel() {
   const { box } = useBox();
   const grid = useGrid();
   const pending = useLive((s) => s.pending);
+  const day = useSelection((s) => s.day);
+  // dim the map while a new period loads, so the old map is never mistaken for the new one;
+  // shown only if loading takes more than a moment, to avoid a flash on quick updates
+  const loading = grid.isFetching && (grid.isPlaceholderData || !grid.data);
+  const [showLoading, setShowLoading] = useState(false);
+  useEffect(() => {
+    if (!loading) { setShowLoading(false); return; }
+    const t = setTimeout(() => setShowLoading(true), 150);
+    return () => clearTimeout(t);
+  }, [loading]);
   const liveError = useLive((s) => s.error);
 
   useEffect(() => {
@@ -106,32 +117,59 @@ export default function MapPanel() {
     if (!ready || !map || !drawing) return;
     const canvas = map.getCanvas();
     canvas.style.cursor = 'crosshair';
+    // one finger draws instead of panning; pinch-zoom is off too, so a two-finger slip can't move the map mid-draw
     map.dragPan.disable();
+    map.touchZoomRotate.disable();
     let start: LngLat | null = null;
+    let last: LngLat | null = null;
     const src = map.getSource('aoi') as GeoJSONSource;
     const toBox = (a: LngLat, b: LngLat): BBox => ({
       min_lat: Math.min(a.lat, b.lat), max_lat: Math.max(a.lat, b.lat), min_lon: Math.min(a.lng, b.lng), max_lon: Math.max(a.lng, b.lng),
     });
     const down = (e: MapMouseEvent) => { start = e.lngLat; };
     const move = (e: MapMouseEvent) => { if (start) src.setData({ type: 'FeatureCollection', features: [rect(toBox(start, e.lngLat))] }); };
-    const up = (e: MapMouseEvent) => {
+    const finish = (end: LngLat) => {
       if (!start) return;
-      const b = toBox(start, e.lngLat);
+      const b = toBox(start, end);
       start = null;
       if (b.max_lat - b.min_lat > 0.05 && b.max_lon - b.min_lon > 0.05) setAoi(b);
       else setDrawing(false);
     };
+    const up = (e: MapMouseEvent) => finish(e.lngLat);
+    // phones send touch events, not mouse events: the same rectangle with one finger
+    const touchDown = (e: MapTouchEvent) => {
+      if (e.points.length !== 1) return;
+      e.preventDefault();
+      start = last = e.lngLat;
+    };
+    const touchMove = (e: MapTouchEvent) => {
+      if (!start || e.points.length !== 1) return;
+      e.preventDefault();
+      last = e.lngLat;
+      src.setData({ type: 'FeatureCollection', features: [rect(toBox(start, last))] });
+    };
+    const touchUp = () => { if (start && last) finish(last); };
     const esc = (e: KeyboardEvent) => e.key === 'Escape' && setDrawing(false);
     map.on('mousedown', down);
     map.on('mousemove', move);
     map.on('mouseup', up);
+    map.on('touchstart', touchDown);
+    map.on('touchmove', touchMove);
+    map.on('touchend', touchUp);
+    map.on('touchcancel', touchUp);
     window.addEventListener('keydown', esc);
     return () => {
       canvas.style.cursor = '';
       map.dragPan.enable();
+      map.touchZoomRotate.enable();
+      map.touchZoomRotate.disableRotation();
       map.off('mousedown', down);
       map.off('mousemove', move);
       map.off('mouseup', up);
+      map.off('touchstart', touchDown);
+      map.off('touchmove', touchMove);
+      map.off('touchend', touchUp);
+      map.off('touchcancel', touchUp);
       window.removeEventListener('keydown', esc);
     };
   }, [ready, drawing, setAoi, setDrawing]);
@@ -146,19 +184,29 @@ export default function MapPanel() {
       <div className="absolute left-f4 top-f4 z-10">
         <AreaControl />
       </div>
-      {pending.length > 0 ? (
-        <div role="status" className="chip pointer-events-none absolute right-f4 top-f4 flex items-center gap-f2 rounded-full border border-line bg-page/85 px-f4 py-f2 text-cap text-ink-2 backdrop-blur">
-          <Icon icon={LoaderCircle} size="xs" className="animate-spin text-ember" />
-          Fetching new satellite data for {pending.length} {pending.length === 1 ? 'day' : 'days'}… usually 1–2 minutes
+      {showLoading && (
+        <div className="pointer-events-none absolute inset-0 z-[5] grid place-items-center bg-page/45 transition-opacity" role="status" aria-live="polite">
+          <div className="chip flex items-center gap-f2 rounded-full border border-line bg-page/90 px-f4 py-f2 text-body text-ink-2 shadow-lg backdrop-blur">
+            <Icon icon={LoaderCircle} size="sm" className="animate-spin text-ember" />
+            {day === null ? 'Updating map…' : 'Loading day…'}
+          </div>
         </div>
-      ) : grid.isFetching ? (
-        <div className="pointer-events-none absolute right-f4 top-f4 rounded-full border border-line bg-page/80 px-f4 py-f1 text-cap text-muted backdrop-blur">Loading…</div>
-      ) : null}
+      )}
+      {/* phones: one row below the area buttons, which take the top row */}
+      <div className="absolute right-f4 top-[4.25rem] z-10 flex flex-col items-end gap-f2 sm:top-f4">
+        <DayControl />
+        {pending.length > 0 && (
+          <div role="status" className="chip pointer-events-none flex max-w-72 items-center gap-f2 rounded-full border border-line bg-page/85 px-f4 py-f2 text-cap text-ink-2 backdrop-blur">
+            <Icon icon={LoaderCircle} size="xs" className="animate-spin text-ember" />
+            Fetching new satellite data for {pending.length} {pending.length === 1 ? 'day' : 'days'}… usually 1–2 minutes
+          </div>
+        )}
+        {grid.error && (
+          <div className="max-w-64 rounded-f3 border border-line bg-page/85 px-f4 py-f2 text-cap text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>
+        )}
+      </div>
       {liveError && (
         <div className="absolute bottom-f4 right-f6 max-w-64 rounded-f4 border border-line bg-page/85 px-f4 py-f3 text-cap text-ember-soft backdrop-blur">{liveError}</div>
-      )}
-      {grid.error && (
-        <div className="absolute right-f4 top-f4 max-w-64 rounded-f3 border border-line bg-page/85 px-f4 py-f2 text-cap text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>
       )}
       <div className="pointer-events-none absolute bottom-f4 left-f4 rounded-f3 border border-line bg-page/80 px-f4 py-f3 backdrop-blur">
         <div className="flex items-center gap-f3 text-cap text-muted">

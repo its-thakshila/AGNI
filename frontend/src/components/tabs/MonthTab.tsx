@@ -15,6 +15,7 @@ const axisY = { type: 'value', splitNumber: 3, axisLabel: { ...AXIS_FONT, format
 
 function DailyChart() {
   const { data, error } = useDaily();
+  const { day, setDay } = useSelection();
   const d = data?.data;
 
   const option = useMemo(() => {
@@ -24,6 +25,8 @@ function DailyChart() {
     const hasBand = days.some((x) => (x.uncertainty ?? 0) > 0);
     // no-data days as grey bands, so a gap never reads as "zero fires"
     const noData = days.flatMap((x, i) => (x.has_data === 'none' ? [[{ xAxis: labels[i] }, { xAxis: labels[i] }]] : []));
+    const top = Math.max(1, ...days.map((x) => x.count ?? 0));
+    const selected = day !== null && labels.includes(String(day)) ? String(day) : null;
     return {
       animation: false,
       grid: { left: 40, right: 8, top: 10, bottom: 22 },
@@ -58,19 +61,30 @@ function DailyChart() {
           lineStyle: { color: EMBER_LINE, width: 2 }, itemStyle: { color: EMBER_LINE },
           data: days.map((x) => x.count),
           markArea: noData.length ? { silent: true, itemStyle: { color: 'rgba(132,131,140,0.12)' }, data: noData } : undefined,
+          // the day shown on the map
+          markLine: selected ? { silent: true, symbol: 'none', label: { show: false }, lineStyle: { color: EMBER_LINE, type: 'solid', width: 1, opacity: 0.6 }, data: [{ xAxis: selected }] } : undefined,
         },
+        // invisible full-height columns: click anywhere above a day to show that day on the map
+        { type: 'bar', barCategoryGap: 0, cursor: 'pointer', itemStyle: { color: 'transparent' }, emphasis: { disabled: true }, tooltip: { show: false }, data: days.map(() => top) },
       ],
     };
-  }, [d]);
+  }, [d, day]);
 
   return (
     <div className="flex min-h-[150px] flex-1 flex-col rounded-f4 border border-line/70 bg-page/35 p-f4">
       <div className="flex items-baseline justify-between gap-f3">
         <h3 className="text-body font-medium text-ink">Day by day</h3>
+        {!d?.days.some((x) => (x.uncertainty ?? 0) > 0) && <span className="text-cap text-muted">Click a day to map it</span>}
         {d?.days.some((x) => (x.uncertainty ?? 0) > 0) && <span className="text-cap text-muted">Shaded: model uncertainty</span>}
       </div>
       <div className="relative min-h-0 flex-1">
-        {error ? <p className="py-f6 text-body text-ember-soft">{friendlyError(error)}</p> : <EChart option={option} ariaLabel="Daily hotspot detections for the selected month" />}
+        {error ? <p className="py-f6 text-body text-ember-soft">{friendlyError(error)}</p> : (
+          <EChart
+            option={option}
+            ariaLabel="Daily hotspot detections for the selected month"
+            onClick={(p) => { const x = d?.days[p.dataIndex]; if (x) setDay(+x.fire_date.slice(8, 10)); }}
+          />
+        )}
       </div>
     </div>
   );

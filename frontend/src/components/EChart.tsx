@@ -9,6 +9,8 @@ echarts.use([BarChart, CustomChart, LineChart, GridComponent, MarkAreaComponent,
 // chart text follows the type scale: 12px captions for axes, 14px tooltips, 19px tooltip values
 export const AXIS_FONT = { color: '#84838c', fontSize: 12, fontFamily: 'Inter' };
 export const TOOLTIP = {
+  // keep the tooltip inside the chart, so the panel never cuts it off at its edge
+  confine: true,
   backgroundColor: '#1a1a1e',
   borderColor: '#26262c',
   borderRadius: 8,

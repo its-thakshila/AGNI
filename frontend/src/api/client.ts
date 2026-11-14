@@ -83,6 +83,12 @@ export const api = {
       ? local(engine.anomaly(bbox, month, types, baseline))
       : get('/api/anomaly', { ...boxParams(bbox), month, types, baseline_start_year: baseline?.[0], baseline_end_year: baseline?.[1] }),
 
+  /** one day (YYYY-MM-DD) compared with the same date in other years; browser engine only */
+  dayAnomaly: (bbox: BBox, date: string, types: number[]): Promise<Envelope<AnomalyData>> =>
+    USING_ENGINE
+      ? local(engine.dayAnomaly(bbox, date, types))
+      : Promise.reject(new ApiError('NOT_AVAILABLE', 'Day comparison needs the in-browser data engine.')),
+
   daily: (q: AreaQuery): Promise<Envelope<DailyData>> => (USING_ENGINE ? local(engine.daily(q)) : get('/api/daily', areaParams(q))),
 
   grid: (q: AreaQuery): Promise<Envelope<GridData>> => (USING_ENGINE ? local(engine.grid(q)) : get('/api/grid', areaParams(q))),

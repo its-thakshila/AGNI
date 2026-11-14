@@ -491,6 +491,57 @@ export async function anomaly(b: BBox, month: string, types: number[], baseline?
   }, { query: { month, baseline_start_year: first, baseline_end_year: last }, warnings: w });
 }
 
+/**
+ * One day compared with the same date in every other year of the record (e.g. 14 December in
+ * 2001…2025), with the same statistics as the month comparison. `month` in the result is the
+ * date ("YYYY-MM-DD"); compared_days is that single day.
+ */
+export async function dayAnomaly(b: BBox, date: string, types: number[]): Promise<Envelope<AnomalyData>> {
+  checkBox(b);
+  const dt = await data();
+  const m = dt.m;
+  const y = +date.slice(0, 4), mo = +date.slice(5, 7), d = +date.slice(8, 10);
+  const latest = m.latest_fire_date;
+  // every year that has this date inside the record (29 February only in leap years)
+  const years: number[] = [];
+  for (let yy = +m.record_start.slice(0, 4); yy <= +latest.slice(0, 4); yy++) {
+    const dd = ymd(yy, mo, d);
+    if (d <= daysInMonth(yy, mo) && dd >= m.record_start && dd <= latest) years.push(yy);
+  }
+  const parts = await Promise.all(years.map((yy) => dayValues(dt, ymd(yy, mo, d), ymd(yy, mo, d), b, types)));
+  const history = years.map((yy, i) => {
+    const st = dt.status.get(ymd(yy, mo, d));
+    const has: HasData = st?.h ?? 'none';
+    const weights: Record<string, number> = {};
+    for (const x of parts[i]) weights[x.o] = (weights[x.o] ?? 0) + x.c;
+    const value = has === 'none' ? null : Object.values(weights).reduce((a, x) => a + x, 0);
+    const main = Object.keys(weights).length ? (Object.entries(weights).sort((p, q) => q[1] - p[1])[0][0] as Origin) : null;
+    return { year: yy, value, has_data: has, main_origin: main };
+  });
+  const cur = history.find((h) => h.year === y) ?? { year: y, value: null, has_data: 'none' as HasData, main_origin: null };
+  const values = history.filter((h) => h.has_data === 'full').map((h) => h.value!);
+  const counted = cur.has_data === 'full';
+  const value = cur.value;
+  const mean = values.length ? values.reduce((a, x) => a + x, 0) / values.length : 0;
+  const std = values.length ? Math.sqrt(values.reduce((a, x) => a + (x - mean) ** 2, 0) / values.length) : 0;
+  const stats = { p10: percentile(values, 0.1), p25: percentile(values, 0.25), p75: percentile(values, 0.75), p90: percentile(values, 0.9) };
+  const median = percentile(values, 0.5);
+  const first = years[0] ?? y, last = years[years.length - 1] ?? y;
+  const st = statusBetween(dt, date, date);
+  return envelope(b, types, {
+    month: date, compared_days: { from_day: d, to_day: d, month_to_date: false }, value,
+    baseline: { years: [first, last], n_years: values.length, median, mean, std, ...stats },
+    percent_of_median: value !== null && median ? (100 * value) / median : null,
+    z_score: value !== null && std ? (value - mean) / std : null,
+    rank: value !== null ? 1 + values.filter((x) => x > value).length : null,
+    rank_of: values.length + (value !== null && !counted ? 1 : 0),
+    // a single day needs a few comparable years before "usual" means anything
+    category: value !== null && values.length >= 5 ? categoryOf(value, stats) : null,
+    has_data: cur.has_data,
+    history,
+  }, { start: date, end: date, query: { date }, warnings: warnings(st, new Set(parts[years.indexOf(y)]?.map((x) => x.o) ?? []), b, date) });
+}
+
 const CSV_COLUMNS = ['latitude', 'longitude', 'bright_ti4', 'scan', 'track', 'acq_date', 'acq_time', 'satellite', 'instrument',
   'confidence', 'version', 'bright_ti5', 'frp', 'daynight', 'type', 'fire_date', 'origin', 'weight'];
 
