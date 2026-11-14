@@ -52,13 +52,23 @@ export function useCalendar() {
   }), !!box);
 }
 
+/**
+ * The month in progress is compared month-to-date with earlier years (the backend default).
+ * Any finished month is compared with the whole record, the same years the calendar's
+ * colours use, so the headline and the calendar always agree and every year is listed.
+ */
 export function useAnomaly() {
   const { box } = useBox();
+  const { data: meta } = useMeta();
   const { year, month, types } = useSelection();
+  const latest = meta?.coverage.latest_fire_date;
+  const inProgress = !!latest && ym(year, month) === latest.slice(0, 7);
+  const lastFullYear = latest ? (latest.endsWith('-12-31') ? +latest.slice(0, 4) : +latest.slice(0, 4) - 1) : 0;
+  const baseline: [number, number] | undefined = inProgress ? undefined : [2001, lastFullYear];
   return gated(useQuery({
-    queryKey: ['anomaly', box, year, month, types],
-    queryFn: () => api.anomaly(box!, ym(year, month), types),
-    enabled: !!box,
+    queryKey: ['anomaly', box, year, month, types, baseline],
+    queryFn: () => api.anomaly(box!, ym(year, month), types, baseline),
+    enabled: !!box && !!meta,
     placeholderData: keepPreviousData,
   }), !!box);
 }

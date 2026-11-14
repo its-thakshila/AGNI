@@ -71,10 +71,12 @@ export default function Headline() {
                   {current.rank ? ` · ${ordinal(current.rank)} of ${current.rank_of} years` : ''}
                 </div>
               </>
+            ) : !current ? (
+              <div className="text-xs text-muted">Comparing…</div>
             ) : value === null ? (
               <div className="text-xs text-muted">No satellite data this month</div>
             ) : (
-              <div className="text-xs text-muted">Comparing…</div>
+              <div className="text-xs text-muted">Not enough other years to compare</div>
             )}
           </div>
         </div>

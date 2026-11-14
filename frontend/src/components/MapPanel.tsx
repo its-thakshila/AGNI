@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from '../lib/maplibre';
 import type { GeoJSONSource, LngLat, Map as MLMap, MapMouseEvent } from 'maplibre-gl';
-import type { BBox, GridCell } from '../api/types';
+import type { BBox } from '../api/types';
 import { isModelled } from '../api/types';
 import { friendlyError } from '../api/client';
 import { useBox, useGrid, useMeta } from '../hooks/useData';
 import { useSelection } from '../store/useSelection';
 import { EMBER } from '../lib/colors';
+import { hotspotShapes } from '../lib/hotspotShapes';
 import AreaControl from './AreaControl';
 
 const STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
@@ -23,24 +24,10 @@ const rect = (b: BBox): GeoJSON.Feature => ({
   },
 });
 
-function gridToGeoJson(cells: GridCell[], max: number, res: number): GeoJSON.FeatureCollection {
-  const lm = Math.log10(Math.max(1, max) + 1);
-  return {
-    type: 'FeatureCollection',
-    features: cells.map((c) => ({
-      type: 'Feature',
-      properties: { t: Math.log10(c.count + 1) / lm, model: isModelled(c.main_origin) ? 1 : 0 },
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[[c.lon, c.lat], [c.lon + res, c.lat], [c.lon + res, c.lat + res], [c.lon, c.lat + res], [c.lon, c.lat]]],
-      },
-    })),
-  };
-}
-
-// MapLibre "step" over EMBER, skipping the darkest steps so cells stay visible on the dark basemap.
-const ramp = EMBER.slice(2);
-const fillColor = ['step', ['get', 't'], ramp[0], ...ramp.slice(1).flatMap((c, i) => [(i + 1) / ramp.length, c])];
+// One flat colour per contour level, from "some burning" to "intense". The first step is
+// already clearly visible on the dark basemap; no blur, no outline, no glow.
+export const BAND_COLORS = [EMBER[4], EMBER[6], EMBER[7], EMBER[8]];
+const BAND_FILL = ['match', ['get', 'band'], 0, BAND_COLORS[0], 1, BAND_COLORS[1], 2, BAND_COLORS[2], BAND_COLORS[3]];
 
 export default function MapPanel() {
   const el = useRef<HTMLDivElement>(null);
@@ -67,7 +54,12 @@ export default function MapPanel() {
       const firstSymbol = map.getStyle().layers.find((l: { type: string }) => l.type === 'symbol')?.id;
       map.addSource('grid', { type: 'geojson', data: EMPTY });
       map.addLayer(
-        { id: 'grid', type: 'fill', source: 'grid', paint: { 'fill-color': fillColor as never, 'fill-opacity': ['case', ['==', ['get', 'model'], 1], 0.7, 0.9] as never } },
+        {
+          id: 'grid', type: 'fill', source: 'grid',
+          // nested levels: draw the brighter, inner shapes on top
+          layout: { 'fill-sort-key': ['get', 'band'] as never },
+          paint: { 'fill-color': BAND_FILL as never, 'fill-opacity': 0.95, 'fill-antialias': true },
+        },
         firstSymbol,
       );
       map.addSource('aoi', { type: 'geojson', data: EMPTY });
@@ -76,6 +68,7 @@ export default function MapPanel() {
       setReady(true);
     });
     mapRef.current = map;
+    if (import.meta.env.DEV) (window as unknown as { __agniMap: MLMap }).__agniMap = map; // for debugging in the console
     // the panel layout can change the map's size without a window resize
     const ro = new ResizeObserver(() => map.resize());
     ro.observe(el.current!);
@@ -85,11 +78,14 @@ export default function MapPanel() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!ready) return;
+  const shapes = useMemo(() => {
     const g = grid.data?.data;
-    (mapRef.current!.getSource('grid') as GeoJSONSource).setData(g && box ? gridToGeoJson(g.cells, g.max_count, g.res) : EMPTY);
-  }, [ready, grid.data, box]);
+    return g && box ? hotspotShapes(g.cells, g.max_count, g.res) : EMPTY;
+  }, [grid.data, box]);
+
+  useEffect(() => {
+    if (ready) (mapRef.current!.getSource('grid') as GeoJSONSource).setData(shapes);
+  }, [ready, shapes]);
 
   // outline + fit to the queried box
   useEffect(() => {
@@ -153,11 +149,11 @@ export default function MapPanel() {
       )}
       <div className="pointer-events-none absolute bottom-3 left-3 rounded-lg border border-line bg-page/80 px-3 py-2 backdrop-blur">
         <div className="flex items-center gap-2 text-[11px] text-muted">
-          <span>Few</span>
-          <span className="flex h-1.5 w-24 overflow-hidden rounded-full">
-            {ramp.map((c) => <span key={c} className="flex-1" style={{ background: c }} />)}
+          <span>Some burning</span>
+          <span className="flex gap-0.5">
+            {BAND_COLORS.map((c) => <span key={c} className="h-2 w-5 rounded-sm" style={{ background: c }} />)}
           </span>
-          <span>Many detections per 10 km</span>
+          <span>Intense</span>
         </div>
         {modelShare > 0.5 && <div className="mt-1 text-[11px] text-ink-2">Rebuilt from MODIS: where burning was, not exact points</div>}
       </div>

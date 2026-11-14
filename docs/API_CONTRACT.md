@@ -1,7 +1,7 @@
 # API Contract — Harmonized Burning Activity Calendar
 
 NASA Space Apps Challenge 2026 · Harmonization of MODIS and VIIRS Hot Spots · Region: Australia
-Backend architecture: `BACKEND_ARCHITECTURE_v2` · Contract version: **1.1**
+Backend architecture: `BACKEND_ARCHITECTURE_v2` · Contract version: **1.2**
 
 This document is for the frontend team. It defines every endpoint, what to send, and exactly what comes back, so the frontend can be built and mocked before the backend is finished. If the backend needs to change anything here, the contract version goes up and the change is listed in §15.
 
@@ -235,6 +235,8 @@ For a day mixing origins, `uncertainty` is the count-weighted average.
 | `baseline_start_year` | int | no | `2001` | First year of the baseline |
 | `baseline_end_year` | int | no | year before `month` | Last year of the baseline |
 | `types` | comma list | no | `0` | As §2 |
+
+**Assessed year inside the baseline:** the frontend asks for finished months with `baseline_start_year=2001` and `baseline_end_year=<last complete year>` (the same years as the calendar's `climatology`), so the assessed year can be inside the baseline. Then it **counts as one of the baseline years**, appears **once** in `history`, and `rank_of` = `n_years`. For the month in progress the frontend uses the default baseline (years before the month).
 
 **Month in progress:** if `month` is the current month, the backend compares **month-to-date**: for example 1–14 November 2026 against 1–14 November of every baseline year. `data.compared_days` says which days were used.
 
@@ -634,3 +636,4 @@ export interface ApiError {
 |---|---|
 | 1.0 | First contract, from backend architecture v2 |
 | 1.1 | Added `GET /api/grid` (§7, map density in 0.1° cells); later sections renumbered. `has_data` values renamed `"true"`/`"false"` → `"full"`/`"none"` (`"partial"` unchanged). Added `p10`/`p90` to calendar `climatology`. Added request size limits to `/api/meta` `limits`. Production must be HTTPS; CORS origins named. |
+| 1.2 | `/api/anomaly` (§6): defined what happens when the assessed year is inside the requested baseline (it counts once, `rank_of` = `n_years`). No field changes. |

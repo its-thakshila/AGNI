@@ -57,7 +57,7 @@ export default function TrendsTab() {
     return {
       animation: false,
       grid: { left: 40, right: 8, top: 10, bottom: 22 },
-      xAxis: { type: 'category', data: t.rows.map((r) => String(r.year)), axisLine: { lineStyle: { color: '#383835' } }, axisTick: { show: false }, axisLabel: { ...AXIS_FONT, interval: 4 } },
+      xAxis: { type: 'category', data: t.rows.map((r) => String(r.year)), axisLine: { lineStyle: { color: '#383835' } }, axisTick: { show: false }, axisLabel: { ...AXIS_FONT, interval: 'auto', hideOverlap: true } },
       yAxis: axisY,
       tooltip: {
         ...TOOLTIP,

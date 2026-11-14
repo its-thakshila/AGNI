@@ -264,7 +264,7 @@ export async function calendar(b: BBox, types: number[]): Promise<Envelope<Calen
     { query: { start_year: 2000, end_year: latestY }, warnings: warningsFor(b, RECORD_START, LATEST).filter((w) => w.code !== 'RECENT_DATA_PROVISIONAL') });
 }
 
-export async function anomaly(b: BBox, month: string, types: number[]): Promise<Envelope<AnomalyData>> {
+export async function anomaly(b: BBox, month: string, types: number[], baseline?: [number, number]): Promise<Envelope<AnomalyData>> {
   checkBox(b);
   await wait(150);
   const s = series(b, types);
@@ -284,16 +284,19 @@ export async function anomaly(b: BBox, month: string, types: number[]): Promise<
     }
     return { v: n ? r1(sum) : null, has: n === 0 ? 'none' : n < total || total < toDay ? 'partial' : 'full' };
   };
-  const by0 = 2001, by1 = y - 1;
+  const [by0, by1] = baseline ?? [2001, y - 1];
   const history: AnomalyData['history'] = [];
   const base: number[] = [];
-  for (let yy = by0; yy <= by1; yy++) {
-    const r = sumFor(yy);
-    history.push({ year: yy, value: r.v, has_data: r.has, main_origin: originOf(ymd(yy, m, 15)) });
-    if (r.has === 'full' && r.v !== null) base.push(r.v);
-  }
   const cur = sumFor(y);
-  history.push({ year: y, value: cur.v, has_data: cur.has, main_origin: originOf(ymd(y, m, 1)) });
+  // contract v1.2: the assessed year appears once in history, even when it is inside the baseline
+  for (let yy = Math.min(by0, y); yy <= Math.max(by1, y); yy++) {
+    const inBase = yy >= by0 && yy <= by1;
+    if (!inBase && yy !== y) continue;
+    const r = yy === y ? cur : sumFor(yy);
+    history.push({ year: yy, value: r.v, has_data: r.has, main_origin: originOf(ymd(yy, m, 15)) });
+    if (inBase && r.has === 'full' && r.v !== null) base.push(r.v);
+  }
+  const inBaseline = y >= by0 && y <= by1;
   const sorted = [...base].sort((a, c) => a - c);
   const mean = base.reduce((a, c) => a + c, 0) / Math.max(1, base.length);
   const std = Math.sqrt(base.reduce((a, c) => a + (c - mean) ** 2, 0) / Math.max(1, base.length));
@@ -308,8 +311,8 @@ export async function anomaly(b: BBox, month: string, types: number[]): Promise<
     baseline: { years: [by0, by1], n_years: base.length, median, mean: r1(mean), std: r1(std), ...stats },
     percent_of_median: v !== null && median ? r1((100 * v) / median) : null,
     z_score: v !== null && std ? +((v - mean) / std).toFixed(2) : null,
-    rank: v !== null ? [...base, v].sort((a, c) => c - a).indexOf(v) + 1 : null,
-    rank_of: base.length + 1,
+    rank: v !== null ? (inBaseline ? base : [...base, v]).sort((a, c) => c - a).indexOf(v) + 1 : null,
+    rank_of: inBaseline ? base.length : base.length + 1,
     category: v !== null && base.length ? categoryOf(v, stats) : null,
     has_data: cur.has,
     history,

@@ -25,7 +25,7 @@ function DailyChart() {
     return {
       animation: false,
       grid: { left: 40, right: 8, top: 10, bottom: 22 },
-      xAxis: { type: 'category', data: labels, axisLine: { lineStyle: { color: '#383835' } }, axisTick: { show: false }, axisLabel: { ...AXIS_FONT, interval: 4 } },
+      xAxis: { type: 'category', data: labels, axisLine: { lineStyle: { color: '#383835' } }, axisTick: { show: false }, axisLabel: { ...AXIS_FONT, interval: 'auto', hideOverlap: true } },
       yAxis: axisY,
       tooltip: {
         ...TOOLTIP,
@@ -85,7 +85,7 @@ function HistoryChart() {
     return {
       animation: false,
       grid: { left: 40, right: 8, top: 10, bottom: 22 },
-      xAxis: { type: 'category', data: h.map((x) => String(x.year)), axisLine: { lineStyle: { color: '#383835' } }, axisTick: { show: false }, axisLabel: { ...AXIS_FONT, interval: 4 } },
+      xAxis: { type: 'category', data: h.map((x) => String(x.year)), axisLine: { lineStyle: { color: '#383835' } }, axisTick: { show: false }, axisLabel: { ...AXIS_FONT, interval: 'auto', hideOverlap: true } },
       yAxis: axisY,
       tooltip: {
         ...TOOLTIP,

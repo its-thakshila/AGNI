@@ -64,9 +64,12 @@ export const api = {
   calendar: (bbox: BBox, types: number[]): Promise<Envelope<CalendarData>> =>
     USING_MOCK ? mock.calendar(bbox, types) : get('/api/calendar', { ...boxParams(bbox), types }),
 
-  /** month = "YYYY-MM"; the backend compares month-to-date for the current month. */
-  anomaly: (bbox: BBox, month: string, types: number[]): Promise<Envelope<AnomalyData>> =>
-    USING_MOCK ? mock.anomaly(bbox, month, types) : get('/api/anomaly', { ...boxParams(bbox), month, types }),
+  /** month = "YYYY-MM"; the backend compares month-to-date for the current month.
+   *  baseline = [first, last] year; omit for the default (2001 to the year before the month). */
+  anomaly: (bbox: BBox, month: string, types: number[], baseline?: [number, number]): Promise<Envelope<AnomalyData>> =>
+    USING_MOCK
+      ? mock.anomaly(bbox, month, types, baseline)
+      : get('/api/anomaly', { ...boxParams(bbox), month, types, baseline_start_year: baseline?.[0], baseline_end_year: baseline?.[1] }),
 
   daily: (q: AreaQuery): Promise<Envelope<DailyData>> => (USING_MOCK ? mock.daily(q) : get('/api/daily', areaParams(q))),
 
