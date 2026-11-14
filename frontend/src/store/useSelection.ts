@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { BBox } from '../api/types';
+import type { Basemap } from '../lib/basemaps';
 
 export type CalendarMode = 'count' | 'anomaly';
 export type Tab = 'calendar' | 'month' | 'trends';
@@ -18,6 +19,8 @@ interface SelectionState {
   playing: boolean;
   /** playback speed: days per frame-time multiplier (1 = about 1.5 days a second) */
   speed: PlaySpeed;
+  /** map background (remembered in this browser) */
+  basemap: Basemap;
   mode: CalendarMode;
   /** the Calendar tab shows every month, or the selected month's days */
   calView: CalView;
@@ -29,6 +32,7 @@ interface SelectionState {
   setDay: (day: number | null) => void;
   setPlaying: (playing: boolean) => void;
   setSpeed: (speed: PlaySpeed) => void;
+  setBasemap: (b: Basemap) => void;
   /** jump to a day of another month (stepping days across a month boundary) */
   setMonthDay: (year: number, month: number, day: number) => void;
   setMode: (m: CalendarMode) => void;
@@ -36,6 +40,14 @@ interface SelectionState {
   setTab: (t: Tab) => void;
   setTypes: (t: number[]) => void;
   setDrawing: (d: boolean) => void;
+}
+
+function savedBasemap(): Basemap {
+  try {
+    const v = localStorage.getItem('agni.basemap');
+    if (v === 'dark' || v === 'satellite' || v === 'daily' || v === 'terrain') return v;
+  } catch { /* storage unavailable */ }
+  return 'dark';
 }
 
 // Start on the month of the latest fire-day (yesterday): "how is this month going?"
@@ -48,6 +60,7 @@ export const useSelection = create<SelectionState>((set) => ({
   day: null,
   playing: false,
   speed: 1,
+  basemap: savedBasemap(),
   mode: 'count',
   calView: 'months',
   tab: 'calendar',
@@ -58,6 +71,10 @@ export const useSelection = create<SelectionState>((set) => ({
   setDay: (day) => set(day === null ? { day, playing: false } : { day }),
   setPlaying: (playing) => set({ playing }),
   setSpeed: (speed) => set({ speed }),
+  setBasemap: (basemap) => {
+    try { localStorage.setItem('agni.basemap', basemap); } catch { /* private mode etc. */ }
+    set({ basemap });
+  },
   setMonthDay: (year, month, day) => set({ year, month, day }),
   setMode: (mode) => set({ mode }),
   setCalView: (calView) => set({ calView }),

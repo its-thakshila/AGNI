@@ -4,7 +4,10 @@ import type { GeoJSONSource, LngLat, Map as MLMap, MapMouseEvent, MapTouchEvent 
 import type { BBox } from '../api/types';
 import { isModelled } from '../api/types';
 import { friendlyError } from '../api/client';
-import { useBox, useGrid, useMeta } from '../hooks/useData';
+import { useBox, useGrid, useMeta, useMonthQuery } from '../hooks/useData';
+import MapControls from './MapControls';
+import { applyBasemap, dailyAvailable, styleBorders } from '../lib/basemaps';
+import { ymd } from '../lib/dates';
 import DayControl from './DayControl';
 import { FRAME_MS, usePlayback } from '../hooks/usePlayback';
 import { useSelection } from '../store/useSelection';
@@ -70,9 +73,16 @@ export default function MapPanel() {
       pitchWithRotate: false,
     });
     map.touchZoomRotate.disableRotation();
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+    // map credits start collapsed behind their "i" button (expanded they cover the legend on phones);
+    // MapLibre opens them on its own while the map loads, so close them again until it has
+    const collapseCredits = () => el.current?.querySelector('.maplibregl-ctrl-attrib')?.classList.remove('maplibregl-compact-show');
+    collapseCredits();
+    map.once('styledata', collapseCredits);
+    map.once('idle', collapseCredits);
     map.on('load', () => {
-      const firstSymbol = map.getStyle().layers.find((l: { type: string }) => l.type === 'symbol')?.id;
+      // hotspots go under the borders, coastline and place names, so regions stay identifiable
+      const layers = map.getStyle().layers;
+      const below = (layers.find((l) => l.id === 'boundary_county') ?? layers.find((l) => l.type === 'symbol'))?.id;
       // two identical layers: a new map fades in on the idle one while the shown one fades out,
       // so changing month or day (and playback) crossfades instead of flipping
       for (const id of ['grid-a', 'grid-b']) {
@@ -87,9 +97,11 @@ export default function MapPanel() {
               'fill-opacity-transition': { duration: FADE_MS, delay: 0 },
             },
           },
-          firstSymbol,
+          below,
         );
       }
+      styleBorders(map);
+      collapseCredits();
       map.addSource('aoi', { type: 'geojson', data: EMPTY });
       map.addLayer({ id: 'aoi-fill', type: 'fill', source: 'aoi', paint: { 'fill-color': '#f2793a', 'fill-opacity': 0.04 } });
       map.addLayer({ id: 'aoi-line', type: 'line', source: 'aoi', paint: { 'line-color': '#f2793a', 'line-width': 1.5 } });
@@ -105,6 +117,29 @@ export default function MapPanel() {
       map.remove();
     };
   }, []);
+
+  // background: the dark map, or NASA imagery under the borders and labels
+  const basemap = useSelection((s) => s.basemap);
+  const setBasemap = useSelection((s) => s.setBasemap);
+  const { year, month } = useSelection();
+  const monthQ = useMonthQuery();
+  const shownDate = day !== null ? ymd(year, month, day) : monthQ?.end ?? '';
+  // imagery for the day shown, but held still during playback (new tiles every frame would flicker)
+  const [imageryDate, setImageryDate] = useState(shownDate);
+  useEffect(() => { if (!playing && shownDate) setImageryDate(shownDate); }, [playing, shownDate]);
+  // "on the day" falls back to the cloud-free imagery when NASA has nothing for that day (yet)
+  const [dailyMissing, setDailyMissing] = useState(false);
+  useEffect(() => {
+    if (!ready || !imageryDate) return;
+    let stale = false;
+    (async () => {
+      const missing = basemap === 'daily' && !(await dailyAvailable(imageryDate));
+      if (stale) return;
+      setDailyMissing(missing);
+      applyBasemap(mapRef.current!, missing ? 'satellite' : basemap, imageryDate);
+    })();
+    return () => { stale = true; };
+  }, [ready, basemap, basemap === 'daily' ? imageryDate : '']);
 
   const shapes = useMemo(() => {
     const g = grid.data?.data;
@@ -234,10 +269,13 @@ export default function MapPanel() {
           <div className="max-w-64 rounded-f3 border border-line bg-page/85 px-f4 py-f2 text-cap text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>
         )}
       </div>
+      <div className="absolute bottom-[2.75rem] right-f4 z-10">
+        <MapControls map={mapRef.current} basemap={basemap} onBasemap={setBasemap} dailyDate={imageryDate} dailyMissing={dailyMissing} />
+      </div>
       {liveError && (
         <div className="absolute bottom-f4 right-f6 max-w-64 rounded-f4 border border-line bg-page/85 px-f4 py-f3 text-cap text-ember-soft backdrop-blur">{liveError}</div>
       )}
-      <div className="pointer-events-none absolute bottom-f4 left-f4 rounded-f3 border border-line bg-page/80 px-f4 py-f3 backdrop-blur">
+      <div className="pointer-events-none absolute bottom-f4 left-f4 max-w-[calc(100%-5.5rem)] rounded-f3 border border-line bg-page/80 px-f4 py-f3 backdrop-blur">
         <div className="flex items-center gap-f3 text-cap text-muted">
           <span>Some burning</span>
           <span className="flex gap-f1">
