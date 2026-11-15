@@ -21,6 +21,13 @@ function categoryOf(v: number, c: Climatology): Category {
   return 'well_above';
 }
 
+/** Why a finished month isn't fully covered: days with no data at all, or days only partly observed
+ *  (e.g. the day a satellite outage starts), which leave every day with some data. */
+function missingText(c: CalendarCell): string {
+  const missing = c.days_total - c.days_with_data;
+  return missing > 0 ? `${missing} ${missing === 1 ? 'day' : 'days'} without data` : 'Some days only partly observed';
+}
+
 interface Drawn { value: [number, number, number]; cell: CalendarCell; color: string; selected: boolean; category: Category | null }
 type Api = { value: (i: number) => number; coord: (v: number[]) => number[]; size: (v: number[]) => number[] };
 
@@ -115,7 +122,7 @@ function MonthsView() {
             c.complete && usual && (c.has_data === 'full' || d.category) ? `${percentText((100 * c.count) / usual)} <span style="color:${INK.muted}">(usual ${compact(usual)})</span>` : '',
             d.category ? `<span style="color:${INK.secondary}">${CATEGORY_LABEL[d.category]}</span>` : '',
             `<span style="color:${INK.secondary}">${c.main_origin ? ORIGIN_LABEL[c.main_origin] : ''}${c.uncertainty ? ` · ±${Math.round(c.uncertainty * 100)}%` : ''}</span>`,
-            c.has_data === 'partial' && c.complete ? `<span style="color:#f8a466">${c.days_total - c.days_with_data} days without data${d.category ? '' : ': no fair comparison'}</span>` : '',
+            c.has_data === 'partial' && c.complete ? `<span style="color:#f8a466">${missingText(c)}${d.category ? '' : ': no fair comparison'}</span>` : '',
           ].filter(Boolean).join('<br/>');
         },
       },
@@ -192,7 +199,7 @@ function MonthsView() {
         >
           <ul className="space-y-f3 text-cap text-ink-2">
             <li className="flex items-center gap-f3"><Swatch kind="model" />Harmonized from MODIS by Harmonic (before 2012)</li>
-            <li className="flex items-center gap-f3"><Swatch kind="partial" />Some days have no data</li>
+            <li className="flex items-center gap-f3"><Swatch kind="partial" />Some days missing or partly observed</li>
             <li className="flex items-center gap-f3"><Swatch kind="none" />No data at all</li>
             <li className="flex items-center gap-f3"><Swatch kind="progress" />Month still in progress</li>
             <li className="pt-f2 text-muted">

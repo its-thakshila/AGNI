@@ -112,7 +112,7 @@ function HistoryChart() {
             `<b>${MONTHS_LONG[month - 1]} ${x.year}</b>${a.compared_days.month_to_date ? ` <span style="color:${INK.muted}">(days 1–${a.compared_days.to_day})</span>` : ''}`,
             `<span style="font-size:19px;font-weight:600">${fmt(x.value)}</span> detections`,
             x.main_origin ? `<span style="color:${INK.secondary}">${ORIGIN_LABEL[x.main_origin]}</span>` : '',
-            x.has_data === 'partial' ? `<span style="color:#f8a466">Some days missing, left out of “usual”</span>` : '',
+            x.has_data === 'partial' ? `<span style="color:#f8a466">Some days missing or partly observed, left out of “usual”</span>` : '',
           ].filter(Boolean).join('<br/>');
         },
       },

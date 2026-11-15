@@ -115,7 +115,7 @@ export default function Headline() {
             ) : shown.value === null ? (
               <div className="text-cap text-muted">No satellite data this {day === null ? 'month' : 'day'}</div>
             ) : shown.has_data === 'partial' ? (
-              <div className="max-w-48 text-cap text-muted">Some days have no satellite data, so no fair comparison</div>
+              <div className="max-w-48 text-cap text-muted">Some days lack full satellite coverage, so no fair comparison</div>
             ) : (
               <div className="text-cap text-muted">Not enough other years to compare</div>
             )}

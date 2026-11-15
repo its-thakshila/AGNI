@@ -12,7 +12,7 @@ RECORD_START = date(2000, 11, 1)
 
 # Day coverage rules (the same as pipeline/data_build/build_aggregates.py), used when no day
 # status file is given: Australia-wide detections per fire-day decide full / partial / none.
-MIN_DAY_ROWS = 100                         # fewer detections Australia-wide -> "partial"
+MIN_DAY_ROWS = 100                         # fewer detections Australia-wide -> flag "low_coverage" (information only)
 DAYNIGHT_UNRELIABLE_FROM = "2022-01-01"    # gap-filled days from here: day/night split unreliable
 
 # The 15 FIRMS VIIRS columns, in the documented order (same as the processed CSV).
@@ -118,8 +118,10 @@ def build_from_parquet(db, files: list[str], status_path: str | None, output: Pa
 
 def derive_day_status(db, rows: str, path: Path) -> None:
     """Per fire-day coverage from the detections themselves (no status file needed):
-    none = no detections (outage), partial = fewer than MIN_DAY_ROWS or next to an outage day,
-    daynight_reliable = false on gap-filled days from DAYNIGHT_UNRELIABLE_FROM (MODIS orbit drift)."""
+    none = no detections (outage), partial = next to an outage day (the outage may start or end
+    during it), daynight_reliable = false on gap-filled days from DAYNIGHT_UNRELIABLE_FROM (MODIS
+    orbit drift). A day with only a few detections is NOT partial: in the history that is a quiet
+    day (e.g. the wet season), fully observed. It is only flagged low_coverage for information."""
     db.execute(f"""COPY (
         WITH span AS (SELECT min(fire_date) AS a, max(fire_date) AS b FROM {rows}),
              days AS (SELECT unnest(generate_series(a, b, INTERVAL 1 DAY))::DATE AS fire_date FROM span),
@@ -130,7 +132,7 @@ def derive_day_status(db, rows: str, path: Path) -> None:
              k AS (SELECT *, lag(n) OVER (ORDER BY fire_date) AS prev_n, lead(n) OVER (ORDER BY fire_date) AS next_n FROM j)
         SELECT fire_date,
                CASE WHEN n = 0 THEN 'none'
-                    WHEN n < {MIN_DAY_ROWS} OR prev_n = 0 OR next_n = 0 THEN 'partial'
+                    WHEN prev_n = 0 OR next_n = 0 THEN 'partial'
                     ELSE 'full' END AS has_data,
                NOT (n_gapfill > 0 AND fire_date >= DATE '{DAYNIGHT_UNRELIABLE_FROM}') AS daynight_reliable,
                CASE WHEN n = 0 THEN 'outage' WHEN n < {MIN_DAY_ROWS} THEN 'low_coverage' END AS flag

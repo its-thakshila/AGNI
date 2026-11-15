@@ -319,7 +319,7 @@ class DerivedStatusTest(unittest.TestCase):
         self.assertEqual(got["2021-12-31"][0], "partial")        # next to an outage day
         self.assertEqual(got["2022-01-01"], ("none", True, "outage"))
         self.assertEqual(got["2022-01-02"][0], "partial")
-        self.assertEqual(got["2022-01-04"], ("partial", True, "low_coverage"))
+        self.assertEqual(got["2022-01-04"], ("full", True, "low_coverage"))  # a quiet day is fully observed
         self.assertEqual(got["2022-01-05"], ("full", False, None))  # gap-filled from 2022: day/night unreliable
 
 
