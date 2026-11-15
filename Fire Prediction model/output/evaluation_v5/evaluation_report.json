@@ -1,0 +1,311 @@
+{
+ "evaluated": "2026-11-15T22:00:28",
+ "models": "D:\\NASA\\Fire Prediction model\\models",
+ "test_years": [
+  2025
+ ],
+ "every_nth_issue_day": 2,
+ "topk": 1000,
+ "fss_windows_deg": [
+  0.1,
+  0.5,
+  1.1
+ ],
+ "leads": {
+  "1": {
+   "days": 183,
+   "actual_rows": 616481.0,
+   "model": {
+    "pr_auc": 0.4008,
+    "brier_x1e4": 30.3649,
+    "poisson_dev_per_cell": 0.1395,
+    "fss": [
+     0.4144,
+     0.7203,
+     0.8171
+    ],
+    "topk_row_capture": 0.6481,
+    "topk_hit_rate": 0.2585,
+    "daily_total_bias_pct": 4.61,
+    "daily_total_mape_pct": 29.0,
+    "daily_total_log_corr": 0.9295,
+    "reliability": [
+     {
+      "n": 7251083,
+      "mean_p": 4e-05,
+      "observed": 5e-05
+     },
+     {
+      "n": 9206329,
+      "mean_p": 0.00038,
+      "observed": 0.00041
+     },
+     {
+      "n": 2950972,
+      "mean_p": 0.00179,
+      "observed": 0.00171
+     },
+     {
+      "n": 1608963,
+      "mean_p": 0.00542,
+      "observed": 0.00504
+     },
+     {
+      "n": 656600,
+      "mean_p": 0.01659,
+      "observed": 0.01641
+     },
+     {
+      "n": 289549,
+      "mean_p": 0.05088,
+      "observed": 0.05276
+     },
+     {
+      "n": 60864,
+      "mean_p": 0.13726,
+      "observed": 0.14378
+     },
+     {
+      "n": 39329,
+      "mean_p": 0.29266,
+      "observed": 0.29586
+     },
+     {
+      "n": 29841,
+      "mean_p": 0.52499,
+      "observed": 0.54274
+     },
+     {
+      "n": 14700,
+      "mean_p": 0.76962,
+      "observed": 0.80361
+     }
+    ],
+    "log_frp_mae": 0.5595,
+    "log_frp_bias": 0.1838
+   },
+   "persistence": {
+    "pr_auc": 0.286,
+    "brier_x1e4": 35.6471,
+    "poisson_dev_per_cell": 0.23288,
+    "fss": [
+     0.3072,
+     0.5354,
+     0.6285
+    ],
+    "topk_row_capture": 0.5654,
+    "topk_hit_rate": 0.2243,
+    "daily_total_bias_pct": -3.32,
+    "daily_total_mape_pct": 59.3,
+    "daily_total_log_corr": 0.8685
+   },
+   "climatology": {
+    "pr_auc": 0.0342,
+    "brier_x1e4": 40.5544,
+    "poisson_dev_per_cell": 0.31421,
+    "fss": [
+     0.0777,
+     0.3469,
+     0.5324
+    ],
+    "topk_row_capture": 0.1256,
+    "topk_hit_rate": 0.0592,
+    "daily_total_bias_pct": 4.55,
+    "daily_total_mape_pct": 88.3,
+    "daily_total_log_corr": 0.6126
+   }
+  },
+  "3": {
+   "days": 183,
+   "actual_rows": 616481.0,
+   "model": {
+    "pr_auc": 0.1764,
+    "brier_x1e4": 36.9817,
+    "poisson_dev_per_cell": 0.21036,
+    "fss": [
+     0.1887,
+     0.5308,
+     0.6946
+    ],
+    "topk_row_capture": 0.3878,
+    "topk_hit_rate": 0.16,
+    "daily_total_bias_pct": -4.27,
+    "daily_total_mape_pct": 35.2,
+    "daily_total_log_corr": 0.8928,
+    "reliability": [
+     {
+      "n": 6187560,
+      "mean_p": 4e-05,
+      "observed": 6e-05
+     },
+     {
+      "n": 9002028,
+      "mean_p": 0.00039,
+      "observed": 0.00053
+     },
+     {
+      "n": 3368675,
+      "mean_p": 0.00181,
+      "observed": 0.00217
+     },
+     {
+      "n": 2155152,
+      "mean_p": 0.00542,
+      "observed": 0.00579
+     },
+     {
+      "n": 851342,
+      "mean_p": 0.01663,
+      "observed": 0.01727
+     },
+     {
+      "n": 401921,
+      "mean_p": 0.05295,
+      "observed": 0.05447
+     },
+     {
+      "n": 91329,
+      "mean_p": 0.1386,
+      "observed": 0.14658
+     },
+     {
+      "n": 40403,
+      "mean_p": 0.27748,
+      "observed": 0.28837
+     },
+     {
+      "n": 9820,
+      "mean_p": 0.49505,
+      "observed": 0.5169
+     }
+    ],
+    "log_frp_mae": 0.5812,
+    "log_frp_bias": 0.2284
+   },
+   "persistence": {
+    "pr_auc": 0.0852,
+    "brier_x1e4": 40.1313,
+    "poisson_dev_per_cell": 0.31324,
+    "fss": [
+     0.0984,
+     0.251,
+     0.3463
+    ],
+    "topk_row_capture": 0.2817,
+    "topk_hit_rate": 0.1225,
+    "daily_total_bias_pct": -4.13,
+    "daily_total_mape_pct": 106.3,
+    "daily_total_log_corr": 0.6507
+   },
+   "climatology": {
+    "pr_auc": 0.0342,
+    "brier_x1e4": 40.5544,
+    "poisson_dev_per_cell": 0.31421,
+    "fss": [
+     0.0777,
+     0.3469,
+     0.5324
+    ],
+    "topk_row_capture": 0.1256,
+    "topk_hit_rate": 0.0592,
+    "daily_total_bias_pct": 4.55,
+    "daily_total_mape_pct": 88.3,
+    "daily_total_log_corr": 0.6126
+   }
+  },
+  "7": {
+   "days": 183,
+   "actual_rows": 616481.0,
+   "model": {
+    "pr_auc": 0.0901,
+    "brier_x1e4": 39.1824,
+    "poisson_dev_per_cell": 0.24583,
+    "fss": [
+     0.0986,
+     0.4035,
+     0.6063
+    ],
+    "topk_row_capture": 0.2408,
+    "topk_hit_rate": 0.1065,
+    "daily_total_bias_pct": -15.0,
+    "daily_total_mape_pct": 40.2,
+    "daily_total_log_corr": 0.86,
+    "reliability": [
+     {
+      "n": 5389809,
+      "mean_p": 4e-05,
+      "observed": 7e-05
+     },
+     {
+      "n": 8857341,
+      "mean_p": 0.00039,
+      "observed": 0.00057
+     },
+     {
+      "n": 3733083,
+      "mean_p": 0.00176,
+      "observed": 0.00223
+     },
+     {
+      "n": 2478239,
+      "mean_p": 0.00541,
+      "observed": 0.00647
+     },
+     {
+      "n": 1070291,
+      "mean_p": 0.01623,
+      "observed": 0.01806
+     },
+     {
+      "n": 477417,
+      "mean_p": 0.05102,
+      "observed": 0.05419
+     },
+     {
+      "n": 87200,
+      "mean_p": 0.13538,
+      "observed": 0.14743
+     },
+     {
+      "n": 14850,
+      "mean_p": 0.25001,
+      "observed": 0.25832
+     }
+    ],
+    "log_frp_mae": 0.5854,
+    "log_frp_bias": 0.2295
+   },
+   "persistence": {
+    "pr_auc": 0.0252,
+    "brier_x1e4": 41.1008,
+    "poisson_dev_per_cell": 0.3399,
+    "fss": [
+     0.031,
+     0.1299,
+     0.2186
+    ],
+    "topk_row_capture": 0.1265,
+    "topk_hit_rate": 0.0641,
+    "daily_total_bias_pct": -4.48,
+    "daily_total_mape_pct": 122.8,
+    "daily_total_log_corr": 0.5066
+   },
+   "climatology": {
+    "pr_auc": 0.0342,
+    "brier_x1e4": 40.5544,
+    "poisson_dev_per_cell": 0.31421,
+    "fss": [
+     0.0777,
+     0.3469,
+     0.5324
+    ],
+    "topk_row_capture": 0.1256,
+    "topk_hit_rate": 0.0592,
+    "daily_total_bias_pct": 4.55,
+    "daily_total_mape_pct": 88.3,
+    "daily_total_log_corr": 0.6126
+   }
+  }
+ },
+ "seconds": 660
+}

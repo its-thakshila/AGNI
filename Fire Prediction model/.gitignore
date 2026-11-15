@@ -1,64 +1,36 @@
-# Fire forecast model: only what is needed to LOAD the model and RUN forecasts (forecast.py).
-# Allow-list: everything is ignored, then the needed files are re-included.
-# Folder layout must stay as it is: fcst_config.py finds ml_pipeline/, backend/ and data/ via the parent folder.
+# Fire forecast model, v5 (v5_unified_ffdi_cv). Paths here are relative to this folder.
+# Allow-list: everything is ignored, then only what is needed to RUN v5 forecasts is re-included.
+# Training / evaluation scripts (train_forecast.py, evaluate.py, build_dataset.py, attributes.py,
+# run_pipeline.py, run_v5_v6.sh) and the design PDF are kept locally only.
+#
+# fcst_config.py also expects ../ml_pipeline/, ../backend/data/parquet/ and ../data/weather/
+# next to this folder. Those are outside this folder, so this file cannot include them.
 
 /*
 !/.gitignore
+!/README.md
 
-# ---- forecast code + trained models (lead_1/3/7.joblib, training_report.json)
-!/Fire Prediction model/
-/Fire Prediction model/*
-!/Fire Prediction model/README.md
-!/Fire Prediction model/fcst_config.py
-!/Fire Prediction model/fmodels.py
-!/Fire Prediction model/history.py
-!/Fire Prediction model/forecast.py
-!/Fire Prediction model/forecast_weather.py
-!/Fire Prediction model/fire_danger.py
-!/Fire Prediction model/weather_forecast_template.csv
-!/Fire Prediction model/models/
+# ---- forecast code (load the model and run forecast.py)
+!/fcst_config.py
+!/fmodels.py
+!/history.py
+!/forecast.py
+!/forecast_weather.py
+!/fire_danger.py
+!/weather_forecast_template.csv
 
-# ---- shared modules from the MODIS->VIIRS pipeline (grid/time rules, weather features)
-!/ml_pipeline/
-/ml_pipeline/*
-!/ml_pipeline/config.py
-!/ml_pipeline/common.py
-!/ml_pipeline/weather.py
-# row-synthesis statistics (overpass times, pixel sizes, FRP/brightness spread), 0.7 MB
-!/ml_pipeline/output/
-/ml_pipeline/output/*
-!/ml_pipeline/output/models/
-/ml_pipeline/output/models/*
-!/ml_pipeline/output/models/synthesis_stats.joblib
+# ---- v5 weights (lead_1/3/7.joblib, ~8 MB each) + training report json
+!/models/
+/models/*
+!/models/*.joblib
+!/models/*.json
 
-# ---- fire history the features are built from (44 MB) + day quality flags
-!/backend/
-/backend/*
-!/backend/data/
-/backend/data/*
-!/backend/data/parquet/
-/backend/data/parquet/*
-!/backend/data/parquet/daily_cells.parquet
-!/backend/data/parquet/day_status.parquet
-
-# ---- weather input folder (the 455 MB POWER parquet is too big for plain git: use Git LFS or download it)
-!/data/
-/data/*
-!/data/weather/
-/data/weather/*
-!/data/weather/PUT_WEATHER_FILES_HERE.txt
-# To commit it with Git LFS:  git lfs track "data/weather/*.parquet"  and uncomment:
-# !/data/weather/australia_daily_weather_2000_2026.parquet
-
-# ---- optional: recent real VIIRS rows, used to place forecast rows on real pixel positions and for the
-# static (gas flare / industry) layer. Without them rows are placed uniformly inside their cells.
-# Needs the issue year and the year before. Uncomment to include (75-96 MB each; Git LFS recommended):
-# !/data/train/
-# /data/train/*
-# !/data/train/VIIRS/
-# /data/train/VIIRS/*
-# !/data/train/VIIRS/viirs-snpp_2024_Australia.csv
-# !/data/train/VIIRS/viirs-snpp_2025_Australia.csv
+# ---- v5 evaluation report json (output/ itself is 3.7 GB and stays out)
+!/output/
+/output/*
+!/output/evaluation_v5/
+/output/evaluation_v5/*
+!/output/evaluation_v5/evaluation_report.json
 
 # ---- never commit
 __pycache__/
