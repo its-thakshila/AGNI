@@ -12,12 +12,15 @@ export const CATEGORY_COLOR: Record<Category, string> = {
   above: '#a84646',
   well_above: '#e66767',
 };
+// The category is about rank among the years (percentiles), not size: the % beside it gives the
+// size. Worded that way so "6% below usual · Among the lowest" or "77% above usual · Higher than
+// most years" never read as a contradiction.
 export const CATEGORY_LABEL: Record<Category, string> = {
-  well_below: 'Much lower than usual',
-  below: 'Lower than usual',
-  normal: 'Usual',
-  above: 'Higher than usual',
-  well_above: 'Much higher than usual',
+  well_below: 'Among the lowest years',   // bottom 10%
+  below: 'Lower than most years',         // 10-25%
+  normal: 'Within the usual range',       // middle half
+  above: 'Higher than most years',        // 75-90%
+  well_above: 'Among the highest years',  // top 10%
 };
 export const CATEGORIES: Category[] = ['well_below', 'below', 'normal', 'above', 'well_above'];
 

@@ -101,3 +101,9 @@ export interface ApiErrorBody {
 export interface AreaQuery { bbox: BBox; start: string; end: string; types: number[] }
 
 export const isModelled = (o: Origin | null | undefined) => o === 'ml' || o === 'gapfill';
+
+/** With satellite days missing, a low total may only be the gap: only "higher" is still a fair call. */
+export function fairCategory(c: Category | null, has: HasData): Category | null {
+  if (has !== 'partial' || c === null) return c;
+  return c === 'above' || c === 'well_above' ? c : null;
+}

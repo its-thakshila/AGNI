@@ -8,6 +8,7 @@ import type {
   AnomalyData, AreaQuery, BBox, CalendarCell, CalendarData, Category, Climatology, DailyData, DailyValue,
   Envelope, GridCell, GridData, HasData, Meta, Origin, Warning,
 } from '../types';
+import { fairCategory } from '../types';
 import { ApiError } from '../errors';
 import { num, readRemote, readWholeFile, text, type Prune, type Row } from './parquet';
 import { boxAreaDeg2, daysBetween, daysInMonth, eachDay, minDate, ymd } from '../../lib/dates';
@@ -440,6 +441,17 @@ function categoryOf(v: number, s: { p10: number; p25: number; p75: number; p90: 
   return 'well_above';
 }
 
+/**
+ * Rank among every year that has data, the same bars the "in every year" chart draws. Years
+ * with some days missing count too: missing days only lower a total, so a year that is still
+ * higher really is higher (leaving them out made "6th" disagree with the bars).
+ */
+function rankOf(history: { year: number; value: number | null }[], y: number, value: number | null, inRange: (h: { year: number }) => boolean) {
+  if (value === null) return { rank: null, rank_of: history.filter((h) => h.value !== null && inRange(h)).length };
+  const others = history.filter((h) => h.year !== y && h.value !== null && inRange(h));
+  return { rank: 1 + others.filter((h) => h.value! > value).length, rank_of: others.length + 1 };
+}
+
 export async function anomaly(b: BBox, month: string, types: number[], baseline?: [number, number]): Promise<Envelope<AnomalyData>> {
   checkBox(b);
   const dt = await data();
@@ -449,7 +461,7 @@ export async function anomaly(b: BBox, month: string, types: number[], baseline?
   const latestDay = +latest.slice(8, 10);
   const mtd = month === latest.slice(0, 7) && latestDay < daysInMonth(y, mo);
   const toDay = mtd ? latestDay : daysInMonth(y, mo);
-  const [first, last] = baseline ?? [2001, y - 1];
+  const [first, last] = baseline ?? [+m.record_start.slice(0, 4), y - 1];
   if (baseline && !(first <= last && last <= +latest.slice(0, 4)))
     throw new ApiError('INVALID_DATE_RANGE', 'Choose baseline years inside the record.', 400);
   const years = [...new Set([...Array.from({ length: Math.max(0, last - first + 1) }, (_, i) => first + i), y])]
@@ -481,9 +493,7 @@ export async function anomaly(b: BBox, month: string, types: number[], baseline?
     return { year: yy, value: s.count, has_data: s.has_data, main_origin: s.main_origin };
   });
   const cur = history.find((h) => h.year === y) ?? { year: y, value: null, has_data: 'none' as HasData, main_origin: null };
-  const inBaseline = first <= y && y <= last;
   const values = history.filter((h) => h.has_data === 'full' && h.year >= first && h.year <= last).map((h) => h.value!);
-  const counted = inBaseline && cur.has_data === 'full';
   const value = cur.value;
   const mean = values.length ? values.reduce((a, x) => a + x, 0) / values.length : 0;
   const std = values.length ? Math.sqrt(values.reduce((a, x) => a + (x - mean) ** 2, 0) / values.length) : 0;
@@ -497,9 +507,8 @@ export async function anomaly(b: BBox, month: string, types: number[], baseline?
     baseline: { years: [first, last], n_years: values.length, median, mean, std, ...stats },
     percent_of_median: value !== null && median ? (100 * value) / median : null,
     z_score: value !== null && std ? (value - mean) / std : null,
-    rank: value !== null ? 1 + values.filter((x) => x > value).length : null,
-    rank_of: values.length + (value !== null && !counted ? 1 : 0),
-    category: value !== null && values.length ? categoryOf(value, stats) : null,
+    ...rankOf(history, y, value, (h) => h.year >= first && h.year <= last),
+    category: fairCategory(value !== null && values.length ? categoryOf(value, stats) : null, cur.has_data),
     has_data: cur.has_data,
     history,
   }, { query: { month, baseline_start_year: first, baseline_end_year: last }, warnings: w });
@@ -534,7 +543,6 @@ export async function dayAnomaly(b: BBox, date: string, types: number[]): Promis
   });
   const cur = history.find((h) => h.year === y) ?? { year: y, value: null, has_data: 'none' as HasData, main_origin: null };
   const values = history.filter((h) => h.has_data === 'full').map((h) => h.value!);
-  const counted = cur.has_data === 'full';
   const value = cur.value;
   const mean = values.length ? values.reduce((a, x) => a + x, 0) / values.length : 0;
   const std = values.length ? Math.sqrt(values.reduce((a, x) => a + (x - mean) ** 2, 0) / values.length) : 0;
@@ -547,10 +555,9 @@ export async function dayAnomaly(b: BBox, date: string, types: number[]): Promis
     baseline: { years: [first, last], n_years: values.length, median, mean, std, ...stats },
     percent_of_median: value !== null && median ? (100 * value) / median : null,
     z_score: value !== null && std ? (value - mean) / std : null,
-    rank: value !== null ? 1 + values.filter((x) => x > value).length : null,
-    rank_of: values.length + (value !== null && !counted ? 1 : 0),
+    ...rankOf(history, y, value, () => true),
     // a single day needs a few comparable years before "usual" means anything
-    category: value !== null && values.length >= 5 ? categoryOf(value, stats) : null,
+    category: fairCategory(value !== null && values.length >= 5 ? categoryOf(value, stats) : null, cur.has_data),
     has_data: cur.has_data,
     history,
   }, { start: date, end: date, query: { date }, warnings: warnings(st, new Set(parts[years.indexOf(y)]?.map((x) => x.o) ?? []), b, date) });

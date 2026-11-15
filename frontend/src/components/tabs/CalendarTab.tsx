@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { CalendarCell, Category, Climatology } from '../../api/types';
-import { isModelled } from '../../api/types';
+import { fairCategory, isModelled } from '../../api/types';
 import { friendlyError } from '../../api/client';
 import { useAnomaly, useBox, useCalendar } from '../../hooks/useData';
 import { useSelection } from '../../store/useSelection';
@@ -44,7 +44,7 @@ function MonthsView() {
       const clim = d.climatology[cell.month - 1];
       let category: Category | null = null;
       if (cell.count !== null) {
-        if (cell.complete && clim.years_used) category = categoryOf(cell.count, clim);
+        if (cell.complete && clim.years_used) category = fairCategory(categoryOf(cell.count, clim), cell.has_data);
         else if (anomaly && anomaly.month === `${cell.year}-${String(cell.month).padStart(2, '0')}`) category = anomaly.category;
       }
       const color =
@@ -112,10 +112,10 @@ function MonthsView() {
           return [
             head,
             `<span style="font-size:19px;font-weight:600">${fmt(c.count)}</span> detections`,
-            c.complete && usual ? `${percentText((100 * c.count) / usual)} <span style="color:${INK.muted}">(usual ${compact(usual)})</span>` : '',
+            c.complete && usual && (c.has_data === 'full' || d.category) ? `${percentText((100 * c.count) / usual)} <span style="color:${INK.muted}">(usual ${compact(usual)})</span>` : '',
             d.category ? `<span style="color:${INK.secondary}">${CATEGORY_LABEL[d.category]}</span>` : '',
             `<span style="color:${INK.secondary}">${c.main_origin ? ORIGIN_LABEL[c.main_origin] : ''}${c.uncertainty ? ` · ±${Math.round(c.uncertainty * 100)}%` : ''}</span>`,
-            c.has_data === 'partial' && c.complete ? `<span style="color:#f8a466">${c.days_total - c.days_with_data} days without data</span>` : '',
+            c.has_data === 'partial' && c.complete ? `<span style="color:#f8a466">${c.days_total - c.days_with_data} days without data${d.category ? '' : ': no fair comparison'}</span>` : '',
           ].filter(Boolean).join('<br/>');
         },
       },
@@ -198,7 +198,7 @@ function MonthsView() {
             <li className="pt-f2 text-muted">
               {mode === 'count'
                 ? 'Brighter = more detections. Grey year labels are modelled years.'
-                : 'Each month is compared with the same month in other years: “usual” is the middle half of years.'}
+                : 'Each month is compared with the same month in every year. The colour shows where it ranks; the middle colour is the usual range (the middle half of years).'}
             </li>
           </ul>
         </Popover>

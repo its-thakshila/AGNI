@@ -65,8 +65,9 @@ export function useAnomaly() {
   const latest = meta?.coverage.latest_fire_date;
   // "in progress" = the newest month with data, and its last day isn't in yet
   const inProgress = !!latest && ym(year, month) === latest.slice(0, 7) && +latest.slice(8, 10) < daysInMonth(year, month);
-  const lastFullYear = latest ? (latest.endsWith('-12-31') ? +latest.slice(0, 4) : +latest.slice(0, 4) - 1) : 0;
-  const baseline: [number, number] | undefined = inProgress ? undefined : [2001, lastFullYear];
+  // every year of the record, exactly the years behind the calendar's colours and "usual"
+  const baseline: [number, number] | undefined = inProgress || !meta || !latest
+    ? undefined : [+meta.coverage.record_start.slice(0, 4), +latest.slice(0, 4)];
   // don't ask about months after the newest data (e.g. before the app has moved to the latest month)
   const inRecord = !!latest && ym(year, month) <= latest.slice(0, 7);
   return gated(useQuery({
