@@ -4,6 +4,7 @@ import type { GeoJSONSource, LngLat, Map as MLMap, MapMouseEvent, MapTouchEvent 
 import type { BBox } from '../api/types';
 import { isModelled } from '../api/types';
 import { friendlyError } from '../api/client';
+import { ApiError } from '../api/errors';
 import { useBox, useGrid, useMeta, useMonthQuery } from '../hooks/useData';
 import MapControls from './MapControls';
 import { applyBasemap, dailyAvailable, styleBorders } from '../lib/basemaps';
@@ -15,7 +16,7 @@ import { EMBER } from '../lib/colors';
 import { shapesFor } from '../lib/shapeCache';
 import AreaControl from './AreaControl';
 import Icon from './ui/Icon';
-import { LoaderCircle } from 'lucide-react';
+import { CloudOff, LoaderCircle, RotateCw, TriangleAlert } from 'lucide-react';
 import { useLive } from '../hooks/useLiveSync';
 
 const STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
@@ -261,6 +262,22 @@ export default function MapPanel() {
       <div className="absolute left-f4 top-f4 z-10">
         <AreaControl />
       </div>
+      {/* the map couldn't load: same dimmed overlay, with the reason and a retry (loading wins while it retries) */}
+      {grid.error && !grid.isFetching && !(showLoading || fetching > 0) && (
+        <div className="pointer-events-none absolute inset-0 z-[5] grid place-items-center bg-page/45 p-f4" role="alert">
+          <div className="chip pointer-events-auto flex max-w-[22rem] items-center gap-f3 rounded-f5 border border-line bg-page/90 py-f2 pl-f4 pr-f2 text-body text-ink-2 shadow-lg backdrop-blur">
+            <Icon icon={grid.error instanceof ApiError && grid.error.code === 'NETWORK' ? CloudOff : TriangleAlert} size="sm" className="shrink-0 text-ember-soft" />
+            <span className="min-w-0">{friendlyError(grid.error)}</span>
+            <button
+              onClick={() => grid.refetch()}
+              className="flex shrink-0 items-center gap-f1 rounded-full px-f3 py-f1 text-ink transition-colors hover:bg-raised"
+            >
+              <Icon icon={RotateCw} size="xs" />
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
       {(showLoading || fetching > 0) && (
         <div className="pointer-events-none absolute inset-0 z-[5] grid place-items-center bg-page/45 transition-opacity" role="status" aria-live="polite">
           <div className="chip flex items-center gap-f3 rounded-f5 border border-line bg-page/90 px-f4 py-f2 text-body text-ink-2 shadow-lg backdrop-blur">
@@ -279,9 +296,6 @@ export default function MapPanel() {
       {/* phones: one row below the area buttons, which take the top row */}
       <div className="absolute right-f4 top-[4.25rem] z-10 flex flex-col items-end gap-f2 sm:top-f4">
         <DayControl />
-        {grid.error && (
-          <div className="max-w-64 rounded-f3 border border-line bg-page/85 px-f4 py-f2 text-cap text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>
-        )}
       </div>
       {/* sits 5px above the 34px credits button (13px from the edge): one column, equal gaps */}
       <div className="absolute bottom-[52px] right-f4 z-10">
