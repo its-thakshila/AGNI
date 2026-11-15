@@ -224,27 +224,40 @@ function checkBox(b: BBox) {
     throw new ApiError('BOX_OUTSIDE_COVERAGE', 'The selected area must be inside Australia.', 400);
 }
 
-const FLAG_WARNINGS: Record<string, Warning> = {
-  outage: { code: 'KNOWN_OUTAGE', message: 'Some days have no satellite data at all (satellite outage).' },
-  firms_low: { code: 'FIRMS_LOW_DELIVERY', message: 'Some recent days have incomplete satellite delivery.' },
-  firms_error: { code: 'FIRMS_UNAVAILABLE', message: 'Recent satellite observations could not be fetched for some days.' },
+// Notes about the data, one per topic and always in this order: where the numbers come from,
+// then days without (complete) data, then how to read them.
+const NOTES = {
+  model: { code: 'MODEL_DATA_INCLUDED', message: 'Before 2012, counts are estimated from MODIS by Harmonic, AGNI’s harmonization model (VIIRS began in 2012).' },
+  gapfill: { code: 'VIIRS_OFFLINE', message: 'On days when no VIIRS satellite was available, Harmonic estimated the detections from MODIS.' },
+  snpp: { code: 'SNPP_OFFLINE', message: 'On days when S-NPP was offline, the same VIIRS instrument on NOAA-20 or NOAA-21 was used.' },
+  outage: { code: 'KNOWN_OUTAGE', message: 'Some days have no satellite data at all.' },
+  low: { code: 'FIRMS_LOW_DELIVERY', message: 'Some recent days have incomplete satellite delivery.' },
+  unavailable: { code: 'FIRMS_UNAVAILABLE', message: 'Recent satellite data could not be fetched for some days yet.' },
+  daynight: { code: 'DAYNIGHT_UNRELIABLE', message: 'Day and night counts are not split on Harmonic-estimated days from 2022 on.' },
+  smallBox: { code: 'SMALL_BOX_MODEL_PERIOD', message: 'Harmonic estimates are reliable as totals, less so for very small areas.' },
   provisional: { code: 'RECENT_DATA_PROVISIONAL', message: 'The last 3 days are near-real-time data and may still change.' },
-  viirs_offline: { code: 'VIIRS_OFFLINE', message: 'VIIRS was offline on some days; Harmonic estimated them from MODIS.' },
-  snpp_offline: { code: 'SNPP_OFFLINE', message: 'S-NPP was offline on some days; they were observed by the same VIIRS instrument on NOAA-20/21.' },
-};
+} satisfies Record<string, Warning>;
+
+/** The order notes are shown in (also used to merge notes from several queries). */
+export const NOTE_ORDER = Object.values(NOTES).map((n) => n.code);
 
 function warnings(status: StatusRow[], origins: Set<string>, b: BBox, start: string): Warning[] {
-  const out: Warning[] = [];
   const flags = new Set(status.map((s) => s.fl).filter(Boolean) as string[]);
-  for (const [flag, w] of Object.entries(FLAG_WARNINGS)) if (flags.has(flag)) out.push(w);
-  if (status.some((s) => s.h === 'none' && !s.fl)) out.push(FLAG_WARNINGS.outage);
-  const model = origins.has('ml') || origins.has('gapfill');
-  if (model) out.push({ code: 'MODEL_DATA_INCLUDED', message: 'Part of this period is harmonized from MODIS by Harmonic, AGNI’s harmonization model.' });
-  if (model && b.max_lat - b.min_lat < LIMITS.small_box_deg && b.max_lon - b.min_lon < LIMITS.small_box_deg && (start <= '2011-12-31' || origins.has('gapfill')))
-    out.push({ code: 'SMALL_BOX_MODEL_PERIOD', message: 'Model-based years are reliable only as totals for small areas.' });
-  if (status.some((s) => !s.r)) out.push({ code: 'DAYNIGHT_UNRELIABLE', message: 'Day/night split is not shown on gap-filled days.' });
-  const seen = new Set<string>();
-  return out.filter((w) => !seen.has(w.code) && seen.add(w.code));
+  const gapfill = origins.has('gapfill') || flags.has('viirs_offline');
+  const model = origins.has('ml') || gapfill;
+  const small = b.max_lat - b.min_lat < LIMITS.small_box_deg && b.max_lon - b.min_lon < LIMITS.small_box_deg;
+  const out: (Warning | false)[] = [
+    origins.has('ml') && NOTES.model,
+    gapfill && NOTES.gapfill,
+    flags.has('snpp_offline') && NOTES.snpp,
+    (flags.has('outage') || status.some((s) => s.h === 'none' && !s.fl)) && NOTES.outage,
+    flags.has('firms_low') && NOTES.low,
+    flags.has('firms_error') && NOTES.unavailable,
+    status.some((s) => !s.r) && NOTES.daynight,
+    model && small && (start <= '2011-12-31' || gapfill) && NOTES.smallBox,
+    flags.has('provisional') && NOTES.provisional,
+  ];
+  return out.filter((w): w is Warning => !!w);
 }
 
 function envelope<T>(b: BBox, types: number[], data: T, extra: { start?: string; end?: string; missing?: string[]; warnings?: Warning[]; query?: object } = {}): Envelope<T> {
@@ -269,7 +282,7 @@ export async function meta(): Promise<Meta> {
     coverage: { record_start: m.record_start, local_end: m.local_end, latest_fire_date: m.latest_fire_date, bbox: COVERAGE },
     periods: [
       ...m.periods.map((p) => (p.to === null ? { ...p, to: m.local_end } : p)),
-      { from: liveStart, to: null, origin: 'firms_nrt', label: 'VIIRS S-NPP via NASA FIRMS (Harmonic from MODIS when VIIRS is offline)', uncertainty: 0 },
+      { from: liveStart, to: null, origin: 'firms_nrt', label: 'VIIRS via NASA FIRMS (S-NPP, or NOAA-20/21 when it is offline; Harmonic from MODIS when no VIIRS is available)', uncertainty: 0 },
     ],
     known_gaps: m.known_gaps,
     types: [{ value: 0, label: 'Vegetation fire' }, { value: 2, label: 'Static / industrial source' }, { value: 3, label: 'Offshore' }],
