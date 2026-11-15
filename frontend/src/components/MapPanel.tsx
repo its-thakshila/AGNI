@@ -184,6 +184,13 @@ export default function MapPanel() {
     // one finger draws instead of panning; pinch-zoom is off too, so a two-finger slip can't move the map mid-draw
     map.dragPan.disable();
     map.touchZoomRotate.disable();
+    // with panning off, MapLibre hands touch gestures back to the browser, so a drag would also
+    // scroll the page. Claim every touch on the map while drawing (CSS for most browsers, and a
+    // non-passive listener for older Safari).
+    const surface = map.getCanvasContainer();
+    surface.style.touchAction = 'none';
+    const noScroll = (e: TouchEvent) => { if (e.cancelable) e.preventDefault(); };
+    surface.addEventListener('touchmove', noScroll, { passive: false });
     let start: LngLat | null = null;
     let last: LngLat | null = null;
     const src = map.getSource('aoi') as GeoJSONSource;
@@ -224,6 +231,8 @@ export default function MapPanel() {
     window.addEventListener('keydown', esc);
     return () => {
       canvas.style.cursor = '';
+      surface.style.touchAction = '';
+      surface.removeEventListener('touchmove', noScroll);
       map.dragPan.enable();
       map.touchZoomRotate.enable();
       map.touchZoomRotate.disableRotation();

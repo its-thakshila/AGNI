@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import { Info } from 'lucide-react';
-import logo from '../assets/brand/agni-logo.svg';
 import logoWithName from '../assets/brand/agni-logo-text.svg';
 import { useMeta } from '../hooks/useData';
 import AboutDialog from './AboutDialog';
@@ -11,10 +10,9 @@ export default function Header() {
   const demo = useMeta().data?.dataset === 'mock';
   return (
     <header className="flex h-f7 shrink-0 items-center justify-between gap-f4 px-f5">
-      {/* the wordmark with the full name where there is room, the wordmark alone on phones */}
+      {/* the logo with the full name everywhere; a little smaller on phones */}
       <div className="flex min-w-0 items-center">
-        <img src={logoWithName} alt="AGNI — Active-fire Global Normalized Inventory" className="hidden h-f6 w-auto sm:block" />
-        <img src={logo} alt="AGNI" className="h-f5 w-auto sm:hidden" />
+        <img src={logoWithName} alt="AGNI — Active-fire Global Normalized Inventory" className="h-[26px] w-auto sm:h-f6" />
       </div>
       <div className="flex items-center gap-f3">
         {demo && (
