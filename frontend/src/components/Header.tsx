@@ -1,5 +1,7 @@
 import { useRef } from 'react';
-import { Flame, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
+import logo from '../assets/brand/agni-logo.svg';
+import logoWithName from '../assets/brand/agni-logo-text.svg';
 import { useMeta } from '../hooks/useData';
 import AboutDialog from './AboutDialog';
 import Icon from './ui/Icon';
@@ -9,12 +11,10 @@ export default function Header() {
   const demo = useMeta().data?.dataset === 'mock';
   return (
     <header className="flex h-f7 shrink-0 items-center justify-between gap-f4 px-f5">
-      <div className="flex min-w-0 items-center gap-f3">
-        <span className="grid size-f6 shrink-0 place-items-center rounded-f3 bg-ember/12 text-ember">
-          <Icon icon={Flame} />
-        </span>
-        <span className="text-lead font-semibold tracking-[0.18em] text-ink">AGNI</span>
-        <span className="hidden truncate text-cap text-muted sm:inline">Active-fire Global Normalized Inventory</span>
+      {/* the wordmark with the full name where there is room, the wordmark alone on phones */}
+      <div className="flex min-w-0 items-center">
+        <img src={logoWithName} alt="AGNI — Active-fire Global Normalized Inventory" className="hidden h-f6 w-auto sm:block" />
+        <img src={logo} alt="AGNI" className="h-f5 w-auto sm:hidden" />
       </div>
       <div className="flex items-center gap-f3">
         {demo && (

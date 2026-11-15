@@ -87,7 +87,8 @@ export default function Headline() {
         <p className="mt-f4 text-body text-muted">Choose an area inside {REGION.name} to see its fire history.</p>
       ) : (
         <div className="mt-f4 flex items-end justify-between gap-f4">
-          <div className="min-w-0">
+          {/* the number and its caption keep their width; on narrow screens the comparison wraps instead */}
+          <div className="shrink-0">
             <div className="tabular text-display font-semibold text-ink">{value !== null && value !== undefined ? fmt(value) : '—'}</div>
             {/* two fixed lines: one wrapping line would change the height as the text beside it changes */}
             <div className="mt-f2 text-cap text-muted">
@@ -95,7 +96,7 @@ export default function Headline() {
               <div className="truncate">{aoi ? 'custom area' : `all of ${REGION.name}`}</div>
             </div>
           </div>
-          <div className={`shrink-0 text-right transition-opacity ${stale ? 'opacity-50' : ''}`}>
+          <div className={`min-w-0 text-right transition-opacity ${stale ? 'opacity-50' : ''}`}>
             {shown?.category && shown.percent_of_median !== null ? (
               <>
                 <div className="flex items-center justify-end gap-f2 text-lead font-medium text-ink">
