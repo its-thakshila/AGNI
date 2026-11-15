@@ -73,10 +73,10 @@ def fetch_day(firms, day: date, today: date) -> tuple[str, list[dict], dict]:
 
     modis, _ = _first(firms, MODIS_PRODUCTS, day, 1)
     if modis is not None:
-        # Harmonic's features use MODIS from 3 days before to 3 days after (as in the ML team's
-        # gapfill.py), so fetch that window; days after today don't exist yet and are skipped.
+        # Harmonic's features use MODIS from CONTEXT_BEFORE days before to CONTEXT_AFTER days after
+        # (as in training), so fetch that window; days after today don't exist yet and are skipped.
         context = list(modis.rows)
-        for offset in range(-harmonic.CONTEXT_DAYS, harmonic.CONTEXT_DAYS + 1):
+        for offset in range(-harmonic.CONTEXT_BEFORE, harmonic.CONTEXT_AFTER + 1):
             other = day + timedelta(days=offset)
             if offset == 0 or other > today:
                 continue
@@ -230,7 +230,9 @@ def upgrade_days(manifest: dict, firms, today: date, limit: int) -> list[date]:
       - NASA's final data now exists for a day still on near-real-time data (or on Harmonic from
         near-real-time MODIS): the final version brings NASA's types, positions and confidence;
       - a recent day that had to use NOAA-20/21 or Harmonic, when FIRMS now has S-NPP for it;
-      - a recent Harmonic day, when FIRMS has any VIIRS (e.g. NOAA-20) for it.
+      - a recent Harmonic day, when FIRMS has any VIIRS (e.g. NOAA-20) for it;
+      - a Harmonic day estimated before the MODIS days after it existed (its features look
+        harmonic.CONTEXT_AFTER days ahead): estimated once more when they do.
     Only FIRMS's availability list is consulted here (one request); a day is looked at again at
     most every REVISIT_AFTER_HOURS."""
     out, now = [], datetime.now(UTC)
@@ -247,7 +249,11 @@ def upgrade_days(manifest: dict, firms, today: date, limit: int) -> list[date]:
         # a Harmonic estimate is also replaced by real VIIRS from NOAA-20/21 when that exists
         viirs_now = (recent and (source or "").startswith("MODIS")
                      and any(firms.covers(p, day) is True for p in VIIRS_PRODUCTS))
-        if final_ready or snpp_back or viirs_now:
+        # estimated too early for its look-ahead window: predict again now that the window exists
+        context_ready = ((source or "").startswith("MODIS") and processed is not None
+                         and today > day + timedelta(days=harmonic.CONTEXT_AFTER)
+                         and datetime.fromisoformat(processed).date() <= day + timedelta(days=harmonic.CONTEXT_AFTER))
+        if final_ready or snpp_back or viirs_now or context_ready:
             out.append(day)
         if len(out) >= limit:
             break

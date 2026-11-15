@@ -43,6 +43,8 @@ FIRE_HISTORY_COLS = ["own_15d_n", "own_31d_n", "nb3_7d_n", "days_since_last", "d
 AQUA_GROWTH_COLS = ["aqua_terra_n_lr", "aqua_terra_frp_lr", "aqua_nb_n", "aqua_nb_frp"]
 CLIMATOLOGY_COLS = ["clim_terra_n", "burned_3_12m_n"]
 OVERPASS_COLS = ["terra_lst_mean", "aqua_lst_mean"]
+WEATHER_COLS = ["w_tmax", "w_tmin", "w_rh", "w_wind", "w_prec", "w_ps", "w_vpd",     # NASA POWER (V9), weather.py
+                "w_prec_7d", "w_prec_30d", "w_prec_90d", "w_dry_days", "w_tmax_anom"]
 
 
 def wanted_groups(feats: list[str] | None = None) -> set[str]:
@@ -50,10 +52,12 @@ def wanted_groups(feats: list[str] | None = None) -> set[str]:
     if feats is not None:
         f = set(feats)
         return {g for g, cols in (("fire_history", FIRE_HISTORY_COLS), ("aqua_growth", AQUA_GROWTH_COLS),
-                                  ("climatology", CLIMATOLOGY_COLS), ("overpass", OVERPASS_COLS))
+                                  ("climatology", CLIMATOLOGY_COLS), ("overpass", OVERPASS_COLS),
+                                  ("weather", WEATHER_COLS))
                 if f & set(cols)}
     return {g for g, on in (("fire_history", config.FEAT_FIRE_HISTORY), ("aqua_growth", config.FEAT_AQUA_GROWTH),
-                            ("climatology", config.FEAT_CLIMATOLOGY), ("overpass", config.FEAT_OVERPASS_TIME)) if on}
+                            ("climatology", config.FEAT_CLIMATOLOGY), ("overpass", config.FEAT_OVERPASS_TIME),
+                            ("weather", config.FEAT_WEATHER)) if on}
 
 
 def _sensor_stats(m: pd.DataFrame, overpass: bool = False) -> pd.DataFrame:
@@ -156,6 +160,8 @@ def build(modis: pd.DataFrame, use_aqua: bool = True, day0: pd.Timestamp | None 
             k = encode(X.ci + di, X.cj + dj, X.day + dd, (1 - X.p) if flip_pass else X.p)
             pos = idx.get_indexer(k)
             ok = pos >= 0
+            if not len(n_arr):   # no detections from this sensor in the window (e.g. a Terra or Aqua outage)
+                return np.zeros(len(X)), np.zeros(len(X))
             n = np.where(ok, n_arr[np.clip(pos, 0, None)], 0.0)
             f = np.where(ok, f_arr[np.clip(pos, 0, None)], 0.0)
             return n, f
@@ -254,6 +260,11 @@ def build(modis: pd.DataFrame, use_aqua: bool = True, day0: pd.Timestamp | None 
             burned += np.where(t >= first_ym, actual, typical)
         X["burned_3_12m_n"] = burned
 
+    # --- optional group "weather" (V9): NASA POWER daily weather at the nearest POWER grid point
+    if "weather" in groups:
+        import weather
+        weather.add_features(X)
+
     X.attrs["day0"] = day0
     return X
 
@@ -273,6 +284,8 @@ def feature_names(use_aqua: bool = True, groups: set[str] | None = None) -> list
     if "climatology" in groups:
         ctx += CLIMATOLOGY_COLS
     place = ["lat", "lon", "doy_sin", "doy_cos", "is_night"]
+    if "weather" in groups:
+        place += WEATHER_COLS
     return own + ctx + place
 
 

@@ -1,10 +1,17 @@
 # Harmonic (MODIS → VIIRS-equivalent model)
 
 This folder belongs to the ML team. It holds Harmonic's code and trained model, exactly as the
-ML pipeline produces them. The data pipeline (`pipeline/agni_pipeline/`) uses it only on days
-when VIIRS S-NPP has no data in NASA FIRMS: it fetches MODIS for that day ± 3 days, runs
-`predict.predict_cells()` and `predict.synthesize_rows()` (the same two steps as `gapfill.py`),
-and stores the rows with version `ML-XGB-1.0-gapfill` (origin `gapfill`).
+ML pipeline produces them. The model in `output/models/` is **Harmonic v8** (trained 14 Nov 2026,
+`python train_all.py --name v8`): XGBoost, 2000 rounds, with the fire-history, Aqua-growth and
+overpass-time feature groups (`FEAT_WEATHER` stays off: weather is the experimental V9).
+Cross-validated error: ±3.1% monthly / ±10.7% daily (Terra + Aqua), ±4.8% / ±15.0% (Terra only).
+
+The data pipeline (`pipeline/agni_pipeline/`) uses it only on days when no VIIRS satellite has
+data in NASA FIRMS: it fetches MODIS from 30 days before to 15 days after that day (the window v8's
+fire-history features read, `harmonic.CONTEXT_BEFORE/AFTER`), runs `predict.predict_cells()` and
+`predict.synthesize_rows()` (the same two steps as `gapfill.py`), and stores the rows with version
+`ML-XGB-1.0-gapfill` (origin `gapfill`). A day estimated before its 15 following days existed is
+estimated again once they do.
 
 ```
 ml_pipeline/

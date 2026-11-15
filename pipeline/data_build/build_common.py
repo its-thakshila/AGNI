@@ -50,7 +50,7 @@ WEIGHTS = {
 UNCERTAINTY = [
     # origin,    from,         to,           value
     ("real",    "2000-01-01", "2099-12-31", 0.0),
-    ("ml",      "2000-01-01", "2002-07-03", 0.16),   # Terra-only model
+    ("ml",      "2000-01-01", "2002-07-03", 0.15),   # Terra-only model (Harmonic v8: 15.0% daily)
     ("ml",      "2002-07-04", "2099-12-31", 0.11),   # Terra + Aqua model
     ("gapfill", "2000-01-01", "2021-12-31", 0.11),
     ("gapfill", "2022-01-01", "2099-12-31", 0.13),   # MODIS orbit drift years

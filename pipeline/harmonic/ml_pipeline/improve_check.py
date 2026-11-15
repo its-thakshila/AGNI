@@ -9,6 +9,12 @@ other 13 years). Does not change the trained model or any output file.
   V1  + 1/2 fire history          V2  + 3/4 Aqua growth        V3  + 5/7 climatology
   V4  + 6  overpass time          V5  + B  Tweedie objective   V6  + C  max_leaves 127
   V7  + E  separate day/night models
+  V8  final: 2000 rounds + fire history + Aqua growth + overpass time
+  V9  V8 + NASA POWER daily weather (needs data/weather/; only with --variants, e.g. --variants V8,V9)
+  Feature selection (Nov 2026; run with --variants, add --full-only to skip the Terra-only model):
+  V9n V9 without w_ps (elevation proxy) and w_tmin
+  V9a V8 + slow-moving weather only (rain sums, dry days, VPD, temperature anomaly)
+  V9p V9 minus every feature below PRUNE_SHARE of V9's total gain (needs V9 earlier in the same run)
 
     python improve_check.py              ->  output/improve/improve_results.json  (~1-1.5 h, GPU)
     python improve_check.py --terra      also test the Terra-only model: baseline vs the best variant
@@ -50,9 +56,20 @@ VARIANTS = [   # name, label, feature groups, count-model settings, day/night sp
     ("V7", "+E day/night models",          ALL_GROUPS,                              {"num_boost_round": 2000, "objective": "reg:tweedie",
                                                                                      "tweedie_variance_power": 1.3, "max_leaves": 127},  True),
     ("V8", "final: A+fire hist+Aqua+overpass", {"fire_history", "aqua_growth", "overpass"}, {"num_boost_round": 2000},              False),
+    ("V9", "V8 + NASA POWER weather",      {"fire_history", "aqua_growth", "overpass", "weather"}, {"num_boost_round": 2000},      False),
 ]
+W9 = {"fire_history", "aqua_growth", "overpass", "weather"}
+SLOW_WEATHER = {"w_prec_7d", "w_prec_30d", "w_prec_90d", "w_dry_days", "w_vpd", "w_tmax_anom"}
+PRUNE_SHARE = 0.003       # V9p: drop features with < 0.3% of V9's total gain (mean over the held-out-year fits)
+SELECT = {   # extra variants: name -> (label, groups, feature filter)
+    "V9n": ("V9 - w_ps, w_tmin", W9, {"drop": {"w_ps", "w_tmin"}}),
+    "V9a": ("V8 + slow weather only", W9, {"weather_only": SLOW_WEATHER}),
+    "V9p": ("V9 pruned by importance", W9, {"prune_from": "V9"}),
+}
+VARIANTS += [(n, lab, g, {"num_boost_round": 2000}, False) for n, (lab, g, _) in SELECT.items()]
+DEFAULT_SKIP = {"V9"} | set(SELECT)     # need data/weather/: run with --variants V8,V9,...
 FLAG = {"fire_history": "FEAT_FIRE_HISTORY", "aqua_growth": "FEAT_AQUA_GROWTH",
-        "climatology": "FEAT_CLIMATOLOGY", "overpass": "FEAT_OVERPASS_TIME"}
+        "climatology": "FEAT_CLIMATOLOGY", "overpass": "FEAT_OVERPASS_TIME", "weather": "FEAT_WEATHER"}
 
 
 def calibrated(X, preds: dict) -> dict:
@@ -100,15 +117,32 @@ def run_variants(use_aqua: bool, variants) -> dict:
     out = {}
     for name, label, groups, params, split in variants:
         feats = features.feature_names(use_aqua, groups)
+        flt = SELECT.get(name, (None, None, {}))[2]
+        if "drop" in flt:
+            feats = [f for f in feats if f not in flt["drop"]]
+        if "weather_only" in flt:
+            feats = [f for f in feats if not f.startswith("w_") or f in flt["weather_only"]]
+        if "prune_from" in flt:
+            src = out.get(flt["prune_from"])
+            if src is None:
+                raise ValueError(f"{name} needs {flt['prune_from']} earlier in --variants")
+            share = dict(src["importance"])
+            feats = [f for f in features.feature_names(use_aqua, groups) if share.get(f, 0.0) >= PRUNE_SHARE]
+            log.info("%s: %d of %d features kept (dropped: %s)", name, len(feats), len(share),
+                     sorted(set(share) - set(feats)))
         config.XGB_PARAMS["count"] = {**BASE_COUNT, **params}
-        res, t1 = {"label": label, "n_features": len(feats), "years": {}}, time.perf_counter()
-        preds = {}
+        res, t1 = {"label": label, "n_features": len(feats), "features": feats, "years": {}}, time.perf_counter()
+        preds, gain = {}, np.zeros(len(feats))
         for y in TEST_YEARS:
             te = (year == y).to_numpy()
             mdl = gbm.fit_count(X.loc[~te, feats], X.loc[~te, "v_n"], X.loc[~te, "w"], feats, split=split)
             p = np.clip(mdl.predict(X.loc[te, feats]), 0, None)
             s = _score(X[te], p)
             s["iterations"] = int(mdl.n_iter_)
+            if hasattr(mdl, "booster"):
+                g = mdl.booster.get_score(importance_type="total_gain")
+                v = np.array([g.get(f"f{i}", 0.0) for i in range(len(feats))])
+                gain += v / max(v.sum(), 1e-12)
             res["years"][y] = s
             preds[y] = (te, p)
         st = [y for y in TEST_YEARS if y < 2022]
@@ -122,6 +156,8 @@ def run_variants(use_aqua: bool, variants) -> dict:
         res["cal_monthly_err_normal"] = round(float(np.mean([cal[y]["monthly_mae_pct"] for y in st])), 2)
         res["cal_abs_bias_normal"] = round(float(np.mean([abs(cal[y]["total_bias_pct"]) for y in st])), 2)
         res["cal_daily_err_2024"] = float(cal[2024]["daily_mae_pct"]) if 2024 in cal else None
+        res["importance"] = sorted(([f, round(float(x / len(TEST_YEARS)), 5)] for f, x in zip(feats, gain)),
+                                   key=lambda kv: -kv[1])
         res["minutes"], res["peak_gb"] = round((time.perf_counter() - t1) / 60, 1), peak_gb()
         out[name] = res
         log.info("%s %-22s daily %.2f%% (normal) | 2024 %.2f%% | monthly %.2f%% | iters %s | %.1f min",
@@ -138,6 +174,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--terra", action="store_true", help="also test the Terra-only model (baseline vs best)")
     ap.add_argument("--variants", help="only these variants, e.g. V0,V8, for BOTH models (stored under 'final_*')")
+    ap.add_argument("--full-only", action="store_true", help="with --variants: skip the Terra-only model")
+    ap.add_argument("--terra-only", action="store_true", help="with --variants: only the Terra-only model")
+    ap.add_argument("--tag", default="", help="with --variants: store under 'final_full<tag>' (keeps other runs)")
     a = ap.parse_args()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     if RESULTS.exists():                                    # keep earlier results: dated copy, never overwritten
@@ -150,7 +189,9 @@ def main():
     if a.variants:
         v = {x[0]: x for x in VARIANTS}
         chosen = [v[n.strip()] for n in a.variants.split(",")]
-        for mode, use_aqua in (("final_full", True), ("final_terra_only", False)):
+        modes = (("final_full", True),) if a.full_only else (("final_terra_only", False),) if a.terra_only             else (("final_full", True), ("final_terra_only", False))
+        for mode, use_aqua in modes:
+            mode += a.tag
             vs = chosen if use_aqua else [(n, l, g - {"aqua_growth"}, p, sp) for n, l, g, p, sp in chosen]
             results[mode] = {}
             for _, out in run_variants(use_aqua, vs):
@@ -158,14 +199,15 @@ def main():
                 RESULTS.write_text(json.dumps(results, indent=1, default=float))
         log.info("saved %s", RESULTS)
         return
+    default = [x for x in VARIANTS if x[0] not in DEFAULT_SKIP]
     results["full"] = {}
-    for _, out in run_variants(True, VARIANTS):
+    for _, out in run_variants(True, default):
         results["full"] = out
         RESULTS.write_text(json.dumps(results, indent=1, default=float))
     if a.terra:
         full = results["full"]
         best = min((k for k in full if k != "V0"), key=lambda k: full[k]["daily_err_normal"])
-        v = {n: (n, l, g - {"aqua_growth"}, p, s) for n, l, g, p, s in VARIANTS}
+        v = {n: (n, l, g - {"aqua_growth"}, p, s) for n, l, g, p, s in default}
         results["terra_only"] = {}
         for _, out in run_variants(False, [v["V0"], v[best]]):
             results["terra_only"] = out

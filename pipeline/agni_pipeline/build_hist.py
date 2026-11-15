@@ -21,7 +21,7 @@ from .common import BBOX, CELLS_MONTH_SELECT, build_from_parquet, load_backend_b
 from .storage import open_store, read_json, write_json
 
 PERIODS = [
-    {"from": "2000-11-01", "to": "2002-07-03", "origin": "ml", "label": "Harmonized from MODIS Terra by Harmonic", "uncertainty": 0.16},
+    {"from": "2000-11-01", "to": "2002-07-03", "origin": "ml", "label": "Harmonized from MODIS Terra by Harmonic", "uncertainty": 0.15},
     {"from": "2002-07-04", "to": "2011-12-31", "origin": "ml", "label": "Harmonized from MODIS Terra + Aqua by Harmonic", "uncertainty": 0.11},
     {"from": "2012-01-01", "to": None, "origin": "real", "label": "VIIRS S-NPP observations", "uncertainty": 0.0},
 ]

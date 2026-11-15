@@ -62,6 +62,7 @@ class Firms:
         self.retries = retries
         self.timeout = timeout
         self._availability: dict[str, tuple[date, date]] | None = None
+        self._detections: dict[tuple[str, date], list[dict]] = {}  # per run: gap days share MODIS context days
 
     def _get(self, url: str) -> str:
         for attempt in range(self.retries):
@@ -98,10 +99,14 @@ class Firms:
         return bool(span) and span[0] <= day <= span[1]
 
     def detections(self, product: str, day: date) -> list[dict]:
+        # a Harmonic day reads ~46 MODIS days around it; neighbouring gap days share most of them
+        if (product, day) in self._detections:
+            return self._detections[(product, day)]
         text = self._get(f"{API}/area/csv/{quote(self.key, safe='')}/{product}/{AREA}/1/{day.isoformat()}")
         rows = list(csv.DictReader(io.StringIO(text)))
         if text.strip() and not rows and "latitude" not in text.split("\n", 1)[0]:
             raise FirmsError(f"Unexpected FIRMS answer for {product} {day}: {text[:80]!r}")
+        self._detections[(product, day)] = rows
         return rows
 
     def first(self, products, day: date) -> Fetched | None:

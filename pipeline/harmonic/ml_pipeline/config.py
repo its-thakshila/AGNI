@@ -130,7 +130,7 @@ XGB_COMMON = dict(tree_method="hist", grow_policy="lossguide", max_depth=0, max_
                   learning_rate=0.06, reg_lambda=1.0, seed=42, verbosity=1)
 XGB_PARAMS = {
     "count": dict(objective="count:poisson", max_leaves=63, min_child_weight=1.0,
-                  num_boost_round=600, early_stopping_rounds=30),
+                  num_boost_round=2000, early_stopping_rounds=30),
     "reg":   dict(objective="reg:squarederror", max_leaves=31, min_child_weight=40.0,
                   num_boost_round=400, early_stopping_rounds=30),
     "conf":  dict(objective="multi:softprob", max_leaves=31, min_child_weight=1.0,
@@ -143,15 +143,24 @@ CV_FOLDS = 4               # GroupKFold, groups = calendar month (blocked in tim
 # The count-model settings for A/B/C are applied by improve_check.py or by editing XGB_PARAMS above:
 #   A  num_boost_round 600 -> 2000      B  objective "reg:tweedie" (variance power 1.3)
 #   C  max_leaves 63 -> 127
-FEAT_FIRE_HISTORY = False      # 1+2  fire age, days since last / until next detection, 3x3 over +-3 days,
+FEAT_FIRE_HISTORY = True       # 1+2  fire age, days since last / until next detection, 3x3 over +-3 days,
                                #      own cell over +-7 and +-15 days
-FEAT_AQUA_GROWTH = False       # 3+4  Aqua vs Terra count and FRP (log ratio), Aqua-only 3x3 neighbourhood
+FEAT_AQUA_GROWTH = True        # 3+4  Aqua vs Terra count and FRP (log ratio), Aqua-only 3x3 neighbourhood
                                #      (full model only: Terra-only has no Aqua)
 FEAT_CLIMATOLOGY = False       # 5+7  Terra detections per cell x calendar month (all years), and Terra
                                #      detections in the cell 3-12 months earlier ("burned recently")
-FEAT_OVERPASS_TIME = False     # 6    mean local solar time of each satellite's detections in the cell
+FEAT_OVERPASS_TIME = True      # 6    mean local solar time of each satellite's detections in the cell
 COUNT_SPLIT_DAYNIGHT = False   # E    separate day-pass and night-pass count models
+FEAT_WEATHER = False           # V9   NASA POWER daily weather (weather.py): temperature, humidity, wind, rain,
+                               #      VPD, 7/30/90-day rain, dry-day run, temperature anomaly. Needs the
+                               #      weather file(s) in WEATHER_DIR for every training AND prediction year.
+                               #      False = V8 (no weather input).
 CLIMATOLOGY_FILE = OUT / "features" / "cell_climatology.pkl"   # built once from all MODIS files
+# NASA POWER daily weather (V9). Any *.csv / *.parquet in this folder, wide schema:
+#   date, latitude, longitude, T2M, T2M_MAX, T2M_MIN, PRECTOTCORR, RH2M, WS10M, PS
+WEATHER_DIR = DATA_DIR / "weather"
+WEATHER_CACHE_DIR = OUT / "features" / "weather"     # rebuilt automatically when the input files change
+WEATHER_MAX_MISSING_SHARE = 0.01   # stop if more than 1% of feature rows fall outside the weather dates
 
 # ------------------------------------------------------------ training memory
 # ~86% of candidate rows have no MODIS fire and no VIIRS fire. Keep this share of them (per year,

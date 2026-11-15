@@ -21,11 +21,15 @@ ML_DIR = Path(__file__).resolve().parents[1] / "harmonic" / "ml_pipeline"
 
 # Real model if its files are present; the placeholder below is only a fallback for tests.
 PLACEHOLDER = not (ML_DIR / "output" / "models" / "hgb_modis_to_viirs.joblib").exists()
-MODEL_VERSION = "HARMONIC-PLACEHOLDER" if PLACEHOLDER else "ML-XGB-1.0-gapfill"
+MODEL_VERSION = "HARMONIC-PLACEHOLDER" if PLACEHOLDER else "ML-XGB-1.0-gapfill"  # real value: model_version()
 
-# The model's features look at MODIS detections up to 3 days before and after (own_7d_n,
-# neighbouring days), so a fire-day is predicted from a 7-day MODIS window, like gapfill.py.
-CONTEXT_DAYS = 3
+# MODIS days around a fire-day that the model's features look at. Harmonic v8's fire-history
+# features (days since the last / until the next detection, burst age, own cell over +-15 days)
+# reach 30 days back and 15 days ahead (features.py), so a fire-day is predicted from that window,
+# as in training. Days after today don't exist yet: such a day is predicted again once they do
+# (process_days.upgrade_days).
+CONTEXT_BEFORE = 30
+CONTEXT_AFTER = 15
 
 
 @lru_cache(maxsize=1)
@@ -87,7 +91,7 @@ def _modis_frame(rows: list[dict]):
 
 
 def predict(modis_rows: list[dict], fire_day: date) -> list[dict]:
-    """MODIS FIRMS rows (fire_day +- CONTEXT_DAYS) -> VIIRS-equivalent rows for that window.
+    """MODIS FIRMS rows (fire_day - CONTEXT_BEFORE ... + CONTEXT_AFTER) -> VIIRS-equivalent rows.
 
     The caller keeps the rows whose fire-day is `fire_day`. Values are strings, in the 15 VIIRS
     columns of the processed data.
@@ -103,6 +107,11 @@ def predict(modis_rows: list[dict], fire_day: date) -> list[dict]:
     if m.empty:
         return []
     X = model.predict_cells(m, bundles)
+    # the other days in the window were only context: make rows for the fire-day (and the days
+    # beside it, in case a synthesized time lands across the day boundary; the caller keeps the day)
+    import pandas as pd
+    day = pd.Timestamp(fire_day)
+    X = X[(X["fire_date"] >= day - pd.Timedelta(days=1)) & (X["fire_date"] <= day + pd.Timedelta(days=1))]
     if X.empty:
         return []
     rng = np.random.default_rng([config.RANDOM_SEED, fire_day.toordinal()])  # repeatable per day
