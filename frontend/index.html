@@ -6,6 +6,7 @@
     <meta name="theme-color" content="#0b0b0d" />
     <meta name="description" content="AGNI — a harmonized MODIS + VIIRS burning activity calendar, 2000 to today." />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="preload" as="image" href="./splash/artwork.webp" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,8 +14,73 @@
       rel="stylesheet"
     />
     <title>AGNI — Active-fire Global Normalized Inventory</title>
+    <!-- Splash screen: plain HTML and CSS, so it shows at once while the app's code and first data
+         load. The app fades it out when the first view is ready (src/lib/splash.ts). -->
+    <style>
+      html, body { background: #0b0b0d; margin: 0; }
+      #splash {
+        position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center; padding: 16px;
+        background: radial-gradient(ellipse at 60% 45%, #17110f 0%, #0b0b0d 60%);
+        font-family: Inter, system-ui, -apple-system, 'Segoe UI', sans-serif; color: #f0efec;
+        transition: opacity 0.45s ease, visibility 0.45s;
+      }
+      #splash.splash-out { opacity: 0; visibility: hidden; }
+      .splash-card {
+        position: relative; width: min(880px, 100%); aspect-ratio: 16 / 9; overflow: hidden;
+        border: 1px solid #26262c; border-radius: 21px; background: #0b0b0d url(./splash/artwork.webp) center / cover no-repeat;
+        box-shadow: 0 34px 89px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.02) inset;
+        display: flex; flex-direction: column; justify-content: space-between; padding: 34px 40px;
+        box-sizing: border-box; animation: splash-in 0.6s ease both;
+      }
+      @keyframes splash-in { from { opacity: 0; transform: translateY(8px) scale(0.99); } to { opacity: 1; transform: none; } }
+      .splash-main { max-width: 46%; }
+      .splash-logo { display: block; height: 44px; width: auto; }
+      .splash-name { margin: 13px 0 0; font-size: 15px; line-height: 1.5; color: #b9b8b2; }
+      .splash-load { margin-top: 34px; width: 200px; }
+      .splash-bar { position: relative; height: 3px; overflow: hidden; border-radius: 3px; background: rgb(255 255 255 / 0.09); }
+      .splash-bar::after {
+        content: ''; position: absolute; inset: 0; width: 40%; border-radius: 3px;
+        background: linear-gradient(90deg, transparent, #fb9823, #fe6a17, transparent);
+        animation: splash-slide 1.3s ease-in-out infinite;
+      }
+      @keyframes splash-slide { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+      .splash-status { margin: 10px 0 0; font-size: 12px; color: #84838c; }
+      .splash-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: 21px; }
+      .splash-nasa { display: block; height: 40px; width: auto; opacity: 0.92; }
+      .splash-credit { font-size: 11px; line-height: 1.5; color: #84838c; text-align: right; text-shadow: 0 1px 8px #0b0b0d, 0 0 2px #0b0b0d; }
+      @media (max-width: 640px) {
+        .splash-card { aspect-ratio: 3 / 4; padding: 26px 24px; background-position: 88% 52%; background-size: 200% auto; }
+        .splash-card::before {
+          content: ''; position: absolute; inset: 0; pointer-events: none;
+          background: linear-gradient(180deg, rgb(11 11 13 / 0.85) 0%, rgb(11 11 13 / 0) 42%, rgb(11 11 13 / 0) 58%, rgb(11 11 13 / 0.92) 100%);
+        }
+        .splash-main, .splash-foot { position: relative; max-width: none; }
+        .splash-logo { height: 36px; }
+        .splash-foot { flex-direction: column; align-items: flex-start; }
+        .splash-credit { text-align: left; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .splash-card, .splash-bar::after { animation: none; }
+      }
+    </style>
   </head>
   <body>
+    <div id="splash" role="status" aria-live="polite" aria-label="Loading AGNI">
+      <div class="splash-card">
+        <div class="splash-main">
+          <img class="splash-logo" src="./splash/agni-logo-white.svg" alt="AGNI" />
+          <p class="splash-name">Active-fire Global Normalized Inventory</p>
+          <div class="splash-load">
+            <div class="splash-bar"></div>
+            <p class="splash-status" id="splash-status">Loading fire data…</p>
+          </div>
+        </div>
+        <div class="splash-foot">
+          <img class="splash-nasa" src="./splash/space-apps-logo-white.svg" alt="NASA Space Apps Challenge 2026" />
+          <span class="splash-credit">Artwork: AGNI fire detections over Australia, 2019<br />Version 1.0 · Team AGNI · Space Apps 2026</span>
+        </div>
+      </div>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

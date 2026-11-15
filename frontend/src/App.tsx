@@ -2,7 +2,8 @@ import { useEffect, useRef } from 'react';
 import Header from './components/Header';
 import MapPanel from './components/MapPanel';
 import SidePanel from './components/SidePanel';
-import { useMeta } from './hooks/useData';
+import { useAnomaly, useCalendar, useMeta } from './hooks/useData';
+import { hideSplash } from './lib/splash';
 import { useSelection } from './store/useSelection';
 import { useLiveSync } from './hooks/useLiveSync';
 import { friendlyError } from './api/client';
@@ -25,6 +26,14 @@ export default function App() {
     const ly = +latest.slice(0, 4), lm = +latest.slice(5, 7);
     if (year * 12 + month > ly * 12 + lm) setMonth(ly, lm);
   }, [latest]);
+
+  // Fade the splash screen (index.html) once the first view has its data, or on an error.
+  const calendar = useCalendar();
+  const anomaly = useAnomaly();
+  const ready = meta.isSuccess && calendar.data !== undefined && anomaly.fetchStatus === 'idle';
+  useEffect(() => {
+    if (ready || meta.error || calendar.error) hideSplash();
+  }, [ready, meta.error, calendar.error]);
 
   return (
     <div className="flex min-h-dvh flex-col lg:h-dvh">
