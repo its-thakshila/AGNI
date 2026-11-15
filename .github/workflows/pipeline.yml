@@ -1,8 +1,10 @@
 name: Process new fire-days
 
-# Adds days after the processed CSV to the dataset in R2:
-#   VIIRS S-NPP from NASA FIRMS when it has data for the day,
+# Adds days after the processed data to the dataset in R2:
+#   VIIRS from NASA FIRMS (S-NPP, or NOAA-20/21 while S-NPP is down; NASA's final version when out),
 #   otherwise MODIS from FIRMS converted by Harmonic.
+# --upgrade also revisits stored days: back to S-NPP when it returns (for 30 days), and to NASA's
+# final data (with its static-source "type") once FIRMS publishes it, about 2-3 months later.
 # Runs every 3 hours, and on demand when the Worker starts it for days a user asked for.
 
 on:
@@ -53,4 +55,4 @@ jobs:
         env:
           DAYS: ${{ inputs.days }}
           FAKE: ${{ inputs.fake && '--fake' || (vars.AGNI_FAKE_FIRMS == 'true' && '--fake' || '') }}
-        run: python -m agni_pipeline.process_days --store "r2:$DATASET" --days "$DAYS" --recent 3 --fill-missing $FAKE
+        run: python -m agni_pipeline.process_days --store "r2:$DATASET" --days "$DAYS" --recent 3 --fill-missing --upgrade $FAKE

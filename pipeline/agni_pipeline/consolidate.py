@@ -20,16 +20,24 @@ import duckdb
 from .build_hist import write_hist
 from .common import CELLS_SELECT, ROW_COLUMNS, ROWS_TABLE_SQL, VIIRS_COLUMNS
 from .storage import open_store, read_json, write_json
+from .firms import is_final
+
+FINAL_WAIT_DAYS = 150  # NASA's final data normally follows within 2-3 months
 
 
-def consolidate(store, export_csv: str | None = None, keep_recent_days: int = 3) -> dict:
+def consolidate(store, export_csv: str | None = None, keep_recent_days: int = 3, final_wait_days: int = FINAL_WAIT_DAYS) -> dict:
     manifest = read_json(store, "manifest.json", None)
     if manifest is None:
         raise SystemExit("manifest.json not found.")
     today = datetime.now(UTC).date()
     cutoff = today - timedelta(days=keep_recent_days)
+    # A day moves into the history only once it is on NASA's final data (or NASA has had
+    # FINAL_WAIT_DAYS to publish it): near-real-time days stay live, where process_days --upgrade
+    # replaces them with the final version, so the history never needs rewriting for an upgrade.
+    give_up = today - timedelta(days=final_wait_days)
     final = sorted(d for d, s in manifest["days"].items()
-                   if date.fromisoformat(d) < cutoff and s.get("flag") != "provisional")
+                   if date.fromisoformat(d) < cutoff and s.get("flag") != "provisional"
+                   and (is_final(s.get("source")) or date.fromisoformat(d) < give_up))
     if not final:
         print("No finished live days to consolidate.")
         return manifest
@@ -41,7 +49,7 @@ def consolidate(store, export_csv: str | None = None, keep_recent_days: int = 3)
         run.append(d)
         expected += timedelta(days=1)
     if not run:
-        print("The first day after the CSV is not finished yet; nothing to consolidate.")
+        print("The first day after the CSV is not on final data yet; nothing to consolidate.")
         return manifest
 
     cols = ", ".join(f'"{c}"' for c in ROW_COLUMNS)

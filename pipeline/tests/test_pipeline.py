@@ -1,7 +1,7 @@
 import json
 import tempfile
 import unittest
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import duckdb
@@ -14,16 +14,23 @@ TODAY = date(2026, 11, 14)
 
 
 class StubFirms:
-    """Answers per product with a fixed number of detections; None = not available."""
+    """Answers per product with a fixed number of detections; None = not available.
+    viirs/modis are the near-real-time S-NPP / MODIS answers; other products (NASA's final
+    versions, NOAA-20/21) are absent unless given in `extra`."""
 
-    def __init__(self, viirs: int | None, modis: int | None):
-        self.counts = {"VIIRS": viirs, "MODIS": modis}
+    def __init__(self, viirs: int | None, modis: int | None, extra: dict | None = None, covered: set | None = None):
+        self.counts = {"VIIRS_SNPP_NRT": viirs, "MODIS_NRT": modis, **(extra or {})}
+        self.covered = covered or set()
+
+    def covers(self, product, day):
+        return product in self.covered or self.counts.get(product) is not None
 
     def first(self, products, day):
-        n = self.counts[products[0].split("_")[0]]
+        product = products[0]
+        n = self.counts.get(product)
         if n is None:
             return None
-        return Fetched(products[0], [
+        return Fetched(product, [
             {"latitude": "-20.5", "longitude": "130.5", "acq_date": day.isoformat(), "acq_time": "0430",
              "frp": "5", "confidence": "n", "daynight": "D", "type": "0", "brightness": "330", "bright_t31": "295",
              "bright_ti4": "330", "bright_ti5": "295", "scan": "0.4", "track": "0.4"}] * n)
@@ -55,9 +62,55 @@ class SourceChoiceTest(unittest.TestCase):
         origin, rows, status = process_days.fetch_day(StubFirms(viirs=None, modis=None), self.day, TODAY)
         self.assertEqual((origin, rows, status["has_data"]), ("none", [], "none"))
 
+    def test_noaa20_stands_in_while_snpp_is_down(self):
+        origin, rows, status = process_days.fetch_day(
+            StubFirms(viirs=None, modis=10, extra={"VIIRS_NOAA20_NRT": 40}), self.day, TODAY)
+        self.assertEqual((origin, len(rows), status["source"], status["flag"]), ("firms_nrt", 40, "VIIRS_NOAA20_NRT", "snpp_offline"))
+
+    def test_final_data_preferred_over_near_real_time(self):
+        origin, _, status = process_days.fetch_day(
+            StubFirms(viirs=50, modis=10, extra={"VIIRS_SNPP_SP": 45}), self.day, TODAY)
+        self.assertEqual((origin, status["source"]), ("firms_sp", "VIIRS_SNPP_SP"))
+
+    def test_too_few_snpp_falls_through_to_noaa20(self):
+        _, _, status = process_days.fetch_day(
+            StubFirms(viirs=3, modis=10, extra={"VIIRS_NOAA20_NRT": 30}), self.day, TODAY)
+        self.assertEqual(status["source"], "VIIRS_NOAA20_NRT")
+
     def test_recent_days_are_provisional(self):
         _, _, status = process_days.fetch_day(StubFirms(viirs=50, modis=10), date(2026, 11, 13), TODAY)
         self.assertEqual(status["flag"], "provisional")
+
+
+class UpgradeTest(unittest.TestCase):
+    """Which stored days are worth processing again."""
+
+    def manifest(self, **days):
+        old = "2026-11-01T00:00:00+00:00"
+        return {"days": {d.replace("_", "-")[1:]: {"has_data": "full", "source": src, "processed_at": old}
+                         for d, src in days.items()}}
+
+    def test_final_data_and_snpp_return_trigger_a_revisit(self):
+        m = self.manifest(d2026_08_10="VIIRS_SNPP_NRT", d2026_11_05="MODIS_NRT+ML-XGB-1.0-gapfill",
+                          d2026_11_06="VIIRS_NOAA20_NRT", d2026_07_01="VIIRS_SNPP_SP", d2026_09_01="VIIRS_SNPP_NRT")
+        firms = StubFirms(viirs=None, modis=None, covered={"VIIRS_SNPP_SP", "VIIRS_SNPP_NRT"})
+        firms.covers = lambda p, day: (p == "VIIRS_SNPP_SP" and day <= date(2026, 8, 31)) or (p == "VIIRS_SNPP_NRT" and day >= date(2026, 9, 1))
+        got = process_days.upgrade_days(m, firms, TODAY, 10)
+        # Aug 10: NASA's final S-NPP is out; Nov 5/6: S-NPP is back within 30 days.
+        # Jul 1 is already final; Sep 1 is S-NPP near real time with no final version yet.
+        self.assertEqual(got, [date(2026, 8, 10), date(2026, 11, 5), date(2026, 11, 6)])
+
+    def test_harmonic_day_revisited_when_noaa20_has_it(self):
+        m = self.manifest(d2026_11_05="MODIS_NRT+ML-XGB-1.0-gapfill", d2026_11_06="VIIRS_SNPP_NRT")
+        firms = StubFirms(viirs=None, modis=None, covered={"VIIRS_NOAA20_NRT"})
+        firms.covers = lambda p, day: p == "VIIRS_NOAA20_NRT"
+        self.assertEqual(process_days.upgrade_days(m, firms, TODAY, 10), [date(2026, 11, 5)])
+
+    def test_recently_processed_days_wait(self):
+        m = self.manifest(d2026_11_05="VIIRS_NOAA20_NRT")
+        m["days"]["2026-11-05"]["processed_at"] = datetime.now(UTC).isoformat(timespec="seconds")
+        firms = StubFirms(viirs=None, modis=None, covered={"VIIRS_SNPP_NRT"})
+        self.assertEqual(process_days.upgrade_days(m, firms, TODAY, 10), [])
 
 
 class DatasetTest(unittest.TestCase):
@@ -109,6 +162,17 @@ class DatasetTest(unittest.TestCase):
                                           ("hist/cells.parquet", " WHERE cell_lat BETWEEN -44 AND -9 AND cell_lon BETWEEN 112 AND 154")))
         self.assertEqual(totals, cells)
         self.assertTrue(json.loads((root / "manifest.json").read_text())["totals"])
+
+    def test_near_real_time_days_wait_for_final_data(self):
+        root = Path(self.tmp.name)
+        # Jan 1-3 on NASA's final data, Jan 4-5 still near real time
+        process_days.run(self.store, StubFirms(viirs=None, modis=None, extra={"VIIRS_SNPP_SP": 30}),
+                         process_days.parse_days("2026-01-01:2026-01-03"), TODAY, log=lambda *_: None)
+        process_days.run(self.store, StubFirms(viirs=30, modis=None),
+                         process_days.parse_days("2026-01-04:2026-01-05"), TODAY, log=lambda *_: None)
+        manifest = consolidate.consolidate(self.store, final_wait_days=10_000)  # these days are old: don't give up on them
+        self.assertEqual(manifest["local_end"], "2026-01-03")
+        self.assertEqual(sorted(manifest["days"]), ["2026-01-04", "2026-01-05"])
 
     def test_consolidate_leaves_other_years_untouched(self):
         root = Path(self.tmp.name)

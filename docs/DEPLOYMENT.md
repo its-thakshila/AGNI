@@ -22,10 +22,13 @@ R2 bucket "agni-data"
 GitHub Actions
   Build dataset            per-year Parquet -> hist/*          (manual)
   Process new fire-days    every 3 h + on demand from the Worker:
-                           VIIRS S-NPP from FIRMS if it has data for the day,
-                           otherwise MODIS from FIRMS -> Harmonic
-  Add processed days       nightly: finished live days -> hist/ (rewrites only the current year's
-                           detection file; optionally exports a full CSV)
+                           VIIRS from FIRMS (S-NPP; NOAA-20/21 while S-NPP is down),
+                           otherwise MODIS from FIRMS -> Harmonic.
+                           Also revisits stored days: back to S-NPP when it returns (30 days),
+                           and to NASA's final data (with its "type") once published (~2-3 months)
+  Add processed days       nightly: live days on NASA's final data -> hist/ (rewrites only the current
+                           year's detection file; optionally exports a full CSV). Near-real-time
+                           days stay live until upgraded (or 150 days have passed).
   Deploy Worker            on push to worker/
   Deploy frontend          on push to frontend/
 ```

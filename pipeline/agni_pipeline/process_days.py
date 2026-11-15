@@ -1,10 +1,16 @@
 """Add fire-days after the processed CSV to the dataset.
 
 For each fire-day:
-  1. VIIRS S-NPP from FIRMS, if FIRMS has it for that day       -> origin firms_nrt / firms_sp
-  2. otherwise (VIIRS offline / not delivered): MODIS from FIRMS,
-     converted to VIIRS-equivalent detections by Harmonic       -> origin gapfill
+  1. VIIRS from FIRMS: S-NPP (the satellite of the processed data), or when S-NPP is down the same
+     instrument on NOAA-20 / NOAA-21; NASA's final version before near real time -> firms_sp / firms_nrt
+  2. otherwise (no VIIRS delivered): MODIS from FIRMS, converted to VIIRS-equivalent
+     detections by Harmonic                                                        -> gapfill
   3. if neither is available: recorded as "no data" and retried on the next run
+
+Later runs revisit stored days (--upgrade): recent days that had to use NOAA-20/21 or Harmonic are
+tried again for S-NPP for RECHECK_DAYS, and any day still on near-real-time data is reprocessed
+once NASA publishes its final version (about 2-3 months later, with NASA's static-source "type"),
+so every day ends up on the same footing as the processed history.
 
 Results are merged into live/rows/YYYY-MM.parquet and live/cells/YYYY-MM.parquet, and every
 decision is written to manifest.json, so the website and later runs know what is stored.
@@ -26,17 +32,29 @@ import duckdb
 
 from . import harmonic
 from .common import BBOX, CELLS_SELECT, ROW_COLUMNS, ROWS_TABLE_SQL, VIIRS_COLUMNS, load_backend_builder, month_key
-from .firms import MODIS_PRODUCTS, VIIRS_PRODUCTS, FakeFirms, Firms, FirmsError, utc_days
+from .firms import FINAL_PRODUCTS, MODIS_PRODUCTS, VIIRS_PRODUCTS, FakeFirms, Firms, FirmsError, is_final, is_snpp, utc_days
 from .storage import open_store, read_json, write_json
 
 MIN_VIIRS_DETECTIONS = int(os.getenv("AGNI_MIN_VIIRS", "20"))  # fewer nationwide = satellite effectively offline
 PROVISIONAL_DAYS = 3  # near-real-time data can still change for about 3 days
 RETRY_NONE_AFTER_HOURS = 6
+RECHECK_DAYS = 30           # how long a day on NOAA-20/21 or Harmonic is retried for S-NPP
+REVISIT_AFTER_HOURS = 12    # a stored day is looked at again at most this often
 
 
-def _products(products, day: date, today: date):
-    # near-real-time first for recent days, the final archive first for older ones
-    return products if day >= today - timedelta(days=60) else tuple(reversed(products))
+def _first(firms, products, day: date, minimum: int):
+    """Try products in order; the first answer with at least `minimum` rows wins.
+    Also returns the largest answer seen (for when none reaches the minimum)."""
+    best = None
+    for product in products:
+        got = firms.first((product,), day)
+        if got is None:
+            continue
+        if len(got.rows) >= minimum:
+            return got, got
+        if best is None or len(got.rows) > len(best.rows):
+            best = got
+    return None, best
 
 
 def fetch_day(firms, day: date, today: date) -> tuple[str, list[dict], dict]:
@@ -45,13 +63,15 @@ def fetch_day(firms, day: date, today: date) -> tuple[str, list[dict], dict]:
     in_progress = day >= today
     status = {"daynight_reliable": True, "flag": "provisional" if provisional else None}
 
-    viirs = firms.first(_products(VIIRS_PRODUCTS, day, today), day)
-    if viirs and len(viirs.rows) >= MIN_VIIRS_DETECTIONS:
+    viirs, viirs_best = _first(firms, VIIRS_PRODUCTS, day, MIN_VIIRS_DETECTIONS)
+    if viirs:
         origin = "firms_nrt" if viirs.product.endswith("NRT") else "firms_sp"
         rows = [_viirs_row(r) for r in viirs.rows]
+        if not is_snpp(viirs.product) and not provisional:
+            status["flag"] = "snpp_offline"  # observed by VIIRS, on NOAA-20/21 instead of S-NPP
         return origin, rows, {**status, "has_data": "partial" if in_progress else "full", "source": viirs.product}
 
-    modis = firms.first(_products(MODIS_PRODUCTS, day, today), day)
+    modis, _ = _first(firms, MODIS_PRODUCTS, day, 1)
     if modis is not None:
         # Harmonic's features use MODIS from 3 days before to 3 days after (as in the ML team's
         # gapfill.py), so fetch that window; days after today don't exist yet and are skipped.
@@ -60,7 +80,7 @@ def fetch_day(firms, day: date, today: date) -> tuple[str, list[dict], dict]:
             other = day + timedelta(days=offset)
             if offset == 0 or other > today:
                 continue
-            extra = firms.first(_products(MODIS_PRODUCTS, other, today), other)
+            extra, _ = _first(firms, MODIS_PRODUCTS, other, 1)
             if extra is not None:
                 context += extra.rows
         rows = harmonic.predict(context, day)
@@ -69,9 +89,9 @@ def fetch_day(firms, day: date, today: date) -> tuple[str, list[dict], dict]:
             "daynight_reliable": False, "flag": "viirs_offline",
         }
 
-    if viirs is not None:  # VIIRS answered with too few detections and MODIS is unavailable too
-        origin = "firms_nrt" if viirs.product.endswith("NRT") else "firms_sp"
-        return origin, [_viirs_row(r) for r in viirs.rows], {**status, "has_data": "partial", "source": viirs.product, "flag": "firms_low"}
+    if viirs_best is not None:  # VIIRS answered with too few detections and MODIS is unavailable too
+        origin = "firms_nrt" if viirs_best.product.endswith("NRT") else "firms_sp"
+        return origin, [_viirs_row(r) for r in viirs_best.rows], {**status, "has_data": "partial", "source": viirs_best.product, "flag": "firms_low"}
 
     return "none", [], {"has_data": "none", "source": None, "daynight_reliable": True, "flag": "firms_error"}
 
@@ -205,6 +225,35 @@ def choose_days(wanted: list[date], backlog: list[date], limit: int) -> list[dat
     return sorted(picked)
 
 
+def upgrade_days(manifest: dict, firms, today: date, limit: int) -> list[date]:
+    """Stored days worth processing again, oldest first:
+      - NASA's final data now exists for a day still on near-real-time data (or on Harmonic from
+        near-real-time MODIS): the final version brings NASA's types, positions and confidence;
+      - a recent day that had to use NOAA-20/21 or Harmonic, when FIRMS now has S-NPP for it;
+      - a recent Harmonic day, when FIRMS has any VIIRS (e.g. NOAA-20) for it.
+    Only FIRMS's availability list is consulted here (one request); a day is looked at again at
+    most every REVISIT_AFTER_HOURS."""
+    out, now = [], datetime.now(UTC)
+    for key, entry in sorted(manifest["days"].items()):
+        day, source = date.fromisoformat(key), entry.get("source")
+        if entry["has_data"] == "none" or is_final(source):
+            continue  # "no data" days are retried by missing_days; final days are done
+        processed = entry.get("processed_at")
+        if processed and (now - datetime.fromisoformat(processed)).total_seconds() < REVISIT_AFTER_HOURS * 3600:
+            continue
+        final_ready = any(firms.covers(p, day) is True for p in FINAL_PRODUCTS)
+        recent = day >= today - timedelta(days=RECHECK_DAYS)
+        snpp_back = recent and not is_snpp(source) and firms.covers("VIIRS_SNPP_NRT", day) is True
+        # a Harmonic estimate is also replaced by real VIIRS from NOAA-20/21 when that exists
+        viirs_now = (recent and (source or "").startswith("MODIS")
+                     and any(firms.covers(p, day) is True for p in VIIRS_PRODUCTS))
+        if final_ready or snpp_back or viirs_now:
+            out.append(day)
+        if len(out) >= limit:
+            break
+    return out
+
+
 def parse_days(text: str) -> list[date]:
     days = []
     for part in filter(None, (p.strip() for p in (text or "").split(","))):
@@ -219,6 +268,8 @@ def main():
     parser.add_argument("--days", default="", help="e.g. 2026-11-01:2026-11-13,2026-10-05")
     parser.add_argument("--recent", type=int, default=0, help="also reprocess the last N days (provisional data)")
     parser.add_argument("--fill-missing", action="store_true", help="also process days after the CSV that are missing")
+    parser.add_argument("--upgrade", action="store_true",
+                        help="also reprocess stored days when S-NPP returns or NASA's final data is published")
     parser.add_argument("--max-days", type=int, default=62, help="safety cap per run")
     parser.add_argument("--fake", action="store_true", help="use deterministic fake FIRMS data (no network, no key)")
     parser.add_argument("--today", type=date.fromisoformat, help="override today's UTC date (testing)")
@@ -242,6 +293,8 @@ def main():
         wanted += [today - timedelta(days=i) for i in range(args.recent)]
     wanted = sorted({d for d in wanted if d <= today})
     backlog = missing_days(manifest, today, args.max_days) if args.fill_missing else []
+    if args.upgrade:
+        backlog += [d for d in upgrade_days(manifest, firms, today, args.max_days) if d not in backlog]
     days = choose_days(wanted, backlog, args.max_days)
     print(f"{store}: processing {len(days)} day(s)" + (" with FAKE FIRMS data" if args.fake else ""))
     if harmonic.PLACEHOLDER:

@@ -21,8 +21,27 @@ from .common import BBOX
 API = "https://firms.modaps.eosdis.nasa.gov/api"
 AREA = ",".join(str(v) for v in BBOX)
 
-VIIRS_PRODUCTS = ("VIIRS_SNPP_NRT", "VIIRS_SNPP_SP")  # the CSV and Harmonic are both S-NPP based
-MODIS_PRODUCTS = ("MODIS_NRT", "MODIS_SP")
+# VIIRS in order of preference. The processed data and Harmonic are S-NPP based, so S-NPP comes
+# first; NOAA-20 and NOAA-21 carry the same VIIRS instrument (375 m, same columns, ~50 min apart in
+# orbit) and stand in when S-NPP is down, before falling back to MODIS + Harmonic. For each
+# satellite NASA's final standard-processing version (_SP: quality-checked, with the static-source
+# "type") is preferred over near real time (_NRT: within ~3 hours, no "type").
+VIIRS_PRODUCTS = (
+    "VIIRS_SNPP_SP", "VIIRS_SNPP_NRT",
+    "VIIRS_NOAA20_SP", "VIIRS_NOAA20_NRT",
+    "VIIRS_NOAA21_SP", "VIIRS_NOAA21_NRT",
+)
+MODIS_PRODUCTS = ("MODIS_SP", "MODIS_NRT")
+FINAL_PRODUCTS = tuple(p for p in (*VIIRS_PRODUCTS, *MODIS_PRODUCTS) if p.endswith("_SP"))
+
+
+def is_final(source: str | None) -> bool:
+    """Whether a day's recorded source is NASA's final data (e.g. "VIIRS_SNPP_SP", "MODIS_SP+ML-...")."""
+    return bool(source) and source.split("+")[0].endswith("_SP")
+
+
+def is_snpp(source: str | None) -> bool:
+    return bool(source) and source.startswith("VIIRS_SNPP")
 
 
 class FirmsError(Exception):

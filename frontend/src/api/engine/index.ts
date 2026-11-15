@@ -230,6 +230,7 @@ const FLAG_WARNINGS: Record<string, Warning> = {
   firms_error: { code: 'FIRMS_UNAVAILABLE', message: 'Recent satellite observations could not be fetched for some days.' },
   provisional: { code: 'RECENT_DATA_PROVISIONAL', message: 'The last 3 days are near-real-time data and may still change.' },
   viirs_offline: { code: 'VIIRS_OFFLINE', message: 'VIIRS was offline on some days; Harmonic estimated them from MODIS.' },
+  snpp_offline: { code: 'SNPP_OFFLINE', message: 'S-NPP was offline on some days; they were observed by the same VIIRS instrument on NOAA-20/21.' },
 };
 
 function warnings(status: StatusRow[], origins: Set<string>, b: BBox, start: string): Warning[] {
