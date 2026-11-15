@@ -1,7 +1,0 @@
-15:49:03 pipeline: ==== tables
-15:49:10 history: history 2000-11-01 .. 2025-12-31 (9192 days), 60405 land cells, grid (355, 418), 8360 target days
-15:49:16 attributes: attributes: 5613465 cell-day-passes, 30737059 rows, mismatch vs daily_cells 0.000%, 6 s -> D:\NASA\Fire Prediction model\output\cache\unified_cell_attributes.parquet
-15:49:25 build: issue year 2002 done (20 s)
-15:50:08 build: issue year 2003 done (64 s)
-15:50:53 build: issue year 2004 done (109 s)
-15:51:38 build: issue year 2005 done (154 s)
