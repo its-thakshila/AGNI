@@ -39,7 +39,7 @@ export default function SidePanel() {
                 tab === t.id ? 'bg-raised text-ink shadow-sm shadow-black/40' : 'text-muted hover:text-ink-2'
               }`}
             >
-              <Icon icon={t.icon} size="sm" className={`hidden min-[1500px]:block ${tab === t.id ? (t.id === 'forecast' ? 'text-[#c4a6ff]' : 'text-ember') : ''}`} />
+              <Icon icon={t.icon} size="sm" className={`hidden min-[1500px]:block ${tab === t.id ? (t.id === 'forecast' ? 'text-forecast-soft' : 'text-ember') : ''}`} />
               {t.label}
             </button>
           ))}

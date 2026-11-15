@@ -467,8 +467,11 @@ export async function anomaly(b: BBox, month: string, types: number[], baseline?
   const m = dt.m;
   const y = +month.slice(0, 4), mo = +month.slice(5, 7);
   const latest = m.latest_fire_date;
-  const latestDay = +latest.slice(8, 10);
-  const mtd = month === latest.slice(0, 7) && latestDay < daysInMonth(y, mo);
+  // the newest fire-day is usually still in progress (partial): month to date runs through the last
+  // finished day, or that one unfinished day would make every current month "no fair comparison"
+  const inMonth = month === latest.slice(0, 7);
+  const latestDay = +latest.slice(8, 10) - (inMonth && +latest.slice(8, 10) > 1 && dt.status.get(latest)?.h === 'partial' ? 1 : 0);
+  const mtd = inMonth && latestDay < daysInMonth(y, mo);
   const toDay = mtd ? latestDay : daysInMonth(y, mo);
   const [first, last] = baseline ?? [+m.record_start.slice(0, 4), y - 1];
   if (baseline && !(first <= last && last <= +latest.slice(0, 4)))

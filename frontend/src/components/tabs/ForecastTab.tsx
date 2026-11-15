@@ -70,15 +70,15 @@ export default function ForecastTab() {
               role="radio"
               aria-checked={on}
               onClick={() => setLead(l)}
-              className={`min-w-0 rounded-f4 border px-f3 py-f3 text-left transition-colors ${
-                on ? 'border-[#a37bf0]/70 bg-[#a37bf0]/10' : 'border-line/70 bg-page/35 hover:border-ink-2/30'
+              className={`min-w-0 rounded-f4 border px-f4 py-f3 text-left transition-colors ${
+                on ? 'border-forecast/70 bg-forecast/10' : 'border-line/70 bg-page/35 hover:border-ink-2/30'
               }`}
             >
               <div className="truncate text-cap text-muted">{LEAD_LABEL[l]}</div>
               <div className="truncate text-body font-medium text-ink">
                 {new Date(`${x.target_date}T00:00:00Z`).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', timeZone: 'UTC' })}
               </div>
-              <div className="tabular text-cap text-ink-2">≈ {compact(x.expected)}</div>
+              <div className="tabular text-cap text-muted">≈ {compact(x.expected)}</div>
             </button>
           );
         })}
@@ -87,7 +87,7 @@ export default function ForecastTab() {
       <div className="rounded-f4 border border-line/70 bg-page/35 p-f4">
         <div className="flex items-end justify-between gap-f4">
           <div className="min-w-0">
-            <div className="tabular text-display font-semibold text-ink">{fmt(expected)}</div>
+            <div className="tabular text-title font-semibold text-ink">{fmt(expected)}</div>
             <div className="text-cap text-muted">
               expected detections · {L ? dayText(L.target_date) : ''} · {area ? 'custom area' : `all of ${REGION.name}`}
             </div>
@@ -112,7 +112,7 @@ export default function ForecastTab() {
 
       {acc && (
         <div className="rounded-f4 border border-line/70 bg-page/35 p-f4 text-cap text-muted">
-          <div className="mb-f2 text-body font-medium text-ink">How good is it?</div>
+          <h3 className="mb-f2 text-body font-medium text-ink">How good is it?</h3>
           <p>
             Tested on {s.test_years?.join(', ') ?? 'held-out years'}: daily totals were off by about{' '}
             <span className="text-ink-2">{Math.round(acc.daily_total_error_pct)}%</span> on average, against{' '}
@@ -123,7 +123,7 @@ export default function ForecastTab() {
         </div>
       )}
 
-      <p className="mt-auto text-cap text-muted">
+      <p className="mt-auto border-t border-line pt-f4 text-cap text-muted">
         Made from fires up to {dayText(s.issue_date)} · observed weather: NASA POWER · weather forecast:{' '}
         <a href="https://open-meteo.com/" target="_blank" rel="noopener" className="text-ink-2 underline decoration-line underline-offset-2 hover:text-ink">
           Open-Meteo.com
@@ -136,10 +136,10 @@ export default function ForecastTab() {
 
 function ExperimentalNote({ error }: { error?: number }) {
   return (
-    <div className="flex items-start gap-f3 rounded-f4 border border-[#a37bf0]/40 bg-[#a37bf0]/[0.07] px-f4 py-f3">
-      <Icon icon={FlaskConical} size="sm" className="mt-[2px] shrink-0 text-[#c4a6ff]" />
+    <div className="flex items-start gap-f3 rounded-f4 border border-forecast/40 bg-forecast/[0.07] px-f4 py-f3">
+      <Icon icon={FlaskConical} size="sm" className="mt-[2px] shrink-0 text-forecast-soft" />
       <p className="text-cap text-ink-2">
-        <span className="font-medium text-[#c4a6ff]">Experimental.</span> A machine-learning forecast from recent fires and the
+        <span className="font-medium text-forecast-soft">Experimental.</span> A machine-learning forecast from recent fires and the
         weather forecast{error ? `; daily totals are typically off by about ${Math.round(error)}%` : ''}.
       </p>
     </div>

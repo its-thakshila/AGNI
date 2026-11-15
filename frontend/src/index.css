@@ -24,6 +24,9 @@
   --color-muted: #84838c;
   --color-ember: #f2793a;
   --color-ember-soft: #f8a466;
+  /* the experimental forecast: violet, so a forecast is never mistaken for observed fire */
+  --color-forecast: #a37bf0;
+  --color-forecast-soft: #c4a6ff;
 
   --spacing-f1: 3px;
   --spacing-f2: 5px;

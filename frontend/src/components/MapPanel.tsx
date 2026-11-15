@@ -325,7 +325,7 @@ export default function MapPanel() {
         {forecastMode ? (
           <>
             <ForecastLegend />
-            <div className="mt-f1 text-cap text-[#c4a6ff]">
+            <div className="mt-f1 text-cap text-forecast-soft">
               Experimental forecast{forecastSummary?.leads[String(lead)] ? ` · ${new Date(`${forecastSummary.leads[String(lead)].target_date}T00:00:00Z`).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' })}` : ''}
             </div>
           </>
