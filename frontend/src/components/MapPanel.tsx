@@ -122,6 +122,10 @@ export default function MapPanel() {
   const basemap = useSelection((s) => s.basemap);
   const setBasemap = useSelection((s) => s.setBasemap);
   const { year, month } = useSelection();
+  // days of the period on screen still being fetched from NASA (the selected day, or the month);
+  // fetching for other months doesn't cover the map you're looking at
+  const period = day === null ? `${year}-${String(month).padStart(2, '0')}` : `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const fetching = pending.filter((d) => d.startsWith(period)).length;
   const monthQ = useMonthQuery();
   const shownDate = day !== null ? ymd(year, month, day) : monthQ?.end ?? '';
   // imagery for the day shown, but held still during playback (new tiles every frame would flicker)
@@ -257,23 +261,24 @@ export default function MapPanel() {
       <div className="absolute left-f4 top-f4 z-10">
         <AreaControl />
       </div>
-      {showLoading && (
+      {(showLoading || fetching > 0) && (
         <div className="pointer-events-none absolute inset-0 z-[5] grid place-items-center bg-page/45 transition-opacity" role="status" aria-live="polite">
-          <div className="chip flex items-center gap-f2 rounded-full border border-line bg-page/90 px-f4 py-f2 text-body text-ink-2 shadow-lg backdrop-blur">
-            <Icon icon={LoaderCircle} size="sm" className="animate-spin text-ember" />
-            {day === null ? 'Updating map…' : 'Loading day…'}
+          <div className="chip flex items-center gap-f3 rounded-f5 border border-line bg-page/90 px-f4 py-f2 text-body text-ink-2 shadow-lg backdrop-blur">
+            <Icon icon={LoaderCircle} size="sm" className="shrink-0 animate-spin text-ember" />
+            {fetching > 0 ? (
+              <span>
+                <span className="block">Fetching new satellite data…</span>
+                <span className="block text-cap text-muted">
+                  {day === null ? `${fetching} ${fetching === 1 ? 'day' : 'days'} · ` : ''}usually 1–2 minutes
+                </span>
+              </span>
+            ) : day === null ? 'Updating map…' : 'Loading day…'}
           </div>
         </div>
       )}
       {/* phones: one row below the area buttons, which take the top row */}
       <div className="absolute right-f4 top-[4.25rem] z-10 flex flex-col items-end gap-f2 sm:top-f4">
         <DayControl />
-        {pending.length > 0 && (
-          <div role="status" className="chip pointer-events-none flex max-w-72 items-center gap-f2 rounded-full border border-line bg-page/85 px-f4 py-f2 text-cap text-ink-2 backdrop-blur">
-            <Icon icon={LoaderCircle} size="xs" className="animate-spin text-ember" />
-            Fetching new satellite data for {pending.length} {pending.length === 1 ? 'day' : 'days'}… usually 1–2 minutes
-          </div>
-        )}
         {grid.error && (
           <div className="max-w-64 rounded-f3 border border-line bg-page/85 px-f4 py-f2 text-cap text-ember-soft backdrop-blur">{friendlyError(grid.error)}</div>
         )}
