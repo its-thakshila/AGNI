@@ -1,0 +1,67 @@
+# Fire forecast model: only what is needed to LOAD the model and RUN forecasts (forecast.py).
+# Allow-list: everything is ignored, then the needed files are re-included.
+# Folder layout must stay as it is: fcst_config.py finds ml_pipeline/, backend/ and data/ via the parent folder.
+
+/*
+!/.gitignore
+
+# ---- forecast code + trained models (lead_1/3/7.joblib, training_report.json)
+!/Fire Prediction model/
+/Fire Prediction model/*
+!/Fire Prediction model/README.md
+!/Fire Prediction model/fcst_config.py
+!/Fire Prediction model/fmodels.py
+!/Fire Prediction model/history.py
+!/Fire Prediction model/forecast.py
+!/Fire Prediction model/forecast_weather.py
+!/Fire Prediction model/fire_danger.py
+!/Fire Prediction model/weather_forecast_template.csv
+!/Fire Prediction model/models/
+
+# ---- shared modules from the MODIS->VIIRS pipeline (grid/time rules, weather features)
+!/ml_pipeline/
+/ml_pipeline/*
+!/ml_pipeline/config.py
+!/ml_pipeline/common.py
+!/ml_pipeline/weather.py
+# row-synthesis statistics (overpass times, pixel sizes, FRP/brightness spread), 0.7 MB
+!/ml_pipeline/output/
+/ml_pipeline/output/*
+!/ml_pipeline/output/models/
+/ml_pipeline/output/models/*
+!/ml_pipeline/output/models/synthesis_stats.joblib
+
+# ---- fire history the features are built from (44 MB) + day quality flags
+!/backend/
+/backend/*
+!/backend/data/
+/backend/data/*
+!/backend/data/parquet/
+/backend/data/parquet/*
+!/backend/data/parquet/daily_cells.parquet
+!/backend/data/parquet/day_status.parquet
+
+# ---- weather input folder (the 455 MB POWER parquet is too big for plain git: use Git LFS or download it)
+!/data/
+/data/*
+!/data/weather/
+/data/weather/*
+!/data/weather/PUT_WEATHER_FILES_HERE.txt
+# To commit it with Git LFS:  git lfs track "data/weather/*.parquet"  and uncomment:
+# !/data/weather/australia_daily_weather_2000_2026.parquet
+
+# ---- optional: recent real VIIRS rows, used to place forecast rows on real pixel positions and for the
+# static (gas flare / industry) layer. Without them rows are placed uniformly inside their cells.
+# Needs the issue year and the year before. Uncomment to include (75-96 MB each; Git LFS recommended):
+# !/data/train/
+# /data/train/*
+# !/data/train/VIIRS/
+# /data/train/VIIRS/*
+# !/data/train/VIIRS/viirs-snpp_2024_Australia.csv
+# !/data/train/VIIRS/viirs-snpp_2025_Australia.csv
+
+# ---- never commit
+__pycache__/
+*.py[cod]
+*.log
+*.out
