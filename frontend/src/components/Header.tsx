@@ -12,7 +12,7 @@ export default function Header() {
     <header className="flex h-f7 shrink-0 items-center justify-between gap-f4 px-f5">
       {/* the logo with the full name everywhere; a little smaller on phones */}
       <div className="flex min-w-0 items-center">
-        <img src={logoWithName} alt="AGNI — Active-fire Global Normalized Inventory" className="h-[26px] w-auto sm:h-f6" />
+        <img src={logoWithName} alt="AGNI | Active-fire Global Normalized Inventory" className="h-[26px] w-auto sm:h-f6" />
       </div>
       <div className="flex items-center gap-f3">
         {demo && (

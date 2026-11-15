@@ -1,5 +1,7 @@
 # API Contract — Harmonized Burning Activity Calendar
 
+> **Note (Nov 2026):** the live site does not call a server. It answers these same requests in the browser from the Parquet files in R2 (`frontend/src/api/engine`), so the shapes below are what the engine returns. The FastAPI backend in `backend/` implements the contract for development only (set `VITE_API_BASE`). See [ARCHITECTURE.md](ARCHITECTURE.md).
+
 NASA Space Apps Challenge 2026 · Harmonization of MODIS and VIIRS Hot Spots · Region: Australia
 Backend architecture: `BACKEND_ARCHITECTURE_v2` · Contract version: **1.2**
 

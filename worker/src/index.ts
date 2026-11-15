@@ -65,7 +65,7 @@ async function serveFile(request: Request, env: Env, dataset: string, file: stri
   if (request.method === 'HEAD') {
     const head = await env.DATA.head(key);
     if (!head) return new Response(null, { status: 404, headers });
-    // Range-aware readers (e.g. DuckDB-WASM) probe with `HEAD` + `Range: bytes=0-` and read a file in
+    // Range-aware readers (e.g. hyparquet in the site) probe with `HEAD` + `Range: bytes=0-` and read a file in
     // parts only if the answer is 206 with the full size; a plain 200 makes them download it whole.
     if (request.headers.has('Range')) {
       return new Response(null, {

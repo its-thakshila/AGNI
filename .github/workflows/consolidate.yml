@@ -1,6 +1,6 @@
 name: Add processed days to the main dataset
 
-# Nightly: finished days (older than 3 days) move from the live monthly files into the main
+# Nightly: finished days (older than 3 days, on NASA's final data or older than 150 days) move from the live monthly files into the main
 # dataset in R2. Run manually with "export CSV" to also rewrite the full processed CSV
 # (csv/agni_processed.csv in the same prefix).
 

@@ -32,7 +32,7 @@ real/
   be fetched from NASA again. Replacing `source/` is enough to remove all old data.
 - **Day status file:** the build can take an optional `day_status` file saying which days have
   data. We have never uploaded one and you don't need one: the build works it out from the
-  detections (days with no rows = satellite outage, few rows = partial day). Ignore it.
+  detections (days with no rows = satellite outage, days next to an outage = partial day). Ignore it.
 
 ---
 
@@ -162,7 +162,7 @@ These are written in the code and must be updated by hand from the new `training
 
 | File | What |
 |---|---|
-| `pipeline/agni_pipeline/build_hist.py` → `PERIODS` | typical daily error of model years: `0.16` (Terra only, 2000–2002) and `0.11` (Terra + Aqua, 2002–2011) |
+| `pipeline/agni_pipeline/build_hist.py` → `PERIODS` | typical daily error of model years: `0.15` (Terra only, 2000–2002) and `0.11` (Terra + Aqua, 2002–2011) |
 | `frontend/src/components/AboutDialog.tsx` | "±3% monthly" |
 | `frontend/src/lib/colors.ts` → `ml` note | "about ±3–5%" |
 

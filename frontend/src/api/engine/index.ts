@@ -157,7 +157,7 @@ export async function dataset(refresh = false): Promise<Manifest> {
 const today = () => new Date().toISOString().slice(0, 10);
 
 function uncertaintyOf(origin: string, d: string): number {
-  if (origin === 'ml') return d < '2002-07-04' ? 0.16 : 0.11;
+  if (origin === 'ml') return d < '2002-07-04' ? 0.15 : 0.11;   // Harmonic v8 daily error (Terra only / Terra + Aqua)
   if (origin === 'gapfill') return d >= '2022-01-01' ? 0.13 : 0.11;
   return 0;
 }
