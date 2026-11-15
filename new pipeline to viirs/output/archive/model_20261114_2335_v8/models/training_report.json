@@ -1,0 +1,195 @@
+{
+ "full": {
+  "rows": 4529926,
+  "rows_represented": 14610142,
+  "rows_with_viirs": 1783764,
+  "empty_keep": 0.2,
+  "years": [
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "cv": {
+   "hgb": {
+    "cell_r2": 0.6359,
+    "cell_mae": 0.797,
+    "cell_poisson_dev": 1.412,
+    "daily_r2": 0.9682,
+    "daily_mae_pct": 10.67,
+    "monthly_r2": 0.9959,
+    "monthly_mae_pct": 3.13,
+    "total_bias_pct": -0.48
+   },
+   "baseline_fixed_ratio": {
+    "cell_r2": 0.407,
+    "cell_mae": 0.918,
+    "cell_poisson_dev": 8.385,
+    "daily_r2": 0.9318,
+    "daily_mae_pct": 17.03,
+    "monthly_r2": 0.9862,
+    "monthly_mae_pct": 6.52,
+    "total_bias_pct": -0.0
+   },
+   "baseline_monthly_ratio": {
+    "cell_r2": 0.4031,
+    "cell_mae": 0.916,
+    "cell_poisson_dev": 8.38,
+    "daily_r2": 0.9346,
+    "daily_mae_pct": 16.64,
+    "monthly_r2": 0.99,
+    "monthly_mae_pct": 5.67,
+    "total_bias_pct": -0.09
+   },
+   "secondary": {
+    "frp_r2_log": 0.6474,
+    "ti4_mae_k": 3.9796,
+    "ti5_mae_k": 3.8561,
+    "conf_share_mae_pct": 0.155
+   },
+   "hgb_calibrated": {
+    "cell_r2": 0.6361,
+    "cell_mae": 0.798,
+    "cell_poisson_dev": 1.412,
+    "daily_r2": 0.9685,
+    "daily_mae_pct": 10.67,
+    "monthly_r2": 0.9961,
+    "monthly_mae_pct": 3.15,
+    "total_bias_pct": -0.0
+   },
+   "calibration_factors": {
+    "0_0": 1.0027,
+    "0_1": 1.0166,
+    "1_0": 0.9998,
+    "1_1": 0.996
+   }
+  },
+  "iterations": 1999,
+  "feature_importance": {
+   "modis_n": 0.7516,
+   "own_otherpass_n": 0.2441,
+   "days_until_next": 0.2406,
+   "own_7d_n": 0.2378,
+   "days_since_last": 0.2083,
+   "modis_frp": 0.1354,
+   "lat": 0.113,
+   "is_night": 0.1088,
+   "aqua_bt_mean": 0.1078,
+   "lon": 0.0645,
+   "nb3_7d_n": 0.057,
+   "nb_frp": 0.0518,
+   "aqua_lst_mean": 0.0501,
+   "aqua_nb_frp": 0.0404,
+   "nb_n": 0.0384
+  }
+ },
+ "terra_only": {
+  "rows": 2902209,
+  "rows_represented": 8753061,
+  "rows_with_viirs": 1327454,
+  "empty_keep": 0.2,
+  "years": [
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "cv": {
+   "hgb": {
+    "cell_r2": 0.4498,
+    "cell_mae": 1.407,
+    "cell_poisson_dev": 2.851,
+    "daily_r2": 0.9464,
+    "daily_mae_pct": 14.98,
+    "monthly_r2": 0.9921,
+    "monthly_mae_pct": 4.85,
+    "total_bias_pct": -0.82
+   },
+   "baseline_fixed_ratio": {
+    "cell_r2": -0.1846,
+    "cell_mae": 1.714,
+    "cell_poisson_dev": 22.353,
+    "daily_r2": 0.8419,
+    "daily_mae_pct": 28.39,
+    "monthly_r2": 0.9748,
+    "monthly_mae_pct": 10.6,
+    "total_bias_pct": -0.01
+   },
+   "baseline_monthly_ratio": {
+    "cell_r2": -0.168,
+    "cell_mae": 1.716,
+    "cell_poisson_dev": 22.358,
+    "daily_r2": 0.8431,
+    "daily_mae_pct": 28.08,
+    "monthly_r2": 0.9782,
+    "monthly_mae_pct": 8.54,
+    "total_bias_pct": -0.23
+   },
+   "hgb_calibrated": {
+    "cell_r2": 0.4498,
+    "cell_mae": 1.41,
+    "cell_poisson_dev": 2.851,
+    "daily_r2": 0.9473,
+    "daily_mae_pct": 15.0,
+    "monthly_r2": 0.9929,
+    "monthly_mae_pct": 4.78,
+    "total_bias_pct": 0.0
+   },
+   "calibration_factors": {
+    "0_0": 1.0099,
+    "0_1": 1.0196,
+    "1_0": 0.9993,
+    "1_1": 1.0076
+   }
+  },
+  "iterations": 2000
+ },
+ "reachable_share_total": 0.8909043314140607,
+ "unreachable_adjust": {
+  "1_D": 1.1033,
+  "1_N": 1.1437,
+  "2_D": 1.1611,
+  "2_N": 1.2439,
+  "3_D": 1.1787,
+  "3_N": 1.4977,
+  "4_D": 1.1141,
+  "4_N": 1.5185,
+  "5_D": 1.0657,
+  "5_N": 1.4789,
+  "6_D": 1.0588,
+  "6_N": 1.6215,
+  "7_D": 1.0556,
+  "7_N": 1.6436,
+  "8_D": 1.0648,
+  "8_N": 1.3683,
+  "9_D": 1.0508,
+  "9_N": 1.1957,
+  "10_D": 1.0371,
+  "10_N": 1.1014,
+  "11_D": 1.0596,
+  "11_N": 1.111,
+  "12_D": 1.0824,
+  "12_N": 1.1179
+ },
+ "model": "XGBoost 3.2.0 (GPU, CUDA)"
+}

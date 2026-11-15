@@ -1,0 +1,6 @@
+{
+ "modis_rows": 304651,
+ "viirs_equiv_expected": 1294399.4309546007,
+ "viirs_equiv_rows": 1294874,
+ "days": 365
+}

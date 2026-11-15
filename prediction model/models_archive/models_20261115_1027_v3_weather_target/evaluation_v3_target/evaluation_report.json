@@ -1,0 +1,328 @@
+{
+ "evaluated": "2026-11-15T10:58:28",
+ "models": "D:\\NASA\\Fire Prediction model\\models",
+ "test_years": [
+  2023,
+  2024,
+  2025
+ ],
+ "every_nth_issue_day": 2,
+ "topk": 1000,
+ "fss_windows_deg": [
+  0.1,
+  0.5,
+  1.1
+ ],
+ "leads": {
+  "1": {
+   "days": 534,
+   "actual_rows": 2029668.0,
+   "model": {
+    "pr_auc": 0.439,
+    "brier_x1e4": 30.7131,
+    "poisson_dev_per_cell": 0.15029,
+    "fss": [
+     0.4779,
+     0.768,
+     0.8527
+    ],
+    "topk_row_capture": 0.6471,
+    "topk_hit_rate": 0.2676,
+    "daily_total_bias_pct": -0.98,
+    "daily_total_mape_pct": 27.3,
+    "daily_total_log_corr": 0.9514,
+    "reliability": [
+     {
+      "n": 18859494,
+      "mean_p": 6e-05,
+      "observed": 4e-05
+     },
+     {
+      "n": 29940182,
+      "mean_p": 0.00037,
+      "observed": 0.00038
+     },
+     {
+      "n": 8682072,
+      "mean_p": 0.0017,
+      "observed": 0.00192
+     },
+     {
+      "n": 4019215,
+      "mean_p": 0.00533,
+      "observed": 0.00571
+     },
+     {
+      "n": 1767209,
+      "mean_p": 0.01708,
+      "observed": 0.01655
+     },
+     {
+      "n": 824423,
+      "mean_p": 0.0526,
+      "observed": 0.04964
+     },
+     {
+      "n": 193296,
+      "mean_p": 0.13837,
+      "observed": 0.1284
+     },
+     {
+      "n": 120722,
+      "mean_p": 0.28535,
+      "observed": 0.25838
+     },
+     {
+      "n": 87703,
+      "mean_p": 0.53836,
+      "observed": 0.47346
+     },
+     {
+      "n": 78032,
+      "mean_p": 0.84734,
+      "observed": 0.77553
+     }
+    ],
+    "log_frp_mae": 0.5658,
+    "log_frp_bias": 0.2006
+   },
+   "persistence": {
+    "pr_auc": 0.315,
+    "brier_x1e4": 36.0353,
+    "poisson_dev_per_cell": 0.25614,
+    "fss": [
+     0.287,
+     0.4998,
+     0.585
+    ],
+    "topk_row_capture": 0.559,
+    "topk_hit_rate": 0.2361,
+    "daily_total_bias_pct": -6.89,
+    "daily_total_mape_pct": 97.4,
+    "daily_total_log_corr": 0.8741
+   },
+   "climatology": {
+    "pr_auc": 0.0323,
+    "brier_x1e4": 42.4308,
+    "poisson_dev_per_cell": 0.37061,
+    "fss": [
+     0.0777,
+     0.3355,
+     0.5114
+    ],
+    "topk_row_capture": 0.109,
+    "topk_hit_rate": 0.0587,
+    "daily_total_bias_pct": -6.73,
+    "daily_total_mape_pct": 108.3,
+    "daily_total_log_corr": 0.6668
+   }
+  },
+  "3": {
+   "days": 534,
+   "actual_rows": 2029668.0,
+   "model": {
+    "pr_auc": 0.1997,
+    "brier_x1e4": 38.167,
+    "poisson_dev_per_cell": 0.23121,
+    "fss": [
+     0.2393,
+     0.5865,
+     0.7339
+    ],
+    "topk_row_capture": 0.3827,
+    "topk_hit_rate": 0.1652,
+    "daily_total_bias_pct": -0.61,
+    "daily_total_mape_pct": 38.3,
+    "daily_total_log_corr": 0.9168,
+    "reliability": [
+     {
+      "n": 11691205,
+      "mean_p": 6e-05,
+      "observed": 3e-05
+     },
+     {
+      "n": 31409660,
+      "mean_p": 0.00038,
+      "observed": 0.0004
+     },
+     {
+      "n": 10919202,
+      "mean_p": 0.00175,
+      "observed": 0.00203
+     },
+     {
+      "n": 6404718,
+      "mean_p": 0.00537,
+      "observed": 0.00587
+     },
+     {
+      "n": 2522963,
+      "mean_p": 0.01684,
+      "observed": 0.01729
+     },
+     {
+      "n": 1134126,
+      "mean_p": 0.05295,
+      "observed": 0.05298
+     },
+     {
+      "n": 284434,
+      "mean_p": 0.13868,
+      "observed": 0.12994
+     },
+     {
+      "n": 137628,
+      "mean_p": 0.27683,
+      "observed": 0.24791
+     },
+     {
+      "n": 57020,
+      "mean_p": 0.51923,
+      "observed": 0.43609
+     },
+     {
+      "n": 11392,
+      "mean_p": 0.78472,
+      "observed": 0.64501
+     }
+    ],
+    "log_frp_mae": 0.5795,
+    "log_frp_bias": 0.2021
+   },
+   "persistence": {
+    "pr_auc": 0.0984,
+    "brier_x1e4": 41.4286,
+    "poisson_dev_per_cell": 0.35045,
+    "fss": [
+     0.0883,
+     0.226,
+     0.3106
+    ],
+    "topk_row_capture": 0.2731,
+    "topk_hit_rate": 0.1301,
+    "daily_total_bias_pct": -9.65,
+    "daily_total_mape_pct": 148.6,
+    "daily_total_log_corr": 0.7297
+   },
+   "climatology": {
+    "pr_auc": 0.0323,
+    "brier_x1e4": 42.4308,
+    "poisson_dev_per_cell": 0.37061,
+    "fss": [
+     0.0777,
+     0.3355,
+     0.5114
+    ],
+    "topk_row_capture": 0.109,
+    "topk_hit_rate": 0.0587,
+    "daily_total_bias_pct": -6.73,
+    "daily_total_mape_pct": 108.3,
+    "daily_total_log_corr": 0.6668
+   }
+  },
+  "7": {
+   "days": 534,
+   "actual_rows": 2029668.0,
+   "model": {
+    "pr_auc": 0.1021,
+    "brier_x1e4": 40.7181,
+    "poisson_dev_per_cell": 0.27654,
+    "fss": [
+     0.1207,
+     0.4354,
+     0.6249
+    ],
+    "topk_row_capture": 0.2313,
+    "topk_hit_rate": 0.1106,
+    "daily_total_bias_pct": -8.97,
+    "daily_total_mape_pct": 43.9,
+    "daily_total_log_corr": 0.8877,
+    "reliability": [
+     {
+      "n": 10343767,
+      "mean_p": 6e-05,
+      "observed": 4e-05
+     },
+     {
+      "n": 29534059,
+      "mean_p": 0.0004,
+      "observed": 0.00045
+     },
+     {
+      "n": 12044027,
+      "mean_p": 0.00176,
+      "observed": 0.0022
+     },
+     {
+      "n": 7661962,
+      "mean_p": 0.00543,
+      "observed": 0.00634
+     },
+     {
+      "n": 3296823,
+      "mean_p": 0.01685,
+      "observed": 0.01832
+     },
+     {
+      "n": 1330225,
+      "mean_p": 0.05188,
+      "observed": 0.05361
+     },
+     {
+      "n": 270111,
+      "mean_p": 0.13688,
+      "observed": 0.13447
+     },
+     {
+      "n": 80858,
+      "mean_p": 0.26206,
+      "observed": 0.23374
+     },
+     {
+      "n": 9980,
+      "mean_p": 0.48867,
+      "observed": 0.38577
+     },
+     {
+      "n": 536,
+      "mean_p": 0.76976,
+      "observed": 0.58582
+     }
+    ],
+    "log_frp_mae": 0.5878,
+    "log_frp_bias": 0.2085
+   },
+   "persistence": {
+    "pr_auc": 0.0289,
+    "brier_x1e4": 42.8099,
+    "poisson_dev_per_cell": 0.3829,
+    "fss": [
+     0.0275,
+     0.113,
+     0.1878
+    ],
+    "topk_row_capture": 0.1192,
+    "topk_hit_rate": 0.0671,
+    "daily_total_bias_pct": -11.41,
+    "daily_total_mape_pct": 171.1,
+    "daily_total_log_corr": 0.6255
+   },
+   "climatology": {
+    "pr_auc": 0.0323,
+    "brier_x1e4": 42.4308,
+    "poisson_dev_per_cell": 0.37061,
+    "fss": [
+     0.0777,
+     0.3355,
+     0.5114
+    ],
+    "topk_row_capture": 0.109,
+    "topk_hit_rate": 0.0587,
+    "daily_total_bias_pct": -6.73,
+    "daily_total_mape_pct": 108.3,
+    "daily_total_log_corr": 0.6668
+   }
+  }
+ },
+ "seconds": 1852
+}

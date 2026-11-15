@@ -1,0 +1,9 @@
+02:41:01 train: lead 1: train 8518737 rows (1788708 with fire), val 741109 rows (133521 with fire)
+02:41:23 fmodels:   occ: 38 rounds (val logloss 0.01300)
+02:41:27 fmodels:   cnt: 29 rounds (val poisson-nloglik 5.20451)
+02:41:31 fmodels:   reg: 46 rounds (val rmse 0.68080)
+02:41:33 fmodels:   reg: 47 rounds (val rmse 6.47140)
+02:41:36 fmodels:   reg: 136 rounds (val rmse 6.37123)
+02:41:43 fmodels:   conf: 78 rounds (val mlogloss 0.51984)
+02:41:46 train: lead 1 val: PR-AUC model 0.321 / persistence 0.287 / climatology 0.031; rows 791713 actual vs 792747 expected (842237 before calibration)
+02:41:46 train: models saved in D:\NASA\Fire Prediction model\models

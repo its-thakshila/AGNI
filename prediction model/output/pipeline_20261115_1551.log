@@ -1,0 +1,42 @@
+15:51:48 pipeline: ==== tables
+15:51:54 history: history 2000-11-01 .. 2025-12-31 (9192 days), 60405 land cells, grid (355, 418), 8360 target days
+15:51:54 attributes: attributes up to date: D:\NASA\Fire Prediction model\output\cache\unified_cell_attributes.parquet
+15:52:01 build: issue year 2002 done (13 s)
+15:52:45 build: issue year 2003 done (56 s)
+15:53:29 build: issue year 2004 done (100 s)
+15:54:13 build: issue year 2005 done (144 s)
+15:54:57 build: issue year 2006 done (188 s)
+15:55:40 build: issue year 2007 done (231 s)
+15:56:22 build: issue year 2008 done (274 s)
+15:57:06 build: issue year 2009 done (317 s)
+15:57:48 build: issue year 2010 done (359 s)
+15:58:37 build: issue year 2011 done (408 s)
+15:59:25 build: issue year 2012 done (456 s)
+16:00:11 build: issue year 2013 done (503 s)
+16:00:58 build: issue year 2014 done (550 s)
+16:01:45 build: issue year 2015 done (597 s)
+16:02:32 build: issue year 2016 done (643 s)
+16:03:19 build: issue year 2017 done (690 s)
+16:04:08 build: issue year 2018 done (739 s)
+16:04:56 build: issue year 2019 done (788 s)
+16:05:42 build: issue year 2020 done (834 s)
+16:06:28 build: issue year 2021 done (880 s)
+16:07:15 build: issue year 2022 done (926 s)
+16:08:03 build: issue year 2023 done (974 s)
+16:08:49 build: lead 1: 7996 target days, 13582496 rows (4567664 with fire)
+16:08:49 build: lead 3: 7996 target days, 13580242 rows (4567664 with fire)
+16:08:49 build: lead 7: 7996 target days, 13579308 rows (4567664 with fire)
+16:08:49 build: done in 1020 s -> D:\NASA\Fire Prediction model\output\tables
+16:08:49 pipeline: ==== train
+16:08:50 train: previous models moved to D:\NASA\Fire Prediction model\models_archive\models_20261115_1140_v4_unified_2003_weather
+16:09:26 train: lead 1 fold (2003, 2009): train 9102189 rows, held-out 4480307 rows
+16:14:02 fmodels:   occ: 627 rounds (val aucpr 0.63397)
+16:15:36 fmodels:   cnt: 1997 rounds (val poisson-nloglik 3.66169)
+16:17:01 train: lead 1 fold (2010, 2016): train 9210957 rows, held-out 4371539 rows
+16:21:33 fmodels:   occ: 533 rounds (val aucpr 0.51977)
+16:23:24 fmodels:   cnt: 2000 rounds (val poisson-nloglik 4.54434)
+16:25:07 train: lead 1 fold (2017, 2024): train 8851846 rows, held-out 4730650 rows
+16:28:33 fmodels:   occ: 563 rounds (val aucpr 0.41788)
+16:30:22 fmodels:   cnt: 1999 rounds (val poisson-nloglik 5.37396)
+16:31:16 train: lead 1 out-of-fold: PR-AUC 0.526, Brier 0.003030 -> 0.003010; yearly total bias (calibrated) [30.3, 25.2, 28.3, 27.4, 23.3, 26.6, 21.7, 14.5, -1.7, -17.3, -5.3, -6.9, -9.4, -3.9, -11.7, -12.3, -20.2, -9.4, -6.0, -11.0, -17.4, -12.1]
+16:32:53 train: lead 1: train 13582496 rows (4567664 with fire)

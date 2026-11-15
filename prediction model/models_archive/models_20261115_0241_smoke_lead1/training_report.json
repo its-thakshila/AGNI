@@ -1,0 +1,293 @@
+{
+ "trained": "2026-11-15T02:41:46",
+ "device": "XGBoost 3.2.0 (GPU, CUDA)",
+ "features": [
+  "own_same_t",
+  "own_other_t",
+  "own_t1",
+  "own_t2",
+  "frp_t",
+  "frp_7d",
+  "nb3_t",
+  "nb5_t",
+  "nb9_t",
+  "nb3_t1",
+  "own_7d",
+  "own_30d",
+  "nb3_7d",
+  "nb5_30d",
+  "nb9_30d",
+  "days_since",
+  "burst_age",
+  "burned_3_12m",
+  "dir_n",
+  "dir_s",
+  "dir_e",
+  "dir_w",
+  "nat_t",
+  "nat_7d",
+  "clim_mean",
+  "clim_p",
+  "is_night",
+  "doy_sin",
+  "doy_cos",
+  "weekday",
+  "lat",
+  "lon"
+ ],
+ "tables": {
+  "built": "2026-11-15T02:40:45",
+  "features": [
+   "own_same_t",
+   "own_other_t",
+   "own_t1",
+   "own_t2",
+   "frp_t",
+   "frp_7d",
+   "nb3_t",
+   "nb5_t",
+   "nb9_t",
+   "nb3_t1",
+   "own_7d",
+   "own_30d",
+   "nb3_7d",
+   "nb5_30d",
+   "nb9_30d",
+   "days_since",
+   "burst_age",
+   "burned_3_12m",
+   "dir_n",
+   "dir_s",
+   "dir_e",
+   "dir_w",
+   "nat_t",
+   "nat_7d",
+   "clim_mean",
+   "clim_p",
+   "is_night",
+   "doy_sin",
+   "doy_cos",
+   "weekday",
+   "lat",
+   "lon"
+  ],
+  "leads": [
+   1,
+   3,
+   7
+  ],
+  "history": [
+   "2000-11-01",
+   "2025-12-31"
+  ],
+  "train_years": [
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021
+  ],
+  "val_years": [
+   2022
+  ],
+  "clim_years": [
+   2001,
+   2021
+  ],
+  "active_keep": 0.02,
+  "quiet_keep": 0.004,
+  "weather": false,
+  "stats": {
+   "1": {
+    "rows": 9259846,
+    "pos": 1922229,
+    "days": 3972
+   },
+   "3": {
+    "rows": 9264316,
+    "pos": 1922229,
+    "days": 3972
+   },
+   "7": {
+    "rows": 9260507,
+    "pos": 1922229,
+    "days": 3972
+   }
+  }
+ },
+ "final": false,
+ "leads": [
+  {
+   "lead": 1,
+   "train_rows": 8518737,
+   "train_fire_rows": 1788708,
+   "val": {
+    "rows": 741109,
+    "fire_rows": 133521,
+    "pr_auc": {
+     "model": 0.32106103235276334,
+     "persistence": 0.28734353547425306,
+     "climatology": 0.03084024529444413
+    },
+    "brier": {
+     "model": 0.002526982221752405,
+     "persistence": 0.002724343677982688,
+     "climatology": 0.003137994557619095
+    },
+    "total_rows_actual": 791713.0,
+    "total_rows_expected_before_calib": 842237.25,
+    "total_rows_expected": 792747.4375,
+    "frp_rmse_log": 0.6808010339736938,
+    "ti4_rmse": 6.4714035987854
+   },
+   "rounds": {
+    "occ": 38,
+    "cnt": 29,
+    "frp": 46,
+    "ti4": 47,
+    "ti5": 136,
+    "conf": 78
+   },
+   "importance": {
+    "occ": [
+     [
+      "own_same_t",
+      0.4578
+     ],
+     [
+      "clim_mean",
+      0.1318
+     ],
+     [
+      "own_other_t",
+      0.0805
+     ],
+     [
+      "nb3_t",
+      0.0783
+     ],
+     [
+      "is_night",
+      0.0529
+     ],
+     [
+      "nb3_7d",
+      0.0422
+     ],
+     [
+      "clim_p",
+      0.0333
+     ],
+     [
+      "lat",
+      0.0207
+     ],
+     [
+      "nb9_t",
+      0.0197
+     ],
+     [
+      "nb5_t",
+      0.0177
+     ],
+     [
+      "own_7d",
+      0.0158
+     ],
+     [
+      "days_since",
+      0.0137
+     ],
+     [
+      "nb5_30d",
+      0.0101
+     ],
+     [
+      "own_30d",
+      0.004
+     ],
+     [
+      "frp_t",
+      0.0038
+     ]
+    ],
+    "cnt": [
+     [
+      "clim_mean",
+      0.29
+     ],
+     [
+      "clim_p",
+      0.2739
+     ],
+     [
+      "nb3_t",
+      0.2237
+     ],
+     [
+      "own_same_t",
+      0.0496
+     ],
+     [
+      "own_other_t",
+      0.0371
+     ],
+     [
+      "own_30d",
+      0.0259
+     ],
+     [
+      "lat",
+      0.0244
+     ],
+     [
+      "is_night",
+      0.0187
+     ],
+     [
+      "days_since",
+      0.0112
+     ],
+     [
+      "frp_t",
+      0.0108
+     ],
+     [
+      "lon",
+      0.0053
+     ],
+     [
+      "doy_cos",
+      0.0046
+     ],
+     [
+      "doy_sin",
+      0.0035
+     ],
+     [
+      "own_t1",
+      0.0035
+     ],
+     [
+      "own_7d",
+      0.0031
+     ]
+    ]
+   },
+   "baselines": {
+    "persistence": {
+     "p1": 0.4060537058553806,
+     "p0": 0.002426755137517003,
+     "c1": 0.5192938446998596,
+     "m0": 0.01320771686732769
+    }
+   },
+   "seconds": 48
+  }
+ ]
+}

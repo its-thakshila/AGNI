@@ -1,0 +1,663 @@
+{
+ "trained": "2026-11-15T11:40:09",
+ "device": "XGBoost 3.2.0 (GPU, CUDA)",
+ "features": [
+  "own_same_t",
+  "own_other_t",
+  "own_t1",
+  "own_t2",
+  "frp_t",
+  "frp_7d",
+  "nb3_t",
+  "nb5_t",
+  "nb9_t",
+  "nb3_t1",
+  "own_7d",
+  "own_30d",
+  "nb3_7d",
+  "nb5_30d",
+  "nb9_30d",
+  "days_since",
+  "burst_age",
+  "burned_3_12m",
+  "dir_n",
+  "dir_s",
+  "dir_e",
+  "dir_w",
+  "nat_t",
+  "nat_7d",
+  "clim_mean",
+  "clim_p",
+  "is_night",
+  "doy_sin",
+  "doy_cos",
+  "weekday",
+  "lat",
+  "lon",
+  "w_tmax",
+  "w_tmin",
+  "w_rh",
+  "w_wind",
+  "w_prec",
+  "w_ps",
+  "w_vpd",
+  "w_prec_7d",
+  "w_prec_30d",
+  "w_prec_90d",
+  "w_dry_days",
+  "w_tmax_anom"
+ ],
+ "tables": {
+  "built": "2026-11-15T11:14:33",
+  "features": [
+   "own_same_t",
+   "own_other_t",
+   "own_t1",
+   "own_t2",
+   "frp_t",
+   "frp_7d",
+   "nb3_t",
+   "nb5_t",
+   "nb9_t",
+   "nb3_t1",
+   "own_7d",
+   "own_30d",
+   "nb3_7d",
+   "nb5_30d",
+   "nb9_30d",
+   "days_since",
+   "burst_age",
+   "burned_3_12m",
+   "dir_n",
+   "dir_s",
+   "dir_e",
+   "dir_w",
+   "nat_t",
+   "nat_7d",
+   "clim_mean",
+   "clim_p",
+   "is_night",
+   "doy_sin",
+   "doy_cos",
+   "weekday",
+   "lat",
+   "lon",
+   "w_tmax",
+   "w_tmin",
+   "w_rh",
+   "w_wind",
+   "w_prec",
+   "w_ps",
+   "w_vpd",
+   "w_prec_7d",
+   "w_prec_30d",
+   "w_prec_90d",
+   "w_dry_days",
+   "w_tmax_anom"
+  ],
+  "leads": [
+   1,
+   3,
+   7
+  ],
+  "history": [
+   "2000-11-01",
+   "2025-12-31"
+  ],
+  "train_years": [
+   2003,
+   2004,
+   2005,
+   2006,
+   2007,
+   2008,
+   2009,
+   2010,
+   2011,
+   2012,
+   2013,
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023
+  ],
+  "val_years": [
+   2024
+  ],
+  "clim_years": [
+   2001,
+   2024
+  ],
+  "target_source": "unified",
+  "active_keep": 0.01,
+  "quiet_keep": 0.002,
+  "weather": "target",
+  "stats": {
+   "1": {
+    "rows": 13611857,
+    "pos": 4572499,
+    "days": 8001
+   },
+   "3": {
+    "rows": 13611455,
+    "pos": 4572499,
+    "days": 8001
+   },
+   "7": {
+    "rows": 13605040,
+    "pos": 4572499,
+    "days": 8001
+   }
+  }
+ },
+ "final": false,
+ "leads": [
+  {
+   "lead": 1,
+   "train_rows": 13028244,
+   "train_fire_rows": 4403527,
+   "val": {
+    "rows": 583613,
+    "fire_rows": 168972,
+    "pr_auc": {
+     "model": 0.39730734472846657,
+     "persistence": 0.2876162473856481,
+     "climatology": 0.033778799120267454
+    },
+    "brier": {
+     "model": 0.0028782805893570185,
+     "persistence": 0.003285517916083336,
+     "climatology": 0.0037549701519310474
+    },
+    "total_rows_actual": 1034264.0,
+    "total_rows_expected_before_calib": 1036771.5625,
+    "total_rows_expected": 1034203.6875,
+    "frp_rmse_log": 0.6546120643615723,
+    "ti4_rmse": 6.3108134269714355
+   },
+   "rounds": {
+    "occ": 672,
+    "cnt": 2000,
+    "frp": 578,
+    "ti4": 594,
+    "ti5": 320,
+    "conf": 399
+   },
+   "importance": {
+    "occ": [
+     [
+      "nb3_7d",
+      0.34
+     ],
+     [
+      "nb5_t",
+      0.1304
+     ],
+     [
+      "days_since",
+      0.129
+     ],
+     [
+      "nb3_t",
+      0.1013
+     ],
+     [
+      "own_same_t",
+      0.0671
+     ],
+     [
+      "frp_t",
+      0.0463
+     ],
+     [
+      "nb5_30d",
+      0.0174
+     ],
+     [
+      "clim_p",
+      0.0168
+     ],
+     [
+      "burst_age",
+      0.0166
+     ],
+     [
+      "is_night",
+      0.0165
+     ],
+     [
+      "own_7d",
+      0.0104
+     ],
+     [
+      "nb9_t",
+      0.0086
+     ],
+     [
+      "own_other_t",
+      0.0082
+     ],
+     [
+      "lat",
+      0.0067
+     ],
+     [
+      "own_30d",
+      0.0067
+     ]
+    ],
+    "cnt": [
+     [
+      "own_same_t",
+      0.2278
+     ],
+     [
+      "nb3_t",
+      0.1506
+     ],
+     [
+      "own_other_t",
+      0.1058
+     ],
+     [
+      "w_vpd",
+      0.0492
+     ],
+     [
+      "is_night",
+      0.0447
+     ],
+     [
+      "frp_t",
+      0.042
+     ],
+     [
+      "lat",
+      0.0343
+     ],
+     [
+      "lon",
+      0.0311
+     ],
+     [
+      "w_rh",
+      0.0261
+     ],
+     [
+      "own_30d",
+      0.0202
+     ],
+     [
+      "own_t1",
+      0.0189
+     ],
+     [
+      "nb3_t1",
+      0.0182
+     ],
+     [
+      "own_7d",
+      0.0174
+     ],
+     [
+      "days_since",
+      0.0165
+     ],
+     [
+      "frp_7d",
+      0.0135
+     ]
+    ]
+   },
+   "baselines": {
+    "persistence": {
+     "p1": 0.49686677747441005,
+     "p0": 0.00242305566118586,
+     "c1": 0.6157855987548828,
+     "m0": 0.00968237966299057
+    }
+   },
+   "seconds": 515
+  },
+  {
+   "lead": 3,
+   "train_rows": 13030319,
+   "train_fire_rows": 4403527,
+   "val": {
+    "rows": 581136,
+    "fire_rows": 168972,
+    "pr_auc": {
+     "model": 0.17462753902315212,
+     "persistence": 0.08392729963101675,
+     "climatology": 0.034614800277442556
+    },
+    "brier": {
+     "model": 0.003481656778603792,
+     "persistence": 0.0037398068234324455,
+     "climatology": 0.003769064322113991
+    },
+    "total_rows_actual": 1034264.0,
+    "total_rows_expected_before_calib": 985012.5,
+    "total_rows_expected": 1033894.8125,
+    "frp_rmse_log": 0.6652036905288696,
+    "ti4_rmse": 6.349061489105225
+   },
+   "rounds": {
+    "occ": 630,
+    "cnt": 2000,
+    "frp": 561,
+    "ti4": 551,
+    "ti5": 476,
+    "conf": 368
+   },
+   "importance": {
+    "occ": [
+     [
+      "nb3_7d",
+      0.3495
+     ],
+     [
+      "days_since",
+      0.0969
+     ],
+     [
+      "nb5_30d",
+      0.0786
+     ],
+     [
+      "clim_p",
+      0.0737
+     ],
+     [
+      "nb3_t",
+      0.0617
+     ],
+     [
+      "nb9_t",
+      0.0505
+     ],
+     [
+      "own_same_t",
+      0.0403
+     ],
+     [
+      "nb5_t",
+      0.039
+     ],
+     [
+      "nb9_30d",
+      0.0212
+     ],
+     [
+      "frp_t",
+      0.0209
+     ],
+     [
+      "clim_mean",
+      0.0127
+     ],
+     [
+      "is_night",
+      0.0104
+     ],
+     [
+      "lat",
+      0.0101
+     ],
+     [
+      "lon",
+      0.0093
+     ],
+     [
+      "burst_age",
+      0.0093
+     ]
+    ],
+    "cnt": [
+     [
+      "w_rh",
+      0.1272
+     ],
+     [
+      "w_vpd",
+      0.1006
+     ],
+     [
+      "lat",
+      0.0876
+     ],
+     [
+      "nb3_t",
+      0.0613
+     ],
+     [
+      "lon",
+      0.0539
+     ],
+     [
+      "days_since",
+      0.0414
+     ],
+     [
+      "doy_cos",
+      0.0337
+     ],
+     [
+      "nat_7d",
+      0.0286
+     ],
+     [
+      "nb3_7d",
+      0.0276
+     ],
+     [
+      "own_30d",
+      0.0268
+     ],
+     [
+      "clim_mean",
+      0.0245
+     ],
+     [
+      "burned_3_12m",
+      0.024
+     ],
+     [
+      "own_same_t",
+      0.0225
+     ],
+     [
+      "frp_7d",
+      0.0224
+     ],
+     [
+      "is_night",
+      0.0201
+     ]
+    ]
+   },
+   "baselines": {
+    "persistence": {
+     "p1": 0.2655857774416412,
+     "p0": 0.00351146293038067,
+     "c1": 0.28838539123535156,
+     "m0": 0.018560441210865974
+    }
+   },
+   "seconds": 505
+  },
+  {
+   "lead": 7,
+   "train_rows": 13021936,
+   "train_fire_rows": 4403527,
+   "val": {
+    "rows": 583104,
+    "fire_rows": 168972,
+    "pr_auc": {
+     "model": 0.09868527642580793,
+     "persistence": 0.027491501152685723,
+     "climatology": 0.03447473554275621
+    },
+    "brier": {
+     "model": 0.0036258853506296873,
+     "persistence": 0.0038007909897714853,
+     "climatology": 0.0037493689451366663
+    },
+    "total_rows_actual": 1034264.0,
+    "total_rows_expected_before_calib": 969971.5,
+    "total_rows_expected": 1033853.75,
+    "frp_rmse_log": 0.6705422401428223,
+    "ti4_rmse": 6.37787389755249
+   },
+   "rounds": {
+    "occ": 787,
+    "cnt": 1999,
+    "frp": 447,
+    "ti4": 597,
+    "ti5": 590,
+    "conf": 398
+   },
+   "importance": {
+    "occ": [
+     [
+      "nb3_7d",
+      0.1577
+     ],
+     [
+      "nb5_30d",
+      0.1279
+     ],
+     [
+      "clim_p",
+      0.1201
+     ],
+     [
+      "nb9_30d",
+      0.104
+     ],
+     [
+      "nb9_t",
+      0.0859
+     ],
+     [
+      "nb5_t",
+      0.0494
+     ],
+     [
+      "nb3_t",
+      0.0477
+     ],
+     [
+      "days_since",
+      0.0376
+     ],
+     [
+      "clim_mean",
+      0.0325
+     ],
+     [
+      "lat",
+      0.0186
+     ],
+     [
+      "lon",
+      0.0181
+     ],
+     [
+      "own_same_t",
+      0.0151
+     ],
+     [
+      "burst_age",
+      0.0144
+     ],
+     [
+      "doy_sin",
+      0.0129
+     ],
+     [
+      "nat_7d",
+      0.011
+     ]
+    ],
+    "cnt": [
+     [
+      "w_vpd",
+      0.1342
+     ],
+     [
+      "w_rh",
+      0.1188
+     ],
+     [
+      "lat",
+      0.0907
+     ],
+     [
+      "days_since",
+      0.0585
+     ],
+     [
+      "lon",
+      0.053
+     ],
+     [
+      "doy_cos",
+      0.037
+     ],
+     [
+      "nat_7d",
+      0.0313
+     ],
+     [
+      "clim_mean",
+      0.0302
+     ],
+     [
+      "w_ps",
+      0.0292
+     ],
+     [
+      "nb3_7d",
+      0.0292
+     ],
+     [
+      "own_30d",
+      0.0264
+     ],
+     [
+      "burned_3_12m",
+      0.0251
+     ],
+     [
+      "doy_sin",
+      0.0248
+     ],
+     [
+      "frp_7d",
+      0.0242
+     ],
+     [
+      "nb9_30d",
+      0.0221
+     ]
+    ]
+   },
+   "baselines": {
+    "persistence": {
+     "p1": 0.13836466821713683,
+     "p0": 0.004131280424562057,
+     "c1": 0.1264132708311081,
+     "m0": 0.023220447823405266
+    }
+   },
+   "seconds": 511
+  }
+ ]
+}

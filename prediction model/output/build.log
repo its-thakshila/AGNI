@@ -1,0 +1,16 @@
+02:59:25 history: history 2000-11-01 .. 2025-12-31 (9192 days), 60461 land cells, grid (355, 418), 5041 target days
+02:59:25 attributes: attributes up to date: D:\NASA\Fire Prediction model\output\cache\viirs_cell_attributes.parquet
+03:00:33 build: issue year 2012 done (79 s)
+03:01:27 build: issue year 2013 done (133 s)
+03:02:25 build: issue year 2014 done (191 s)
+03:03:21 build: issue year 2015 done (247 s)
+03:04:17 build: issue year 2016 done (303 s)
+03:05:17 build: issue year 2017 done (363 s)
+03:06:13 build: issue year 2018 done (419 s)
+03:07:06 build: issue year 2019 done (472 s)
+03:08:02 build: issue year 2020 done (528 s)
+03:08:59 build: issue year 2021 done (585 s)
+03:09:53 build: lead 1: 3972 target days, 9259846 rows (1922229 with fire)
+03:09:53 build: lead 3: 3972 target days, 9264316 rows (1922229 with fire)
+03:09:53 build: lead 7: 3972 target days, 9260507 rows (1922229 with fire)
+03:09:53 build: done in 638 s -> D:\NASA\Fire Prediction model\output\tables
