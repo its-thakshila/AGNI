@@ -10,9 +10,11 @@ import os
 import sys
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent              # Fire Prediction model/
-ROOT = HERE.parent                                  # d:\NASA
-ML = ROOT / "ml_pipeline"
+HERE = Path(__file__).resolve().parent              # pipeline/forecast/ in the AGNI repo
+ROOT = HERE.parent                                  # pipeline/
+# Harmonic's ml_pipeline (grid, VIIRS schema, weather.py). In the ML team's own folder layout it sits
+# next to this folder; in the AGNI repo it is pipeline/harmonic/ml_pipeline.
+ML = ROOT / "harmonic" / "ml_pipeline" if (ROOT / "harmonic" / "ml_pipeline").exists() else ROOT / "ml_pipeline"
 if str(ML) not in sys.path:                         # reuse grid, VIIRS schema, synthesis stats, weather.py
     sys.path.insert(0, str(ML))
 

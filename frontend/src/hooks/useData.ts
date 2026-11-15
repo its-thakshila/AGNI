@@ -127,3 +127,21 @@ export function useGrid() {
   }, [settled, month, q, meta, qc]);
   return gated(r, !!q);
 }
+
+/** The experimental forecast's summary (null when the dataset has none). Refreshed every 30 minutes. */
+export function useForecast() {
+  return useQuery({ queryKey: ['forecast'], queryFn: api.forecast, staleTime: 30 * 60_000, refetchInterval: 30 * 60_000 });
+}
+
+/** Forecast cells of the selected lead (only fetched while the Forecast tab is open). */
+export function useForecastCells(enabled = true) {
+  const { data: s } = useForecast();
+  const lead = useSelection((x) => x.lead);
+  return useQuery({
+    queryKey: ['forecast-cells', s?.version, lead],
+    queryFn: () => api.forecastCells(s!, lead),
+    enabled: enabled && !!s,
+    placeholderData: keepPreviousData,
+    staleTime: Infinity,
+  });
+}

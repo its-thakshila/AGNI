@@ -9,7 +9,7 @@
 // The result is plain polygons in lon/lat, so they scale correctly at every zoom.
 
 import { contours } from 'd3-contour';
-import type { GridCell } from '../api/types';
+import type { ForecastCell, GridCell } from '../api/types';
 
 export const LEVELS = [0.22, 0.55, 1.0, 1.7];
 const UP = 2; // raster cells per grid cell, per axis
@@ -99,6 +99,68 @@ export function hotspotShapes(cells: GridCell[], maxCount: number, res: number):
           type: 'MultiPolygon',
           coordinates: m.coordinates.map((poly) => poly.map((ring) => smooth(ring).map(toLonLat))),
         },
+      })),
+  };
+}
+
+/** Chance-of-fire bands for the forecast map (probability of at least one detection in a cell). */
+export const FORECAST_LEVELS = [0.05, 0.15, 0.3, 0.5];
+
+/**
+ * The forecast as the same fluid shapes, traced on a probability field: each cell's chance spread by
+ * the Gaussian (so neighbouring cells merge), but never above the highest chance nearby, so a band
+ * always means "at least this chance" and touching cells don't add up to more than either has.
+ */
+export function forecastShapes(cells: ForecastCell[], res: number): GeoJSON.FeatureCollection {
+  const kept = cells.filter((c) => c.p >= FORECAST_LEVELS[0] * 0.5);
+  if (!kept.length) return { type: 'FeatureCollection', features: [] };
+  const step = res / UP;
+  let minLon = Infinity, minLat = Infinity, maxLon = -Infinity, maxLat = -Infinity;
+  for (const c of kept) {
+    minLon = Math.min(minLon, c.lon); minLat = Math.min(minLat, c.lat);
+    maxLon = Math.max(maxLon, c.lon + res); maxLat = Math.max(maxLat, c.lat + res);
+  }
+  minLon -= PAD * res; minLat -= PAD * res; maxLon += PAD * res; maxLat += PAD * res;
+  const w = Math.ceil((maxLon - minLon) / step);
+  const h = Math.ceil((maxLat - minLat) / step);
+  const a = new Float32Array(w * h);
+  const half = Math.floor(UP / 2);
+  for (const c of kept) {
+    const x = Math.min(w - 1, Math.max(0, Math.round((c.lon - minLon) / res) * UP + half));
+    const y = Math.min(h - 1, Math.max(0, Math.round((maxLat - c.lat) / res) * UP - UP + half));
+    a[y * w + x] = Math.max(a[y * w + x], c.p);
+  }
+  // highest chance within one cell (UP raster pixels) in each direction
+  const r = UP;
+  const mh = new Float32Array(w * h), m = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    let v = 0;
+    for (let k = Math.max(0, x - r); k <= Math.min(w - 1, x + r); k++) v = Math.max(v, a[y * w + k]);
+    mh[y * w + x] = v;
+  }
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    let v = 0;
+    for (let k = Math.max(0, y - r); k <= Math.min(h - 1, y + r); k++) v = Math.max(v, mh[k * w + x]);
+    m[y * w + x] = v;
+  }
+  const radius = Math.ceil(3 * SIGMA);
+  const kernel = Array.from({ length: radius + 1 }, (_, i) => Math.exp(-(i * i) / (2 * SIGMA * SIGMA)));
+  const b = new Float32Array(w * h);
+  blur1d(a, b, w, h, true, kernel);
+  blur1d(b, a, w, h, false, kernel);
+  for (let i = 0; i < a.length; i++) a[i] = Math.min(a[i], m[i]);
+
+  const shift = half + 0.5 - UP / 2;
+  const toLonLat = ([x, y]: number[]) => [+(minLon + (x - shift) * step).toFixed(5), +(maxLat - (y - shift) * step).toFixed(5)];
+  const bands = contours().size([w, h]).thresholds(FORECAST_LEVELS)(Array.from(a));
+  return {
+    type: 'FeatureCollection',
+    features: bands
+      .filter((mm) => mm.coordinates.length)
+      .map((mm) => ({
+        type: 'Feature',
+        properties: { band: FORECAST_LEVELS.indexOf(mm.value) },
+        geometry: { type: 'MultiPolygon', coordinates: mm.coordinates.map((poly) => poly.map((ring) => smooth(ring).map(toLonLat))) },
       })),
   };
 }

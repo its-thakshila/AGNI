@@ -323,5 +323,175 @@ class DerivedStatusTest(unittest.TestCase):
         self.assertEqual(got["2022-01-05"], ("full", False, None))  # gap-filled from 2022: day/night unreliable
 
 
+def _days(n: int):
+    from datetime import timedelta
+    return timedelta(days=n)
+
+
+class ForecastTest(unittest.TestCase):
+    """The experimental forecast job (agni_pipeline.forecast), offline: NASA POWER and Open-Meteo are faked."""
+
+    PARAMS = ["T2M_MAX", "T2M_MIN", "PRECTOTCORR", "RH2M", "WS10M", "PS"]
+
+    @staticmethod
+    def _weather(dates, lats, lons, seed=0):
+        """POWER-like daily weather for every (date, lat, lon); PS in kPa as POWER gives it."""
+        import numpy as np
+        import pandas as pd
+        rng = np.random.default_rng(seed)
+        d, la, lo = (a.ravel() for a in np.meshgrid(pd.to_datetime(dates), np.asarray(lats, float),
+                                                     np.asarray(lons, float), indexing="ij"))
+        n = len(d)
+        d = pd.DatetimeIndex(d)
+        tmax = 32 + 6 * np.cos(2 * np.pi * (d.day_of_year.to_numpy() - 15) / 365.25) + rng.normal(0, 2, n)
+        return pd.DataFrame({
+            "date": d, "latitude": la, "longitude": lo, "T2M_MAX": tmax, "T2M_MIN": tmax - 13,
+            "PRECTOTCORR": np.where(rng.random(n) < 0.15, rng.exponential(6, n), 0.0),
+            "RH2M": rng.uniform(15, 60, n), "WS10M": rng.uniform(1, 7, n), "PS": rng.uniform(96.5, 98.5, n)})
+
+    def test_power_boxes_cover_the_grid_within_10_degrees(self):
+        import numpy as np
+        from agni_pipeline.forecast import _power_boxes
+        grids = [(np.arange(-44.0, -9.99, 0.5), np.arange(113.125, 153.76, 0.625)),   # NASA POWER Australia
+                 (np.array([-30.0, -25.0, -20.0, -10.0, -9.5]), np.array([140.0, 150.0, 150.625])),
+                 (np.array([-20.0]), np.array([130.0]))]
+        for lats, lons in grids:
+            boxes = _power_boxes(lats, lons)
+            for la0, la1, lo0, lo1 in boxes:
+                self.assertLessEqual(la1 - la0, 10 + 1e-9)
+                self.assertLessEqual(lo1 - lo0, 10 + 1e-9)
+                self.assertTrue(la0 <= la1 and lo0 <= lo1)
+                self.assertTrue(np.isin([la0, la1], lats).all() and np.isin([lo0, lo1], lons).all())
+            for la in lats:
+                for lo in lons:
+                    self.assertTrue(any(a <= la <= b and c <= lo <= d for a, b, c, d in boxes), (la, lo))
+
+    def test_choose_issue_is_newest_finished_day(self):
+        from agni_pipeline.forecast import choose_issue
+        today = date(2026, 11, 15)
+        self.assertEqual(choose_issue({"latest_fire_date": "2026-11-15"}, today), date(2026, 11, 14))
+        self.assertEqual(choose_issue({"latest_fire_date": "2026-11-14"}, today), date(2026, 11, 14))
+        self.assertEqual(choose_issue({"latest_fire_date": "2026-11-10"}, today), date(2026, 11, 10))
+
+    def test_spread_is_ordered_and_seeded(self):
+        import numpy as np
+        from agni_pipeline.forecast import spread
+        r = np.random.default_rng(1)
+        p = r.uniform(0, 0.9, 500)
+        p[:50] = 0.0                                     # never fire: dropped
+        mu = r.uniform(1, 6, 500)
+        f = r.uniform(0.5, 1.5, 500)
+        a = spread(p, mu, f, np.random.default_rng(42))
+        b = spread(p, mu, f, np.random.default_rng(42))
+        self.assertEqual(a, b)
+        self.assertEqual(len(a), 3)
+        self.assertTrue(a[0] <= a[1] <= a[2])
+        self.assertGreater(a[2], 0)
+        self.assertEqual(spread(np.zeros(10), np.ones(10), np.ones(10), np.random.default_rng(0)), [0.0, 0.0, 0.0])
+
+    def test_run_end_to_end_on_a_tiny_store(self):
+        from unittest import mock
+
+        import numpy as np
+        import pandas as pd
+
+        from agni_pipeline import forecast
+        from agni_pipeline.storage import open_store
+
+        today = datetime.now(UTC).date()
+        issue = today - _days(1)
+        rng = np.random.default_rng(7)
+        # website cells around (-20.3, 130.4): ci = floor(lon*10), cj = floor(lat*10)
+        cells = [(ci, cj) for ci in range(1300, 1308) for cj in range(-206, -200)]
+        rows = []
+        for y in range(2001, 2025):                       # sparse climatology years
+            for m in range(1, 13):
+                for k in rng.choice(len(cells), 3, replace=False):
+                    rows.append((date(y, m, 15), "D", *cells[k], 2.0))
+        for n in range(forecast.WARM_DAYS + 1):          # the fire-days the rolling features need
+            for k in rng.choice(len(cells), 6, replace=False):
+                rows.append((issue - _days(n), "D" if rng.random() < 0.7 else "N", *cells[k],
+                             float(rng.integers(1, 5))))
+        fire = pd.DataFrame(rows, columns=["fire_date", "pass", "ci", "cj", "count"])
+        fire["type"] = 0
+        static = fire.iloc[:5].assign(type=2, ci=1400, cj=-250)   # static sources: never forecast
+        fire = pd.concat([fire, static], ignore_index=True)
+        fire = fire.groupby(["fire_date", "pass", "type", "ci", "cj"], as_index=False)["count"].sum()
+
+        lats = np.arange(-22.0, -18.49, 0.5)             # POWER grid points around the cells
+        lons = 113.125 + 0.625 * np.arange(25, 31)        # 128.75 .. 131.875
+        obs = self._weather(pd.date_range(issue - _days(420), issue - _days(4)), lats, lons)
+        calls = {"power": [], "om": []}
+
+        def fake_power(la, lo, start, end):
+            calls["power"].append((len(la), len(lo), start, end))
+            out = self._weather(pd.date_range(start, end), la, lo, seed=1)
+            out.loc[out["date"] > pd.Timestamp(today - _days(3)), self.PARAMS] = np.nan   # not published yet
+            return out
+
+        def fake_om(points, past_days, forecast_days):
+            calls["om"].append((len(points), past_days, forecast_days))
+            days = pd.date_range(pd.Timestamp(today - _days(past_days)), pd.Timestamp(today + _days(forecast_days - 1)))
+            parts = [self._weather(days, [la], [lo], seed=2) for la, lo in points]
+            return pd.concat(parts, ignore_index=True)    # PS already in kPa, like fetch_open_meteo
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "hist").mkdir()
+            (root / "forecast").mkdir()
+            with duckdb.connect() as db:
+                db.register("fire_df", fire)
+                db.execute(f"""COPY (SELECT CAST(fire_date AS DATE) AS fire_date, "pass", CAST(type AS INT) AS type,
+                                        'real' AS origin, CAST(ci AS INT) AS ci, CAST(cj AS INT) AS cj,
+                                        (cj + 0.5) / 10 AS cell_lat, (ci + 0.5) / 10 AS cell_lon,
+                                        CAST(count AS DOUBLE) AS count, count * 12.5 AS frp_sum,
+                                        CAST(count AS BIGINT) AS n_rows
+                                 FROM fire_df ORDER BY fire_date)
+                               TO '{(root / "hist" / "cells.parquet").as_posix()}' (FORMAT PARQUET)""")
+                db.register("obs_df", obs)
+                db.execute(f"COPY obs_df TO '{(root / 'forecast' / 'weather_observed.parquet').as_posix()}' "
+                           "(FORMAT PARQUET)")
+            (root / "manifest.json").write_text(json.dumps({"latest_fire_date": str(today), "live_months": []}))
+
+            store = open_store(f"local:{tmp}")
+            with mock.patch.object(forecast, "fetch_power", fake_power), \
+                    mock.patch.object(forecast, "fetch_open_meteo", fake_om):
+                summary = forecast.run(store)
+
+            latest = json.loads((root / "forecast" / "latest.json").read_text())
+            self.assertEqual(latest, json.loads(json.dumps(summary)))
+            self.assertTrue(latest["experimental"])
+            self.assertEqual(latest["issue_date"], str(issue))
+            self.assertEqual(set(latest["leads"]), {"1", "3", "7"})
+            for L, v in latest["leads"].items():
+                self.assertEqual(v["target_date"], str(issue + _days(int(L))))
+                self.assertLessEqual(v["range"][0], v["range"][1])
+                self.assertGreaterEqual(v["expected"], 0)
+            self.assertEqual(set(latest["accuracy"]), {"1", "3", "7"})
+            self.assertEqual(latest["weather"]["observed_until"], str(today - _days(3)))
+            self.assertEqual(latest["weather"]["filled_days"], 2)      # issue-1, issue: from Open-Meteo
+            self.assertGreater(latest["weather"]["points"], 0)
+            self.assertEqual(len(calls["power"]), 1)
+            self.assertEqual(calls["power"][0][3], today)
+            self.assertEqual(len(calls["om"]), 1)
+
+            with duckdb.connect() as db:
+                for L in (1, 3, 7):
+                    path = (root / "forecast" / f"lead_{L}.parquet").as_posix()
+                    cols = [r[0] for r in db.execute(f"DESCRIBE SELECT * FROM read_parquet('{path}')").fetchall()]
+                    self.assertEqual(cols, ["ci", "cj", "p", "expected"])
+                    got = db.execute(f"SELECT ci, cj, p, expected FROM read_parquet('{path}')").fetchall()
+                    self.assertEqual(len(got), latest["leads"][str(L)]["cells"])
+                    self.assertGreater(len(got), 0)
+                    for ci, cj, p, e in got:
+                        self.assertIn((ci, cj), cells)       # same website grid, never the static cell
+                        self.assertTrue(0 <= p <= 1)
+                        self.assertGreaterEqual(e, 0)
+                # observed weather kept up to date: the faked POWER days were added
+                last = db.execute("SELECT max(date) FROM read_parquet(?)",
+                                  [str(root / "forecast" / "weather_observed.parquet")]).fetchone()[0]
+            self.assertEqual(pd.Timestamp(last).date(), today)
+
+
 if __name__ == "__main__":
     unittest.main()

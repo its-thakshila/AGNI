@@ -49,3 +49,6 @@ export const ORIGIN_DETAIL: Record<Origin, string> = {
   firms_nrt: 'Recent VIIRS data from NASA FIRMS. Near-real-time values can still change for about 3 days.',
   firms_sp: 'Final, quality-checked VIIRS archive from NASA FIRMS.',
 };
+
+/** Forecast map bands (chance of fire, FORECAST_LEVELS): violet, so a forecast is never mistaken for observed fire. */
+export const FORECAST_COLORS = ['#4b3a8c', '#6f4fc4', '#9b6be6', '#d2a6ff'];

@@ -6,7 +6,7 @@
 
 import type {
   AnomalyData, AreaQuery, BBox, CalendarCell, CalendarData, Category, Climatology, DailyData, DailyValue,
-  Envelope, GridCell, GridData, HasData, Meta, Origin, Warning,
+  Envelope, ForecastCell, ForecastSummary, GridCell, GridData, HasData, Meta, Origin, Warning,
 } from '../types';
 import { fairCategory } from '../types';
 import { ApiError } from '../errors';
@@ -635,4 +635,24 @@ export async function pendingDays(): Promise<string[]> {
   const m = await dataset();
   const res = await fetch(`${WORKER}/pending/${m.dataset}`);
   return res.ok ? ((await res.json()) as { pending: string[] }).pending : [];
+}
+
+// ---------------------------------------------------------------- experimental forecast
+/** The latest forecast's summary, or null when this dataset has none (e.g. the mock dataset). */
+export async function forecastSummary(): Promise<ForecastSummary | null> {
+  let res: Response;
+  try {
+    res = await fetch(fileUrl('forecast/latest.json'), { cache: 'no-store' });
+  } catch (e) {
+    throw new ApiError('NETWORK', String(e));
+  }
+  if (res.status === 404) return null;
+  if (!res.ok) throw new ApiError('INTERNAL_ERROR', `Forecast not available (HTTP ${res.status}).`, res.status);
+  return res.json();
+}
+
+/** Forecast cells of one lead (whole file, cached by the forecast's version). */
+export async function forecastCells(summary: ForecastSummary, lead: number): Promise<ForecastCell[]> {
+  const rows = await smallFile(`forecast/lead_${lead}.parquet`, summary.version, ['ci', 'cj', 'p', 'expected']);
+  return rows.map((r) => ({ lat: num(r.cj) / 10, lon: num(r.ci) / 10, p: num(r.p), expected: num(r.expected) }));
 }

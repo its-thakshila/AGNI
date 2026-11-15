@@ -107,3 +107,17 @@ export function fairCategory(c: Category | null, has: HasData): Category | null 
   if (has !== 'partial' || c === null) return c;
   return c === 'above' || c === 'well_above' ? c : null;
 }
+
+// ---------------------------------------------------------------- experimental forecast
+export type Lead = 1 | 3 | 7;
+export interface ForecastLead { target_date: string; expected: number; range: [number, number]; cells: number }
+export interface ForecastAccuracy { daily_total_error_pct: number; persistence_error_pct: number; top1000_capture_pct: number }
+export interface ForecastSummary {
+  experimental: true; issue_date: string; generated_at: string; version: string; model: string;
+  test_years: number[] | null;
+  leads: Record<string, ForecastLead>;
+  accuracy: Record<string, ForecastAccuracy>;
+  weather: { observed: string; observed_until: string; filled_days: number; forecast: string; points: number };
+}
+/** One 0.1° cell (lat/lon = south-west corner, like GridCell): chance of a detection, expected detections. */
+export interface ForecastCell { lat: number; lon: number; p: number; expected: number }

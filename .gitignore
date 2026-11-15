@@ -1,1 +1,3 @@
 .claude
+# hand-off archives from the ML team (their contents go to the repo or R2)
+*.zip

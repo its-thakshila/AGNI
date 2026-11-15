@@ -1,4 +1,4 @@
-import { CalendarDays, ChartColumn, TrendingUp, type LucideIcon } from 'lucide-react';
+import { CalendarDays, ChartColumn, CloudSun, TrendingUp, type LucideIcon } from 'lucide-react';
 import { useSelection, type Tab } from '../store/useSelection';
 import Headline from './Headline';
 import NotesChip from './NotesChip';
@@ -6,12 +6,14 @@ import SettingsMenu from './SettingsMenu';
 import CalendarTab from './tabs/CalendarTab';
 import MonthTab from './tabs/MonthTab';
 import TrendsTab from './tabs/TrendsTab';
+import ForecastTab from './tabs/ForecastTab';
 import Icon from './ui/Icon';
 
 const TABS: { id: Tab; label: string; icon: LucideIcon }[] = [
   { id: 'calendar', label: 'Calendar', icon: CalendarDays },
   { id: 'month', label: 'Month', icon: ChartColumn },
   { id: 'trends', label: 'Trends', icon: TrendingUp },
+  { id: 'forecast', label: 'Forecast', icon: CloudSun },
 ];
 
 // Side panel: 1/φ² ≈ 38.2% of the width (map gets the golden 61.8%), clamped for small and huge screens.
@@ -24,7 +26,7 @@ export default function SidePanel() {
     >
       <Headline />
       <div className="flex items-center gap-f3 px-f5 pb-f4">
-        <div role="tablist" aria-label="Views" className="grid flex-1 grid-cols-3 gap-f1 rounded-f4 bg-page/60 p-f1">
+        <div role="tablist" aria-label="Views" className="grid flex-1 grid-cols-4 gap-f1 rounded-f4 bg-page/60 p-f1">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -37,7 +39,7 @@ export default function SidePanel() {
                 tab === t.id ? 'bg-raised text-ink shadow-sm shadow-black/40' : 'text-muted hover:text-ink-2'
               }`}
             >
-              <Icon icon={t.icon} size="sm" className={tab === t.id ? 'text-ember' : ''} />
+              <Icon icon={t.icon} size="sm" className={`hidden min-[1500px]:block ${tab === t.id ? (t.id === 'forecast' ? 'text-[#c4a6ff]' : 'text-ember') : ''}`} />
               {t.label}
             </button>
           ))}
@@ -48,8 +50,10 @@ export default function SidePanel() {
         {tab === 'calendar' && <CalendarTab />}
         {tab === 'month' && <MonthTab />}
         {tab === 'trends' && <TrendsTab />}
+        {tab === 'forecast' && <ForecastTab />}
       </div>
-      <NotesChip />
+      {/* the notes describe the record, not the forecast */}
+      {tab !== 'forecast' && <NotesChip />}
     </aside>
   );
 }

@@ -5,14 +5,16 @@ import type { BBox } from '../api/types';
 import { isModelled } from '../api/types';
 import { friendlyError } from '../api/client';
 import { ApiError } from '../api/errors';
-import { useBox, useGrid, useMeta, useMonthQuery } from '../hooks/useData';
+import { useBox, useForecast, useForecastCells, useGrid, useMeta, useMonthQuery } from '../hooks/useData';
+import { ForecastLegend } from './tabs/ForecastTab';
+import { forecastShapes } from '../lib/hotspotShapes';
 import MapControls from './MapControls';
 import { applyBasemap, dailyAvailable, styleBorders } from '../lib/basemaps';
 import { ymd } from '../lib/dates';
 import DayControl from './DayControl';
 import { FRAME_MS, usePlayback } from '../hooks/usePlayback';
 import { useSelection } from '../store/useSelection';
-import { EMBER } from '../lib/colors';
+import { EMBER, FORECAST_COLORS } from '../lib/colors';
 import { shapesFor } from '../lib/shapeCache';
 import AreaControl from './AreaControl';
 import Icon from './ui/Icon';
@@ -39,6 +41,7 @@ export const BAND_COLORS = [EMBER[4], EMBER[6], EMBER[7], EMBER[8]];
 const FILL_OPACITY = 0.95;
 const FADE_MS = 300;
 const BAND_FILL = ['match', ['get', 'band'], 0, BAND_COLORS[0], 1, BAND_COLORS[1], 2, BAND_COLORS[2], BAND_COLORS[3]];
+const FORECAST_FILL = ['match', ['get', 'band'], 0, FORECAST_COLORS[0], 1, FORECAST_COLORS[1], 2, FORECAST_COLORS[2], FORECAST_COLORS[3]];
 
 export default function MapPanel() {
   const el = useRef<HTMLDivElement>(null);
@@ -54,7 +57,14 @@ export default function MapPanel() {
   usePlayback();
   // dim the map while a new period loads, so the old map is never mistaken for the new one;
   // shown only if loading takes more than a moment, to avoid a flash on quick updates
-  const loading = grid.isFetching && (grid.isPlaceholderData || !grid.data) && !playing;
+  // Forecast tab: the map shows the experimental forecast for the chosen day instead of the record
+  const forecastMode = useSelection((s) => s.tab) === 'forecast';
+  const forecast = useForecastCells(forecastMode);
+  const forecastSummary = useForecast().data;
+  const lead = useSelection((s) => s.lead);
+  const loading = forecastMode
+    ? forecast.isFetching && (forecast.isPlaceholderData || !forecast.data)
+    : grid.isFetching && (grid.isPlaceholderData || !grid.data) && !playing;
   const [showLoading, setShowLoading] = useState(false);
   useEffect(() => {
     if (!loading) { setShowLoading(false); return; }
@@ -147,9 +157,16 @@ export default function MapPanel() {
   }, [ready, basemap, basemap === 'daily' ? imageryDate : '']);
 
   const shapes = useMemo(() => {
+    if (forecastMode) return forecast.data ? forecastShapes(forecast.data, 0.1) : EMPTY;
     const g = grid.data?.data;
     return g && box ? shapesFor(g) : EMPTY;
-  }, [grid.data, box]);
+  }, [forecastMode, forecast.data, grid.data, box]);
+
+  // violet bands for the forecast, ember for observed fire (set before the new shapes are shown)
+  useEffect(() => {
+    if (!ready) return;
+    for (const id of ['grid-a', 'grid-b']) mapRef.current!.setPaintProperty(id, 'fill-color', (forecastMode ? FORECAST_FILL : BAND_FILL) as never);
+  }, [ready, forecastMode]);
 
   const speed = useSelection((s) => s.speed);
   // the crossfade fits the frame: half a frame at normal speeds; at the top speed it lasts the whole
@@ -263,7 +280,7 @@ export default function MapPanel() {
         <AreaControl />
       </div>
       {/* the map couldn't load: same dimmed overlay, with the reason and a retry (loading wins while it retries) */}
-      {grid.error && !grid.isFetching && !(showLoading || fetching > 0) && (
+      {!forecastMode && grid.error && !grid.isFetching && !(showLoading || fetching > 0) && (
         <div className="pointer-events-none absolute inset-0 z-[5] grid place-items-center bg-page/45 p-f4" role="alert">
           <div className="chip pointer-events-auto flex max-w-[22rem] items-center gap-f3 rounded-f5 border border-line bg-page/90 py-f2 pl-f4 pr-f2 text-body text-ink-2 shadow-lg backdrop-blur">
             <Icon icon={grid.error instanceof ApiError && grid.error.code === 'NETWORK' ? CloudOff : TriangleAlert} size="sm" className="shrink-0 text-ember-soft" />
@@ -278,24 +295,24 @@ export default function MapPanel() {
           </div>
         </div>
       )}
-      {(showLoading || fetching > 0) && (
+      {(showLoading || (!forecastMode && fetching > 0)) && (
         <div className="pointer-events-none absolute inset-0 z-[5] grid place-items-center bg-page/45 transition-opacity" role="status" aria-live="polite">
           <div className="chip flex items-center gap-f3 rounded-f5 border border-line bg-page/90 px-f4 py-f2 text-body text-ink-2 shadow-lg backdrop-blur">
             <Icon icon={LoaderCircle} size="sm" className="shrink-0 animate-spin text-ember" />
-            {fetching > 0 ? (
+            {!forecastMode && fetching > 0 ? (
               <span>
                 <span className="block">Fetching new satellite data…</span>
                 <span className="block text-cap text-muted">
                   {day === null ? `${fetching} ${fetching === 1 ? 'day' : 'days'} · ` : ''}usually 1–2 minutes
                 </span>
               </span>
-            ) : day === null ? 'Updating map…' : 'Loading day…'}
+            ) : forecastMode ? 'Loading forecast…' : day === null ? 'Updating map…' : 'Loading day…'}
           </div>
         </div>
       )}
       {/* phones: one row below the area buttons, which take the top row */}
       <div className="absolute right-f4 top-[4.25rem] z-10 flex flex-col items-end gap-f2 sm:top-f4">
-        <DayControl />
+        {!forecastMode && <DayControl />}
       </div>
       {/* sits 5px above the 34px credits button (13px from the edge): one column, equal gaps */}
       <div className="absolute bottom-[52px] right-f4 z-10">
@@ -305,14 +322,25 @@ export default function MapPanel() {
         <div className="absolute bottom-f4 right-f6 max-w-64 rounded-f4 border border-line bg-page/85 px-f4 py-f3 text-cap text-ember-soft backdrop-blur">{liveError}</div>
       )}
       <div className="pointer-events-none absolute bottom-f4 left-f4 max-w-[calc(100%-5.5rem)] rounded-f3 border border-line bg-page/80 px-f4 py-f3 backdrop-blur">
-        <div className="flex items-center gap-f3 text-cap text-muted">
-          <span>Some burning</span>
-          <span className="flex gap-f1">
-            {BAND_COLORS.map((c) => <span key={c} className="h-2 w-5 rounded-f2" style={{ background: c }} />)}
-          </span>
-          <span>Intense</span>
-        </div>
-        {modelShare > 0.5 && <div className="mt-f1 text-cap text-ink-2">Harmonized by Harmonic: where burning was, not exact points</div>}
+        {forecastMode ? (
+          <>
+            <ForecastLegend />
+            <div className="mt-f1 text-cap text-[#c4a6ff]">
+              Experimental forecast{forecastSummary?.leads[String(lead)] ? ` · ${new Date(`${forecastSummary.leads[String(lead)].target_date}T00:00:00Z`).toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' })}` : ''}
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="flex items-center gap-f3 text-cap text-muted">
+              <span>Some burning</span>
+              <span className="flex gap-f1">
+                {BAND_COLORS.map((c) => <span key={c} className="h-2 w-5 rounded-f2" style={{ background: c }} />)}
+              </span>
+              <span>Intense</span>
+            </div>
+            {modelShare > 0.5 && <div className="mt-f1 text-cap text-ink-2">Harmonized by Harmonic: where burning was, not exact points</div>}
+          </>
+        )}
       </div>
     </section>
   );

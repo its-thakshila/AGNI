@@ -4,7 +4,7 @@
 // FastAPI backend instead (useful for backend development).
 
 import type {
-  AnomalyData, AreaQuery, BBox, CalendarData, DailyData, Envelope, GridData, Meta, ApiErrorBody,
+  AnomalyData, AreaQuery, BBox, CalendarData, DailyData, Envelope, ForecastSummary, GridData, Meta, ApiErrorBody,
 } from './types';
 import * as engine from './engine';
 import { ApiError } from './errors';
@@ -92,6 +92,10 @@ export const api = {
   daily: (q: AreaQuery): Promise<Envelope<DailyData>> => (USING_ENGINE ? local(engine.daily(q)) : get('/api/daily', areaParams(q))),
 
   grid: (q: AreaQuery): Promise<Envelope<GridData>> => (USING_ENGINE ? local(engine.grid(q)) : get('/api/grid', areaParams(q))),
+
+  // experimental forecast: dataset files only (no backend endpoint)
+  forecast: () => engine.forecastSummary(),
+  forecastCells: (s: ForecastSummary, lead: number) => engine.forecastCells(s, lead),
 };
 
 /** Download the hotspots CSV for a query (contract §9). */

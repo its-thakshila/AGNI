@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import type { BBox } from '../api/types';
+import type { BBox, Lead } from '../api/types';
 import type { Basemap } from '../lib/basemaps';
 
 export type CalendarMode = 'count' | 'anomaly';
-export type Tab = 'calendar' | 'month' | 'trends';
+export type Tab = 'calendar' | 'month' | 'trends' | 'forecast';
 export type CalView = 'months' | 'days';
 export const PLAY_SPEEDS = [0.5, 1, 2, 4, 8] as const;
 export type PlaySpeed = (typeof PLAY_SPEEDS)[number];
@@ -25,6 +25,8 @@ interface SelectionState {
   /** the Calendar tab shows every month, or the selected month's days */
   calView: CalView;
   tab: Tab;
+  /** Forecast tab: days ahead shown on the map */
+  lead: Lead;
   types: number[];
   drawing: boolean;
   setAoi: (b: BBox | null) => void;
@@ -38,6 +40,7 @@ interface SelectionState {
   setMode: (m: CalendarMode) => void;
   setCalView: (v: CalView) => void;
   setTab: (t: Tab) => void;
+  setLead: (l: Lead) => void;
   setTypes: (t: number[]) => void;
   setDrawing: (d: boolean) => void;
 }
@@ -64,6 +67,7 @@ export const useSelection = create<SelectionState>((set) => ({
   mode: 'count',
   calView: 'months',
   tab: 'calendar',
+  lead: 1,
   types: [0],
   drawing: false,
   setAoi: (aoi) => set({ aoi, drawing: false, playing: false }),
@@ -78,7 +82,9 @@ export const useSelection = create<SelectionState>((set) => ({
   setMonthDay: (year, month, day) => set({ year, month, day }),
   setMode: (mode) => set({ mode }),
   setCalView: (calView) => set({ calView }),
-  setTab: (tab) => set({ tab }),
+  // the forecast shows the days ahead: stop playback and a selected day of the past
+  setTab: (tab) => set(tab === 'forecast' ? { tab, playing: false, day: null } : { tab }),
+  setLead: (lead) => set({ lead }),
   setTypes: (types) => set({ types }),
   setDrawing: (drawing) => set({ drawing }),
 }));
