@@ -88,13 +88,22 @@ function monthVersion(m: Manifest, month: string): string {
   return v || m.updated_at;
 }
 
-const histUrl = (m: Manifest, name: string) => fileUrl(`hist/${name}.parquet?v=${encodeURIComponent(m.local_end)}`);
+/**
+ * Version of the history files, so browsers never reuse a cached copy of an older build. The
+ * record's end date isn't enough: a rebuild can end on the same date as an earlier one (new data
+ * up to 2025-12-31 after an old build to 2025-12-31), and then the old cached bytes get mixed
+ * with the new file's ranges. The newest row-file stamp changes on every history write (full
+ * build or consolidate), so it is used when present.
+ */
+const histVersion = (m: Manifest) =>
+  m.row_years ? Object.values(m.row_years).reduce((a, v) => (v > a ? v : a), m.local_end) : m.local_end;
+const histUrl = (m: Manifest, name: string) => fileUrl(`hist/${name}.parquet?v=${encodeURIComponent(histVersion(m))}`);
 
 async function load(m: Manifest): Promise<Data> {
   // everything small, in parallel: day coverage, all-Australia totals, the live months' cells
   const [statusRows, totalRows, liveParts] = await Promise.all([
-    smallFile('hist/day_status.parquet', m.local_end, ['fire_date', 'has_data', 'daynight_reliable', 'flag']),
-    m.totals ? smallFile('hist/day_totals.parquet', m.local_end) : Promise.resolve(null),
+    smallFile('hist/day_status.parquet', histVersion(m), ['fire_date', 'has_data', 'daynight_reliable', 'flag']),
+    m.totals ? smallFile('hist/day_totals.parquet', histVersion(m)) : Promise.resolve(null),
     Promise.all(m.live_months.map((mo) => smallFile(`live/cells/${mo}.parquet`, monthVersion(m, mo), CELL_COLUMNS))),
   ]);
   const status = new Map<string, StatusRow>();
