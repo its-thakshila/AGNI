@@ -9,6 +9,10 @@
 <p align="center"><b>Active-fire Global Normalized Inventory</b><br>
 NASA Space Apps Challenge 2026 · Harmonization of MODIS and VIIRS Hot Spots</p>
 
+
+https://github.com/user-attachments/assets/231a283a-1a68-4750-9304-5cf05a906e7b
+
+
 AGNI is a consistent record of active-fire detections over Australia, from November 2000 to today.
 NASA's MODIS satellites have flown since 2000; the more sensitive VIIRS instruments since 2012.
 Their raw counts cannot be compared directly. AGNI joins them into one series in VIIRS terms, so
